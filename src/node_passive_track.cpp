@@ -83,6 +83,9 @@ class IiwaRosMaster
         _subControl[1] = _n.subscribe<geometry_msgs::Pose>("/passive_control/vel_quat", 1,
             boost::bind(&IiwaRosMaster::updateControlVel,this,_1),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
 
+        _subDamping = _n.subscribe<std_msgs::Float64MultiArray>("/lwr/joint_controllers/passive_ds_eig", 1,
+            boost::bind(&IiwaRosMaster::updateDamping,this,_1),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
+
         _TrqCmdPublisher = _n.advertise<std_msgs::Float64MultiArray>("/iiwa/TorqueController/command",1);
         _EEPosePublisher = _n.advertise<geometry_msgs::Pose>("/iiwa/ee_info/Pose",1);
         _EEVelPublisher = _n.advertise<geometry_msgs::Twist>("/iiwa/ee_info/Vel",1);
@@ -184,7 +187,7 @@ class IiwaRosMaster
 
     ros::Subscriber _subControl[2];
 
-
+    ros::Subscriber _subDamping;
 
     ros::Subscriber _subOptitrack[TOTAL_No_MARKERS];  // optitrack markers pose
 
@@ -344,6 +347,17 @@ class IiwaRosMaster
         Eigen::Matrix3d rotMat = rotMat_z*rotMat_y*rotMat_x * Utils<double>::quaternionToRotationMatrix(des_quat);
 
         _controller->set_desired_pose(des_pos+delta_pos,Utils<double>::rotationMatrixToQuaternion(rotMat));
+    }
+
+    public:
+
+    void updateDamping(const std_msgs::Float64MultiArray::ConstPtr &msg){
+
+        lambda0_pos=msg->data[0];lambda1_pos=msg->data[1];
+
+        _controller->set_pos_gains(ds_gain_pos,lambda0_pos,lambda1_pos);
+        _controller->set_ori_gains(ds_gain_ori,lambda0_ori,lambda1_ori);
+
     }
 };
 
