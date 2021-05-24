@@ -165,8 +165,8 @@ class IiwaRosMaster
 
                 // publishPlotVariable(_controller->getPlotVariable());
 
-                // std::cerr<<"eig0 eig1: "<<lambda0_pos<<", "<<lambda0_pos<<std::endl;
-                ROS_WARN_STREAM_THROTTLE(1, "eig0 eig1: "<<lambda0_pos<<", "<<lambda0_pos);
+                // std::cerr<<"eig0 eig1: "<<lambda0_pos<<", "<<lambda1_pos<<std::endl;
+                ROS_WARN_STREAM_THROTTLE(1, "eig0 eig1: "<<lambda0_pos<<", "<<lambda1_pos);
                 
             _mutex.unlock();
             

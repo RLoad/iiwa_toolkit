@@ -5,8 +5,8 @@ control:
     dsGainPos: 5.0
     lambda0Pos: 40.0
     lambda1Pos: 40.0
-    # lambda0Pos: 400.0
-    # lambda1Pos: 400.0
+    # lambda0Pos: 100.0
+    # lambda1Pos: 100.0
     dsGainOri: 3.0
     lambda0Ori: 5.0
     lambda1Ori: 2.5
@@ -14,4 +14,5 @@ control:
 target:
     pos: [0.8, 0.0, 0.4]
     quat: [0.7071068, 0.0, 0.7071068,  0.0]
-    # quat: [-0.06, 0.99, 0.12,  0.06]
+    # pos: [0.6, 0.0, 0.4]
+    # quat: [0.0, 0.0, 0.7071068,  0.0]
