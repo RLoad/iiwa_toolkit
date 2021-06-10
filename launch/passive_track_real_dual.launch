@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<launch>
+
+    <!-- Select the robot name -->
+    <arg name="robot_name_1" default="iiwa1"/>
+    <arg name="iiwa_model_1" default="7"/>
+    <arg name="robot_name_2" default="iiwa_blue"/>
+    <arg name="iiwa_model_2" default="14"/>
+
+    <arg name="controller" default="TorqueController"/>
+
+    <include file="$(find iiwa_driver)/launch/iiwa_bringup.launch">
+        <arg name="robot_name" value="$(arg robot_name_1)"/>
+        <arg name="model" value="$(arg iiwa_model_1)"/>
+        <arg name="controller" value="$(arg controller)" />
+    </include>
+
+    <include file="$(find iiwa_driver)/launch/iiwa_bringup.launch">
+        <arg name="robot_name" value="$(arg robot_name_2)"/>
+        <arg name="model" value="$(arg iiwa_model_2)"/>
+        <arg name="controller" value="$(arg controller)" />
+    </include>
+
+    <group ns="/$(arg robot_name_1)">
+        <node name="passive_tracking" pkg="iiwa_toolkit" type="passive_track" output="screen">
+        </node>
+
+        <rosparam file="$(find iiwa_toolkit)/config/passive_track_params.yaml" command="load"/>
+    </group>
+
+    <group ns="/$(arg robot_name_2)">
+        <node name="passive_tracking" pkg="iiwa_toolkit" type="passive_track" output="screen">
+        </node>
+
+        <rosparam file="$(find iiwa_toolkit)/config/passive_track_params.yaml" command="load"/>
+    </group>
+    
+    <!-- <node name="plotter"
+            pkg="rqt_plot"
+            type="rqt_plot"
+            args="/iiwa/plotvar/data[0] /iiwa/plotvar/data[1] /iiwa/plotvar/data[2]" >
+    </node> -->
+</launch>

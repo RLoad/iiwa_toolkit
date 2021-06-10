@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<launch>
+
+    <!-- Select the robot name -->
+    <arg name="robot_name_1" default="iiwa1"/>
+    <arg name="iiwa_model_1" default="7"/>
+    <arg name="robot_name_2" default="iiwa_blue"/>
+    <arg name="iiwa_model_2" default="14"/>
+    <arg name="force_sensor_1" default="True"/>
+    <arg name="grabber_1" default="True"/>
+    <arg name="force_sensor_2" default="True"/>
+    <arg name="grabber_2" default="True"/>
+
+    <arg name="controller" default="TorqueController"/>
+
+    <include file="$(find iiwa_gazebo)/launch/iiwa_double_gazebo.launch">
+        <arg name="robot_name_1" value="$(arg robot_name_1)"/>
+        <arg name="iiwa_model_1" value="$(arg iiwa_model_1)"/>
+        <arg name="robot_name_2" value="$(arg robot_name_2)"/>
+        <arg name="iiwa_model_2" value="$(arg iiwa_model_2)"/>
+        <arg name="force_sensor_1" value="$(arg force_sensor_1)"/>
+        <arg name="grabber_1" value="$(arg grabber_1)"/>
+        <arg name="force_sensor_2" value="$(arg force_sensor_2)"/>
+        <arg name="grabber_2" value="$(arg grabber_2)"/>
+        <arg name="controller" value="$(arg controller)"/>
+    </include>
+
+    <group ns="/$(arg robot_name_1)">
+        <node name="passive_tracking" pkg="iiwa_toolkit" type="passive_track" output="screen">
+        </node>
+
+        <rosparam file="$(find iiwa_toolkit)/config/passive_track_params.yaml" command="load"/>
+    </group>
+
+    <group ns="/$(arg robot_name_2)">
+        <node name="passive_tracking" pkg="iiwa_toolkit" type="passive_track" output="screen">
+        </node>
+
+        <rosparam file="$(find iiwa_toolkit)/config/passive_track_params.yaml" command="load"/>
+    </group>
+    
+    <!-- <node name="plotter"
+            pkg="rqt_plot"
+            type="rqt_plot"
+            args="/iiwa/plotvar/data[0] /iiwa/plotvar/data[1] /iiwa/plotvar/data[2]" >
+    </node> -->
+</launch>

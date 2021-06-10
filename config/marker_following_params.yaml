@@ -7,17 +7,12 @@ options:
 control:
     dsGainPos: 5.0
     lambda0Pos: 30.0
-    lambda1Pos: 30.0
-    dsGainOri: 5.0
+    lambda1Pos: 20.0
+    dsGainOri: 3.0
     lambda0Ori: 5.0
-    lambda1Ori: 2.75
-    mass_ee: 0.01
+    lambda1Ori: 2.5
+    mass_ee: 1.5
 
 target:
-    pos: [0.5, 0.0, 0.2]
+    pos: [0.5, 0.0, 0.3]
     quat: [0.7071068, 0.0, 0.7071068,  0.0]
-    # quat: [0.7071068, -0.7071068, 0.0, 0.0]
-
-
-leader:
-    pos: [1.2, 0., 0.0]
