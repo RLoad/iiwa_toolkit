@@ -3,20 +3,20 @@ options:
 
 control:
     dsGainPos: 5.0
-    lambda0Pos: 30.0
-    lambda1Pos: 30.0
+    lambda0Pos: 40.0
+    lambda1Pos: 40.0
     # lambda0Pos: 20.0
     # lambda1Pos: 10.0
     dsGainOri: 3.0
-    # lambda0Ori: 5.0
-    # lambda1Ori: 2.5
-    lambda0Ori: 3.0
-    lambda1Ori: 3.0
+    lambda0Ori: 5.0
+    lambda1Ori: 2.5
+    # lambda0Ori: 8.0
+    # lambda1Ori: 4.0
 
 target:
-    # pos: [0.5, 0.0, 0.6]
-    # quat: [0.7071068, 0.0, 0.7071068,  0.0]
-    pos: [0.35,  0.10, 0.80]
-    quat: [0.3827, -0.9239, 0.0, 0.0]
+    pos: [0.8, 0.0, 0.4]
+    quat: [0.7071068, 0.0, 0.7071068,  0.0]
+    # pos: [0.35,  0.10, 0.80]
+    # quat: [0.3827, -0.9239, 0.0, 0.0]
     # iiwa_blue_pos: [0.35,  -0.20, 0.80]
     # iiwa_blue_quat: [0.3827,  0.9239, 0.0, 0.0]
