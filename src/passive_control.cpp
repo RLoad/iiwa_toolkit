@@ -235,7 +235,7 @@ void PassiveControl::computeTorqueCmd(){
     xgain(0,0) *= 1.5; 
 
     if(!is_just_velocity)
-        _robot.ee_des_vel   = zgain * dsGain_pos*(Eigen::Matrix3d::Identity()+xgain*std::exp(theta_g)) *deltaX;
+        _robot.ee_des_vel = dsGain_pos*(1+std::exp(theta_g)) *deltaX;
 
     // desired angular values
     Eigen::Vector4d dqd = Utils<double>::slerpQuaternion(_robot.ee_quat, _robot.ee_des_quat, 0.5);    

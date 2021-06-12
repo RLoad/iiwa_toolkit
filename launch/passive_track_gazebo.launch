@@ -1,6 +1,6 @@
 <launch>
     <!-- Select the robot name -->
-    <arg name="robot_name_1" default="iiwa1"/>
+    <arg name="robot_name_1" default="iiwa"/>
 
     <arg name="iiwa_model_1" default="14"/>
 
@@ -15,6 +15,9 @@
 
         <rosparam file="$(find iiwa_toolkit)/config/passive_track_params.yaml" command="load"/>
     </group>
+
+    <node name="spawn_box" pkg="gazebo_ros" type="spawn_model" args="-file $(find box_spawner)/models/box1.urdf -x 0.5 -y 0.0 -z 0.0 -urdf -model box1" />
+
 
     <!-- <node name="plotter"
             pkg="rqt_plot"
