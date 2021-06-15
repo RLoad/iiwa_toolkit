@@ -37,6 +37,7 @@ void DampingDS::set_damping_eigval(const double& lam0, const double& lam1){
 }
 void DampingDS::updateDampingMatrix(const Eigen::Vector3d& ref_vel,const Eigen::Vector3d& ref_dvel,const Eigen::Vector3d& ref_dzvel){ 
 
+    // std::cerr<<"ref_vel: "<<ref_vel(0)<<","<<ref_vel(1)<<","<<ref_vel(2)<<" ref_dvel: "<<ref_dvel(0)<<","<<ref_dvel(1)<<","<<ref_dvel(2)<<"\n";
     if(ref_vel.norm() > 1e-6){
         baseMat.setRandom();
         baseMat.col(0) = ref_dvel.normalized();
@@ -213,10 +214,12 @@ void DampingControl::set_desired_quat(const Eigen::Vector4d& quat){
 void DampingControl::set_desired_velocity(const Eigen::Vector3d& vel){
      _robot.ee_des_vel = vel;
      is_just_velocity = true;
+    // std::cerr<<"vel: "<<vel(0)<<","<<vel(1)<<","<<vel(2)<<"\n";
 }
 void DampingControl::set_desired_and_z_velocity(const Eigen::Vector3d& desired_vel, const Eigen::Vector3d& desired_vel_z){
      _robot.ee_des_vel_for_DMatrix = desired_vel;
      _robot.ee_des_z_vel_for_DMatrix = desired_vel_z;
+    //  std::cerr<<"desired_vel: "<<desired_vel(0)<<","<<desired_vel(1)<<","<<desired_vel(2)<<"\n";
 }
 
 void DampingControl::set_load(const double& mass ){
@@ -240,8 +243,11 @@ void DampingControl::computeTorqueCmd(){
     xgain(0,0) *= 1.5; 
 
     if(!is_just_velocity)
-        _robot.ee_des_vel = dsGain_pos*(1+std::exp(theta_g)) *deltaX;
-
+        {
+            _robot.ee_des_vel = dsGain_pos*(1+std::exp(theta_g)) *deltaX;
+            _robot.ee_des_vel_for_DMatrix = dsGain_pos*(1+std::exp(theta_g)) *deltaX;
+            _robot.ee_des_z_vel_for_DMatrix = dsGain_pos*(1+std::exp(theta_g)) *deltaX;
+        }
     // desired angular values
     Eigen::Vector4d dqd = Utils<double>::slerpQuaternion(_robot.ee_quat, _robot.ee_des_quat, 0.5);    
     Eigen::Vector4d deltaQ = dqd -  _robot.ee_quat;
@@ -262,6 +268,10 @@ void DampingControl::computeTorqueCmd(){
     dsContPos->update(_robot.ee_vel,_robot.ee_des_vel,_robot.ee_des_vel_for_DMatrix,_robot.ee_des_z_vel_for_DMatrix);
     Eigen::Vector3d wrenchPos = dsContPos->get_output() + load_added * 9.8*Eigen::Vector3d::UnitZ();   
     Eigen::VectorXd tmp_jnt_trq_pos = _robot.jacobPos.transpose() * wrenchPos;
+
+    // std::cerr<<"ee_des_vel: "<<_robot.ee_des_vel(0)<<","<<_robot.ee_des_vel(1)<<","<<_robot.ee_des_vel(2)
+    // <<" _robot.ee_des_vel_for_DMatrix: "<<_robot.ee_des_vel_for_DMatrix(0)<<","<<_robot.ee_des_vel_for_DMatrix(1)<<","<<_robot.ee_des_vel_for_DMatrix(2)<<"\n";
+
 
     // Orientation
     dsContOri->update(_robot.ee_angVel,_robot.ee_des_angVel,_robot.ee_des_vel_for_DMatrix,_robot.ee_des_z_vel_for_DMatrix);

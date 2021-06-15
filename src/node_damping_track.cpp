@@ -333,12 +333,12 @@ class IiwaRosMaster
     }
 
     void updateVelforDampMatrix(const geometry_msgs::Twist::ConstPtr& msg){
-        Eigen::Vector3d desire_vel;
+        Eigen::Vector3d desired_vel;
         Eigen::Vector3d desired_z_vel;
-        desire_vel << (double)msg->linear.x, (double)msg->linear.y, (double)msg->linear.z;
+        desired_vel << (double)msg->linear.x, (double)msg->linear.y, (double)msg->linear.z;
         desired_z_vel << (double)msg->angular.x, (double)msg->angular.y, (double)msg->angular.z;
-        if(desire_vel.norm()<1.&&desired_z_vel.norm()<1.){
-            _controller->set_desired_and_z_velocity(desire_vel,desired_z_vel);
+        if(desired_vel.norm()<1.&&desired_z_vel.norm()<1.){
+            _controller->set_desired_and_z_velocity(desired_vel,desired_z_vel);
         }else{
             ROS_WARN("VELOCITY OUT OF BOUND");
         }
