@@ -54,3 +54,7 @@ add_dependencies(passive_track ${PROJECT_NAME}_gencfg)
 add_executable(marker_following src/node_marker_following.cpp  src/motion_capture.cpp src/passive_control.cpp include/thirdparty/Utils.cpp ${MODEL_SOURCES})
 target_link_libraries(marker_following ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
 add_dependencies(marker_following ${PROJECT_NAME}_gencfg)
+
+add_executable(damping_track src/node_damping_track.cpp  src/damping_control.cpp include/thirdparty/Utils.cpp ${MODEL_SOURCES})
+target_link_libraries(damping_track ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
+add_dependencies(damping_track ${PROJECT_NAME}_gencfg)

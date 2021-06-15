@@ -14,7 +14,7 @@
     </include>
 
     <group ns="/$(arg robot_name)">
-        <node name="passive_tracking" pkg="iiwa_toolkit" type="passive_track" output="screen">
+        <node name="damping_tracking" pkg="iiwa_toolkit" type="damping_tracking" output="screen">
         </node>
 
         <rosparam file="$(find iiwa_toolkit)/config/passive_track_params.yaml" command="load"/>
