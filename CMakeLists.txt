@@ -24,7 +24,7 @@ find_package(catkin REQUIRED COMPONENTS
 generate_dynamic_reconfigure_options(
   cfg/passive_cfg_params.cfg
   cfg/marker_tracking_cfg_params.cfg
-
+  cfg/damping_cfg_params.cfg
 )
 
 find_package(Eigen3 REQUIRED eigen3) 

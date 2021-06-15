@@ -45,7 +45,7 @@ struct Robot
     Eigen::Vector3d ee_pos, ee_vel, ee_acc, ee_angVel, ee_angAcc;
     Eigen::Vector4d ee_quat;
 
-    Eigen::Vector3d ee_des_pos, ee_des_vel, ee_des_acc, ee_des_angVel, ee_des_angAcc;
+    Eigen::Vector3d ee_des_pos, ee_des_vel, ee_des_acc, ee_des_angVel, ee_des_angAcc, ee_des_vel_for_DMatrix, ee_des_z_vel_for_DMatrix;
     Eigen::Vector4d ee_des_quat;
 
 
@@ -90,12 +90,12 @@ private:
 
     Eigen::Matrix3d Dmat = Eigen::Matrix3d::Identity();
     Eigen::Vector3d control_output = Eigen::Vector3d::Zero();
-    void updateDampingMatrix(const Eigen::Vector3d& ref_vel);
+    void updateDampingMatrix(const Eigen::Vector3d& ref_vel,const Eigen::Vector3d& ref_dvel,const Eigen::Vector3d& ref_dzvel);
 public:
     DampingDS(const double& lam0, const double& lam1);
     ~DampingDS();
     void set_damping_eigval(const double& lam0, const double& lam1);
-    void update(const Eigen::Vector3d& vel, const Eigen::Vector3d& des_vel);
+    void update(const Eigen::Vector3d& vel, const Eigen::Vector3d& des_vel,const Eigen::Vector3d& vel_Dmax, const Eigen::Vector3d& zvel_Dmax);
     Eigen::Vector3d get_output();
 };
 
@@ -129,6 +129,7 @@ public:
     void set_desired_position(const Eigen::Vector3d& pos);
     void set_desired_quat(const Eigen::Vector4d& quat);
     void set_desired_velocity(const Eigen::Vector3d& vel);
+    void set_desired_and_z_velocity(const Eigen::Vector3d& desired_vel, const Eigen::Vector3d& desired_vel_z);
 
 
     void set_pos_gains(const double& ds, const double& lambda0,const double& lambda1);

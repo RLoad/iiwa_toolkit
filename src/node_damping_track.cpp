@@ -29,8 +29,8 @@
 #include <ros/package.h>
 #include <Eigen/Dense>
 
-#include "passive_control.h"
-#include "iiwa_toolkit/passive_cfg_paramsConfig.h"
+#include "damping_control.h"
+#include "iiwa_toolkit/damping_cfg_paramsConfig.h"
 #include "dynamic_reconfigure/server.h"
 
 #define No_JOINTS 7
@@ -91,6 +91,9 @@ class IiwaRosMaster
         _subControl[1] = _n.subscribe<geometry_msgs::Pose>("/passive_control/vel_quat", 1,
             boost::bind(&IiwaRosMaster::updateControlVel,this,_1),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
 
+        _subVelforDampMatrix = _n.subscribe<geometry_msgs::Twist>("/ds1/desired_velocity", 1,
+            boost::bind(&IiwaRosMaster::updateVelforDampMatrix,this,_1),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
+
         _subDamping = _n.subscribe<std_msgs::Float64MultiArray>("/lwr/joint_controllers/passive_ds_eig", 1,
             boost::bind(&IiwaRosMaster::updateDamping,this,_1),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
 
@@ -122,7 +125,7 @@ class IiwaRosMaster
         // Initialize iiwa tools
         
         
-        _controller = std::make_unique<PassiveControl>(urdf_string, end_effector);
+        _controller = std::make_unique<DampingControl>(urdf_string, end_effector);
         
 
         std::vector<double> dpos;
@@ -198,6 +201,8 @@ class IiwaRosMaster
 
     ros::Subscriber _subControl[2];
 
+    ros::Subscriber _subVelforDampMatrix;
+
     ros::Subscriber _subDamping;
 
     ros::Subscriber _subOptitrack[TOTAL_No_MARKERS];  // optitrack markers pose
@@ -208,8 +213,8 @@ class IiwaRosMaster
 
     ros::Publisher _plotPublisher;
 
-    dynamic_reconfigure::Server<iiwa_toolkit::passive_cfg_paramsConfig> _dynRecServer;
-    dynamic_reconfigure::Server<iiwa_toolkit::passive_cfg_paramsConfig>::CallbackType _dynRecCallback;
+    dynamic_reconfigure::Server<iiwa_toolkit::damping_cfg_paramsConfig> _dynRecServer;
+    dynamic_reconfigure::Server<iiwa_toolkit::damping_cfg_paramsConfig>::CallbackType _dynRecCallback;
 
 
     feedback _feedback;
@@ -217,7 +222,7 @@ class IiwaRosMaster
     Eigen::VectorXd command_trq = Eigen::VectorXd(No_JOINTS);
     Eigen::VectorXd command_plt = Eigen::VectorXd(3);
 
-    std::unique_ptr<PassiveControl> _controller;
+    std::unique_ptr<DampingControl> _controller;
 
     bool _stop;                        // Check for CTRL+C
     std::mutex _mutex;
@@ -327,7 +332,19 @@ class IiwaRosMaster
         }
     }
 
-    void param_cfg_callback(iiwa_toolkit::passive_cfg_paramsConfig& config, uint32_t level){
+    void updateVelforDampMatrix(const geometry_msgs::Twist::ConstPtr& msg){
+        Eigen::Vector3d desire_vel;
+        Eigen::Vector3d desired_z_vel;
+        desire_vel << (double)msg->linear.x, (double)msg->linear.y, (double)msg->linear.z;
+        desired_z_vel << (double)msg->angular.x, (double)msg->angular.y, (double)msg->angular.z;
+        if(desire_vel.norm()<1.&&desired_z_vel.norm()<1.){
+            _controller->set_desired_and_z_velocity(desire_vel,desired_z_vel);
+        }else{
+            ROS_WARN("VELOCITY OUT OF BOUND");
+        }
+    }
+
+    void param_cfg_callback(iiwa_toolkit::damping_cfg_paramsConfig& config, uint32_t level){
         ROS_INFO("Reconfigure request.. Updating the parameters ... ");
 
         double sc_pos_ds = config.Position_DSgain;
@@ -377,7 +394,7 @@ class IiwaRosMaster
 int main (int argc, char **argv)
 {
     float frequency = 200.0f;
-    ros::init(argc,argv, "iiwa_passive_track");
+    ros::init(argc,argv, "iiwa_damping_track");
     ros::NodeHandle n;
 
     Options options;
