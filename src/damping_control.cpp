@@ -37,9 +37,10 @@ void DampingDS::set_damping_eigval(const double& lam0, const double& lam1){
 }
 void DampingDS::updateDampingMatrix(const Eigen::Vector3d& ref_vel,const Eigen::Vector3d& ref_dvel,const Eigen::Vector3d& ref_dzvel){ 
 
-    std::cerr<<"ref_dvel: "<<ref_dvel(0)<<","<<ref_dvel(1)<<","<<ref_dvel(2)
-             <<"ref_dvel: "<<ref_dzvel(0)<<","<<ref_dzvel(1)<<","<<ref_dzvel(2)
-             <<"damping: "<<damping_eigval(0,0)<<","<<damping_eigval(1,1)<<","<<damping_eigval(2,2)<<"\n";
+    // std::cerr<<"ref_dvel: "<<ref_dvel(0)<<","<<ref_dvel(1)<<","<<ref_dvel(2)
+    //          <<"ref_dvel: "<<ref_dzvel(0)<<","<<ref_dzvel(1)<<","<<ref_dzvel(2)
+    //          <<"damping: "<<damping_eigval(0,0)<<","<<damping_eigval(1,1)<<","<<damping_eigval(2,2)<<"\n";
+    
     if(ref_vel.norm() > 1e-6){
         baseMat.setRandom();
         baseMat.col(0) = ref_dvel.normalized();
