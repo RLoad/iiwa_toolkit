@@ -37,15 +37,20 @@ void DampingDS::set_damping_eigval(const double& lam0, const double& lam1){
 }
 void DampingDS::updateDampingMatrix(const Eigen::Vector3d& ref_vel,const Eigen::Vector3d& ref_dvel,const Eigen::Vector3d& ref_dzvel){ 
 
-    // std::cerr<<"ref_vel: "<<ref_vel(0)<<","<<ref_vel(1)<<","<<ref_vel(2)<<" ref_dvel: "<<ref_dvel(0)<<","<<ref_dvel(1)<<","<<ref_dvel(2)<<"\n";
+    std::cerr<<"ref_dvel: "<<ref_dvel(0)<<","<<ref_dvel(1)<<","<<ref_dvel(2)
+             <<"ref_dvel: "<<ref_dzvel(0)<<","<<ref_dzvel(1)<<","<<ref_dzvel(2)
+             <<"damping: "<<damping_eigval(0,0)<<","<<damping_eigval(1,1)<<","<<damping_eigval(2,2)<<"\n";
     if(ref_vel.norm() > 1e-6){
         baseMat.setRandom();
         baseMat.col(0) = ref_dvel.normalized();
-        for(uint i=1;i<3;i++){
-            for(uint j=0;j<i;j++)
-                baseMat.col(i) -= baseMat.col(j).dot(baseMat.col(i))*baseMat.col(j);
-            baseMat.col(i).normalize();
-        }
+        baseMat.col(1) = ref_dzvel.normalized();
+        baseMat.col(2) = baseMat.col(0).cross(baseMat.col(1));
+        baseMat.col(2).normalize();
+        // for(uint i=1;i<3;i++){
+        //     for(uint j=0;j<i;j++)
+        //         baseMat.col(i) -= baseMat.col(j).dot(baseMat.col(i))*baseMat.col(j);
+        //     baseMat.col(i).normalize();
+        // }
         Dmat = baseMat*damping_eigval*baseMat.transpose();
     }else{
         Dmat = Eigen::Matrix3d::Identity();
