@@ -1,0 +1,27 @@
+<launch>
+    <!-- Select the robot name -->
+    <arg name="robot_name_1" default="iiwa"/>
+
+    <arg name="iiwa_model_1" default="14"/>
+
+    <include file="$(find iiwa_gazebo)/launch/iiwa_gazebo.launch">
+        <arg name="robot_name_1" value="$(arg robot_name_1)"/>
+        <arg name="iiwa_model_1" value="$(arg iiwa_model_1)"/>
+    </include>
+
+    <group ns="/$(arg robot_name_1)">
+        <node name="force_tracking" pkg="iiwa_toolkit" type="force_track" output="screen">
+        </node>
+
+        <rosparam file="$(find iiwa_toolkit)/config/passive_track_params.yaml" command="load"/>
+    </group>
+
+    <node name="spawn_box" pkg="gazebo_ros" type="spawn_model" args="-file $(find box_spawner)/models/box1.urdf -x 0.5 -y 0.0 -z 0.0 -urdf -model box1" />
+
+
+    <!-- <node name="plotter"
+            pkg="rqt_plot"
+            type="rqt_plot"
+            args="/iiwa/plotvar/data[0] /iiwa/plotvar/data[1] /iiwa/plotvar/data[2]" >
+    </node> -->
+</launch>
