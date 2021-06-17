@@ -36,36 +36,89 @@ void DampingDS::set_damping_eigval(const double& lam0, const double& lam1){
     }
 }
 void DampingDS::updateDampingMatrix(const Eigen::Vector3d& ref_vel,const Eigen::Vector3d& ref_dvel,const Eigen::Vector3d& ref_dzvel){ 
+    //-----first damping controller:eigbector use commend vel
+        if(ref_vel.norm() > 1e-6){
+            baseMat.setRandom();
+            //----passive controller
+                // baseMat.col(0) = ref_vel.normalized();
+                // for(uint i=1;i<3;i++){
+                //     for(uint j=0;j<i;j++)
+                //         baseMat.col(i) -= baseMat.col(j).dot(baseMat.col(i))*baseMat.col(j);
+                //     baseMat.col(i).normalize();
+                // }
+                // Dmat = baseMat*damping_eigval*baseMat.transpose();
+            //----DAMPING controller
+                Eigen::Matrix3d realMat; realMat.setRandom();
+                realMat.col(0) = ref_dvel.normalized();
+                realMat.col(1) = ref_dzvel.normalized();
+                realMat.col(2) = realMat.col(0).cross(realMat.col(1));
+                realMat.col(2).normalize();
+                Dmat = realMat*damping_eigval*realMat.transpose();
 
-    // std::cerr<<"ref_dvel: "<<ref_dvel(0)<<","<<ref_dvel(1)<<","<<ref_dvel(2)
-    //          <<"ref_dvel: "<<ref_dzvel(0)<<","<<ref_dzvel(1)<<","<<ref_dzvel(2)
-    //          <<"damping: "<<damping_eigval(0,0)<<","<<damping_eigval(1,1)<<","<<damping_eigval(2,2)<<"\n";
-    
-    if(ref_vel.norm() > 1e-6){
-        baseMat.setRandom();
-        baseMat.col(0) = ref_dvel.normalized();
-        baseMat.col(1) = ref_dzvel.normalized();
-        baseMat.col(2) = baseMat.col(0).cross(baseMat.col(1));
-        baseMat.col(2).normalize();
-        // for(uint i=1;i<3;i++){
-        //     for(uint j=0;j<i;j++)
-        //         baseMat.col(i) -= baseMat.col(j).dot(baseMat.col(i))*baseMat.col(j);
-        //     baseMat.col(i).normalize();
+        }else{
+            Dmat = Eigen::Matrix3d::Identity();
+        }
+        // otherwise just use the last computed basis
+    //-----second damping controller:eigbector use random slect
+        // if(ref_vel.norm() > 1e-6){
+        //     baseMat.setRandom();
+        //     //----passive controller
+        //         baseMat.col(0) = ref_vel.normalized();
+        //         for(uint i=1;i<3;i++){
+        //             for(uint j=0;j<i;j++)
+        //                 baseMat.col(i) -= baseMat.col(j).dot(baseMat.col(i))*baseMat.col(j);
+        //             baseMat.col(i).normalize();
+        //         }
+        //     //----DAMPING controller
+        //         Eigen::Vector3d e1,e2,e3;
+        //         Eigen::Matrix3d realMat; realMat.setRandom();
+        //         realMat.col(0) = ref_dvel.normalized();
+        //         realMat.col(1) = ref_dzvel.normalized();
+        //         realMat.col(2) = realMat.col(0).cross(realMat.col(1));
+        //         realMat.col(2).normalize();
+                
+        //         //-----calculate eigenvalue in controller eigen
+        //         double alpha1,alpha2;
+        //         alpha1=realMat.col(1).dot(baseMat.col(1));
+        //         alpha2=realMat.col(1).dot(baseMat.col(2));
+        //         Eigen::Matrix3d damping_eigval_rotate = Eigen::Matrix3d::Identity();
+        //         damping_eigval_rotate(0,0)=damping_eigval(0,0);
+        //         damping_eigval_rotate(1,1) = abs(alpha1)*damping_eigval(1,1);
+        //         damping_eigval_rotate(2,2) = abs(alpha2)*damping_eigval(2,2);
+
+        //     Dmat = baseMat*damping_eigval_rotate*baseMat.transpose();
+
+        //     std::cerr<<"ref_vel : "<<ref_vel(0)<<","<<ref_vel(1)<<","<<ref_vel(2)<<"\n"
+        //         <<"ref_dvel: "<<ref_dvel(0)<<","<<ref_dvel(1)<<","<<ref_dvel(2)<<"\n"
+        //         <<"ref_dzvel : "<<ref_dzvel(0)<<","<<ref_dzvel(1)<<","<<ref_dzvel(2)<<"\n"
+        //         <<"baseMat.col(0) : "<<baseMat.col(0)<<"\n"
+        //         <<"baseMat.col(1) : "<<baseMat.col(1)<<"\n"
+        //         <<"baseMat.col(2) : "<<baseMat.col(2)<<"\n"
+        //         <<"realMat.col(0) : "<<realMat.col(0)<<"\n"
+        //         <<"realMat.col(1) : "<<realMat.col(1)<<"\n"
+        //         <<"realMat.col(2) : "<<realMat.col(2)<<"\n"
+        //         <<"alpha: "<<alpha1<<","<<alpha2<<","<<realMat.col(1).dot(baseMat.col(1))<<"\n"
+        //         <<"damping of vel: "<<damping_eigval(0,0)<<","<<damping_eigval(1,1)<<","<<damping_eigval(2,2)<<"\n"
+        //         <<"damping of controller: "<<damping_eigval_rotate(0,0)<<","<<damping_eigval_rotate(1,1)<<","<<damping_eigval_rotate(2,2)<<"\n";
+        // }else{
+        //     Dmat = Eigen::Matrix3d::Identity();
         // }
-        Dmat = baseMat*damping_eigval*baseMat.transpose();
-    }else{
-        Dmat = Eigen::Matrix3d::Identity();
-    }
-    // otherwise just use the last computed basis
+        // // otherwise just use the last computed basis
 }
 
 void DampingDS::update(const Eigen::Vector3d& vel, const Eigen::Vector3d& des_vel,const Eigen::Vector3d& vel_Dmax, const Eigen::Vector3d& zvel_Dmax){
     // compute damping
     updateDampingMatrix(des_vel,vel_Dmax,zvel_Dmax);
-    // dissipate
-    control_output = - Dmat * vel;
-    // compute control
-    control_output += eigVal0*des_vel;
+    
+    //----passive controller
+    // // dissipate
+    // control_output = - Dmat * vel;
+    // // compute control
+    // control_output += eigVal0*des_vel;
+
+    //------ damping conterol
+    control_output = Dmat * (des_vel - vel);
+
 }
 Eigen::Vector3d DampingDS::get_output(){ return control_output;}
 
@@ -112,6 +165,8 @@ DampingControl::DampingControl(const std::string& urdf_string,const std::string&
     _robot.ee_des_angAcc.setZero();
     _robot.ee_des_vel_for_DMatrix.setZero();
     _robot.ee_des_z_vel_for_DMatrix.setZero();
+    _robot.ee_des_vel_for_DMatrix_ANGLE.setZero();
+    _robot.ee_des_z_vel_for_DMatrix_ANGLE.setZero();
 
 
     _robot.jacob.setZero();
@@ -252,7 +307,11 @@ void DampingControl::computeTorqueCmd(){
         {
             _robot.ee_des_vel = dsGain_pos*(1+std::exp(theta_g)) *deltaX;
             _robot.ee_des_vel_for_DMatrix = dsGain_pos*(1+std::exp(theta_g)) *deltaX;
-            _robot.ee_des_z_vel_for_DMatrix = dsGain_pos*(1+std::exp(theta_g)) *deltaX;
+            Eigen::MatrixXd Tran_rot_eigen(3,3);
+            Tran_rot_eigen(0,0)=1;Tran_rot_eigen(0,1)=0;Tran_rot_eigen(0,2)=0;
+            Tran_rot_eigen(1,0)=0;Tran_rot_eigen(1,1)=0;Tran_rot_eigen(1,2)=1;
+            Tran_rot_eigen(2,0)=0;Tran_rot_eigen(2,1)=1;Tran_rot_eigen(2,2)=0;
+            _robot.ee_des_z_vel_for_DMatrix=Tran_rot_eigen*_robot.ee_des_vel_for_DMatrix;
         }
     // desired angular values
     Eigen::Vector4d dqd = Utils<double>::slerpQuaternion(_robot.ee_quat, _robot.ee_des_quat, 0.5);    
@@ -269,6 +328,12 @@ void DampingControl::computeTorqueCmd(){
 
     double theta_gq = (-.5/(4*maxDq*maxDq)) * tmp_angular_vel.transpose() * tmp_angular_vel;
     _robot.ee_des_angVel  = 2 * dsGain_ori*(1+std::exp(theta_gq)) * tmp_angular_vel;
+    _robot.ee_des_vel_for_DMatrix_ANGLE  = 2 * dsGain_ori*(1+std::exp(theta_gq)) * tmp_angular_vel;
+    Eigen::MatrixXd Tran_rot_eigen(3,3);
+    Tran_rot_eigen(0,0)=1;Tran_rot_eigen(0,1)=0;Tran_rot_eigen(0,2)=0;
+    Tran_rot_eigen(1,0)=0;Tran_rot_eigen(1,1)=0;Tran_rot_eigen(1,2)=1;
+    Tran_rot_eigen(2,0)=0;Tran_rot_eigen(2,1)=1;Tran_rot_eigen(2,2)=0;
+    _robot.ee_des_z_vel_for_DMatrix_ANGLE  = Tran_rot_eigen*_robot.ee_des_vel_for_DMatrix_ANGLE;
 
     // -----------------------get desired force in task space
     dsContPos->update(_robot.ee_vel,_robot.ee_des_vel,_robot.ee_des_vel_for_DMatrix,_robot.ee_des_z_vel_for_DMatrix);
@@ -280,7 +345,7 @@ void DampingControl::computeTorqueCmd(){
 
 
     // Orientation
-    dsContOri->update(_robot.ee_angVel,_robot.ee_des_angVel,_robot.ee_des_vel_for_DMatrix,_robot.ee_des_z_vel_for_DMatrix);
+    dsContOri->update(_robot.ee_angVel,_robot.ee_des_angVel,_robot.ee_des_vel_for_DMatrix_ANGLE,_robot.ee_des_z_vel_for_DMatrix_ANGLE);
     Eigen::Vector3d wrenchAng   = dsContOri->get_output();
     Eigen::VectorXd tmp_jnt_trq_ang = _robot.jacobAng.transpose() * wrenchAng;
 

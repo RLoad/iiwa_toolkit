@@ -364,7 +364,7 @@ class IiwaRosMaster
 
     void updateDamping(const std_msgs::Float64MultiArray::ConstPtr &msg){
 
-        lambda0_pos=msg->data[0];lambda1_pos=msg->data[1];
+        lambda0_pos=msg->data[0];lambda1_pos=msg->data[1];lambda0_ori=msg->data[2];lambda1_ori=msg->data[3];
 
         _controller->set_pos_gains(ds_gain_pos,lambda0_pos,lambda1_pos);
         _controller->set_ori_gains(ds_gain_ori,lambda0_ori,lambda1_ori);

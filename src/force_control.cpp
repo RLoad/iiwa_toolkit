@@ -53,12 +53,24 @@ void ForceDS::updateDampingMatrix(const Eigen::Vector3d& ref_vel){
 }
 
 void ForceDS::update(const Eigen::Vector3d& vel, const Eigen::Vector3d& des_vel){
-    // compute damping
-    updateDampingMatrix(des_vel);
-    // dissipate
-    control_output = - Dmat * vel;
-    // compute control
-    control_output += eigVal0*des_vel;
+    if (damping_eigval(0,0)==40||damping_eigval(0,0)==5)
+    {
+        //-----passive control
+        // compute damping
+        updateDampingMatrix(des_vel);
+        // dissipate
+        control_output = - Dmat * vel;
+        // compute control
+        control_output += eigVal0*des_vel;
+         ROS_WARN_STREAM_THROTTLE(1, "passiveDS!!!!!!!!!");
+         std::cerr <<damping_eigval(0,0)<< " passiveDS!!!!!!!!!"<<"\n";
+    }else
+    {
+       //---- force control
+        control_output = vel;
+        ROS_WARN_STREAM_THROTTLE(1, "forceDS!!!!!!!!!");
+        std::cerr << damping_eigval(0,0)<< " forceDS!!!!!!!!!"<<"\n";
+    }
 }
 Eigen::Vector3d ForceDS::get_output(){ return control_output;}
 

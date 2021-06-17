@@ -45,7 +45,7 @@ struct Robot
     Eigen::Vector3d ee_pos, ee_vel, ee_acc, ee_angVel, ee_angAcc;
     Eigen::Vector4d ee_quat;
 
-    Eigen::Vector3d ee_des_pos, ee_des_vel, ee_des_acc, ee_des_angVel, ee_des_angAcc, ee_des_vel_for_DMatrix, ee_des_z_vel_for_DMatrix;
+    Eigen::Vector3d ee_des_pos, ee_des_vel, ee_des_acc, ee_des_angVel, ee_des_angAcc, ee_des_vel_for_DMatrix, ee_des_z_vel_for_DMatrix,ee_des_vel_for_DMatrix_ANGLE,ee_des_z_vel_for_DMatrix_ANGLE;
     Eigen::Vector4d ee_des_quat;
 
 
