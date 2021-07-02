@@ -90,12 +90,14 @@ private:
 
     Eigen::Matrix3d Dmat = Eigen::Matrix3d::Identity();
     Eigen::Vector3d control_output = Eigen::Vector3d::Zero();
+    Eigen::Vector3d control_prev = Eigen::Vector3d::Zero();
     void updateDampingMatrix(const Eigen::Vector3d& ref_vel);
 public:
     ForceDS(const double& lam0, const double& lam1);
     ~ForceDS();
     void set_damping_eigval(const double& lam0, const double& lam1);
     void update(const Eigen::Vector3d& vel, const Eigen::Vector3d& des_vel);
+    void update_ori(const Eigen::Vector3d& vel, const Eigen::Vector3d& des_vel);
     Eigen::Vector3d get_output();
 };
 

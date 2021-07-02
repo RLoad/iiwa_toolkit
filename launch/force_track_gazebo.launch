@@ -16,7 +16,7 @@
         <rosparam file="$(find iiwa_toolkit)/config/passive_track_params.yaml" command="load"/>
     </group>
 
-    <node name="spawn_box" pkg="gazebo_ros" type="spawn_model" args="-file $(find box_spawner)/models/box1.urdf -x 0.5 -y 0.0 -z 0.0 -urdf -model box1" />
+    <node name="spawn_box" pkg="gazebo_ros" type="spawn_model" args="-file $(find box_spawner)/models/box1.urdf -x 0.5 -y 0.05 -z 0.0 -urdf -model box1" />
 
 
     <!-- <node name="plotter"
