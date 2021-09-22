@@ -99,6 +99,8 @@ public:
     void update(const Eigen::Vector3d& vel, const Eigen::Vector3d& des_vel);
     void update_ori(const Eigen::Vector3d& vel, const Eigen::Vector3d& des_vel);
     Eigen::Vector3d get_output();
+
+    double dt_control=0.005;//control loop rate
 };
 
 
