@@ -53,7 +53,7 @@ void ForceDS::updateDampingMatrix(const Eigen::Vector3d& ref_vel){
 }
 
 void ForceDS::update(const Eigen::Vector3d& vel, const Eigen::Vector3d& des_vel){
-    if (damping_eigval(0,0)==40||damping_eigval(0,0)==5)
+    if (damping_eigval(0,0)==80||damping_eigval(0,0)==5)
     {
         //-----passive control
         // compute damping

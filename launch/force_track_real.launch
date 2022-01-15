@@ -17,7 +17,7 @@
         <node name="force_tracking" pkg="iiwa_toolkit" type="force_track" output="screen">
         </node>
 
-        <rosparam file="$(find iiwa_toolkit)/config/passive_track_params.yaml" command="load"/>
+        <rosparam file="$(find iiwa_toolkit)/config/force_track_param.yaml" command="load"/>
     </group>
 
     <!-- <arg  name="ip_address"  default="128.178.145.248"/> -->
