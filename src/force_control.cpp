@@ -73,7 +73,7 @@ void ForceDS::update(const Eigen::Vector3d& vel, const Eigen::Vector3d& des_vel)
                 control_output = eigVal0*des_vel;
             //----- control with loop memory
                 // control_output = control_prev + eigVal0*des_vel*dt_control;
-                // // control_output = control_prev + eigVal0*des_vel;
+                // // // control_output = control_prev + eigVal0*des_vel;
                 // control_prev=control_output;
         //------------------------------------------------------------------------------
         ROS_WARN_STREAM_THROTTLE(1, "forceDS!!!!!!!!!"<<des_vel(0)<<","<<des_vel(1)<<","<<des_vel(2)<<","<<control_output(0)<<","<<control_output(1)<<","<<control_output(2));
