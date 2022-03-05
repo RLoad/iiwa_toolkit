@@ -7,14 +7,14 @@ control:
     lambda1Pos: 80.0
     # lambda0Pos: 100.0
     # lambda1Pos: 100.0
-    dsGainOri: 3.0
+    dsGainOri: 8.0
     # lambda0Ori: 5.0
     # lambda1Ori: 2.5
-    lambda0Ori: 5
-    lambda1Ori: 5
+    lambda0Ori: 12
+    lambda1Ori: 8
 
 target:
-    pos: [0.7, 0.0, 0.4]
+    pos: [0.7, 0.0, 0.5]
     quat: [0.7071068, 0.0, 0.7071068,  0.0]
     # pos: [0.6, 0.0, 0.4]
     # quat: [0.0, -0.7071068, 0.7071068,  0.0]
