@@ -5,13 +5,14 @@ control:
     dsGainPos: 5.0
     lambda0Pos: 80.0
     lambda1Pos: 80.0
-    # lambda0Pos: 100.0
-    # lambda1Pos: 100.0
-    dsGainOri: 8.0
-    # lambda0Ori: 5.0
-    # lambda1Ori: 2.5
-    lambda0Ori: 12
-    lambda1Ori: 8
+    # lambda0Pos max: 80.0
+    # lambda1Pos: 80.0
+    dsGainOri: 5.0
+    lambda0Ori: 8
+    lambda1Ori: 5
+    # dsGainOri: 8.0
+    # lambda0Ori: 12
+    # lambda1Ori: 8
 
 target:
     pos: [0.7, 0.0, 0.5]
