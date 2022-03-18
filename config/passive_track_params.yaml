@@ -9,7 +9,7 @@ control:
     # lambda1Pos: 100.0
     # dsGainOri: 3.0
     # lambda0Ori: 5
-    # lambda1Ori: 5
+    # lambda1Ori: 2.5
     dsGainOri: 4.0
     lambda0Ori: 6
     lambda1Ori: 6
