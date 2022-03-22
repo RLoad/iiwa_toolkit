@@ -40,20 +40,20 @@ void DampingDS::updateDampingMatrix(const Eigen::Vector3d& ref_vel,const Eigen::
         if(ref_vel.norm() > 1e-6){
             baseMat.setRandom();
             //----passive controller
-                // baseMat.col(0) = ref_vel.normalized();
-                // for(uint i=1;i<3;i++){
-                //     for(uint j=0;j<i;j++)
-                //         baseMat.col(i) -= baseMat.col(j).dot(baseMat.col(i))*baseMat.col(j);
-                //     baseMat.col(i).normalize();
-                // }
-                // Dmat = baseMat*damping_eigval*baseMat.transpose();
+                baseMat.col(0) = ref_vel.normalized();
+                for(uint i=1;i<3;i++){
+                    for(uint j=0;j<i;j++)
+                        baseMat.col(i) -= baseMat.col(j).dot(baseMat.col(i))*baseMat.col(j);
+                    baseMat.col(i).normalize();
+                }
+                Dmat = baseMat*damping_eigval*baseMat.transpose();
             //----DAMPING controller
-                Eigen::Matrix3d realMat; realMat.setRandom();
-                realMat.col(0) = ref_dvel.normalized();
-                realMat.col(1) = ref_dzvel.normalized();
-                realMat.col(2) = realMat.col(0).cross(realMat.col(1));
-                realMat.col(2).normalize();
-                Dmat = realMat*damping_eigval*realMat.transpose();
+                // Eigen::Matrix3d realMat; realMat.setRandom();
+                // realMat.col(0) = ref_dvel.normalized();
+                // realMat.col(1) = ref_dzvel.normalized();
+                // realMat.col(2) = realMat.col(0).cross(realMat.col(1));
+                // realMat.col(2).normalize();
+                // Dmat = realMat*damping_eigval*realMat.transpose();
 
         }else{
             Dmat = Eigen::Matrix3d::Identity();
