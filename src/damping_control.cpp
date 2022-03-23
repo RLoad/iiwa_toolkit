@@ -59,11 +59,13 @@ void DampingDS::updateDampingMatrix(const Eigen::Vector3d& ref_vel,const Eigen::
                 }else
                 {
                     Dmat = Eigen::Matrix3d::Identity();
+                    ROS_WARN_STREAM_THROTTLE(1, "ref_dzvel too small");
                 }
                 
 
         }else{
             Dmat = Eigen::Matrix3d::Identity();
+            ROS_WARN_STREAM_THROTTLE(1, "ref_vel too small");
         }
         // otherwise just use the last computed basis
     //-----second damping controller:eigbector use random slect
