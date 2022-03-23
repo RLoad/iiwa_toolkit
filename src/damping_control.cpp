@@ -342,6 +342,14 @@ void DampingControl::computeTorqueCmd(){
     Tran_rot_eigen(2,0)=0;Tran_rot_eigen(2,1)=1;Tran_rot_eigen(2,2)=0;
     _robot.ee_des_z_vel_for_DMatrix_ANGLE  = Tran_rot_eigen*_robot.ee_des_vel_for_DMatrix_ANGLE;
 
+
+    //----- wr ------ set ref_dzvel small if some code didn't send this comment
+        if (std::isnan(_robot.ee_des_z_vel_for_DMatrix.norm())) {
+            ROS_WARN_THROTTLE(0.1, "ref_dzvel is generating NaN. Setting the output near to zero.");
+            _robot.ee_des_z_vel_for_DMatrix.setZero();
+            _robot.ee_des_z_vel_for_DMatrix= {0.0 , 0.0, 0.00001};
+        }
+        
     // -----------------------get desired force in task space
     dsContPos->update(_robot.ee_vel,_robot.ee_des_vel,_robot.ee_des_vel_for_DMatrix,_robot.ee_des_z_vel_for_DMatrix);
     Eigen::Vector3d wrenchPos = dsContPos->get_output() + load_added * 9.8*Eigen::Vector3d::UnitZ();   
