@@ -152,7 +152,8 @@ class IiwaRosMaster
         rotMat_opttrack(2,0)=0;rotMat_opttrack(2,1)=0;rotMat_opttrack(2,2)=1;
         
         marker_pos=rotMat_opttrack*marker_pos;
-        std::cerr<<"marker_pos"<<marker_pos[0]<<","<<marker_pos[1]<<","<<marker_pos[2]<<std::endl;
+        // std::cerr<<"marker_pos"<<marker_pos[0]<<","<<marker_pos[1]<<","<<marker_pos[2]<<std::endl;
+        ROS_WARN_STREAM_THROTTLE(0.2, "marker_pos:"<<marker_pos);						
 
 
         Eigen::Matrix3d magnifying = Eigen::Matrix3d::Zero();
@@ -160,9 +161,9 @@ class IiwaRosMaster
 
         Eigen::Vector3d virtObj =  mirror_dir * magnifying * (marker_pos - leader_pos) ;   
         
-        std::cerr<<"virtObj"<<virtObj[0]<<","<<virtObj[1]<<","<<virtObj[2]<<std::endl;
+        // std::cerr<<"virtObj"<<virtObj[0]<<","<<virtObj[1]<<","<<virtObj[2]<<std::endl;
 
-        std::cerr<<"mirror_dir"<<mirror_dir<<std::endl;
+        // std::cerr<<"mirror_dir"<<mirror_dir<<std::endl;
 
         Eigen::Vector3d des_position = init_des_pos + virtObj ;
         Eigen::Vector4d des_orientation = ref_des_quat;
