@@ -114,6 +114,21 @@ namespace environs{
         environs::object MotionCapture::getRelativeEntity(const size_t& index_1, const size_t& index_0){
             object _obj;
             _obj.rotMat = objects[index_0].rotMat.transpose() * objects[index_1].rotMat; 
+
+            Eigen::Matrix3d rotMat_opttrack;
+            rotMat_opttrack(0,0)=0;rotMat_opttrack(0,1)=-1;rotMat_opttrack(0,2)=0;
+            rotMat_opttrack(1,0)=1;rotMat_opttrack(1,1)=0;rotMat_opttrack(1,2)=0;
+            rotMat_opttrack(2,0)=0;rotMat_opttrack(2,1)=0;rotMat_opttrack(2,2)=1;
+
+            // Eigen::Matrix3d rotMat_opttrack_1;
+            // rotMat_opttrack_1(0,0)=1;rotMat_opttrack_1(0,1)=0;rotMat_opttrack_1(0,2)=0;
+            // rotMat_opttrack_1(1,0)=0;rotMat_opttrack_1(1,1)=-1;rotMat_opttrack_1(1,2)=0;
+            // rotMat_opttrack_1(2,0)=0;rotMat_opttrack_1(2,1)=0;rotMat_opttrack_1(2,2)=-1;
+
+            // _obj.rotMat=rotMat_opttrack_1.transpose()*rotMat_opttrack*rotMat_opttrack_1*_obj.rotMat;
+            _obj.rotMat=rotMat_opttrack*_obj.rotMat;
+
+
             _obj.quat   =  Utils<double>::rotationMatrixToQuaternion(_obj.rotMat);
             _obj.quat.normalize();
             Eigen::Vector3d axis = Eigen::Vector3d::Zero();

@@ -67,7 +67,7 @@ class IiwaRosMaster
 
         // Get the URDF XML from the parameter server
         std::string urdf_string, full_param;
-        std::string robot_description = "robot_description";
+        std::string robot_description = "/iiwa/robot_description";
         std::string end_effector;
         // gets the location of the robot description on the parameter server
         if (!_n.searchParam(robot_description, full_param)) {
@@ -146,15 +146,24 @@ class IiwaRosMaster
         Eigen::Vector3d marker_pos = _optiTrack->getRelativeEntity(1,0).pos;
         Eigen::Vector3d ee_pos = _controller->getEEpos();
 
-
+        Eigen::Matrix3d rotMat_opttrack;
+        rotMat_opttrack(0,0)=0;rotMat_opttrack(0,1)=-1;rotMat_opttrack(0,2)=0;
+        rotMat_opttrack(1,0)=1;rotMat_opttrack(1,1)=0;rotMat_opttrack(1,2)=0;
+        rotMat_opttrack(2,0)=0;rotMat_opttrack(2,1)=0;rotMat_opttrack(2,2)=1;
         
+        marker_pos=rotMat_opttrack*marker_pos;
+        std::cerr<<"marker_pos"<<marker_pos[0]<<","<<marker_pos[1]<<","<<marker_pos[2]<<std::endl;
+
 
         Eigen::Matrix3d magnifying = Eigen::Matrix3d::Zero();
         magnifying.diagonal() = Eigen::Vector3d(1.,1.2,1.2);
 
         Eigen::Vector3d virtObj =  mirror_dir * magnifying * (marker_pos - leader_pos) ;   
         
-        
+        std::cerr<<"virtObj"<<virtObj[0]<<","<<virtObj[1]<<","<<virtObj[2]<<std::endl;
+
+        std::cerr<<"mirror_dir"<<mirror_dir<<std::endl;
+
         Eigen::Vector3d des_position = init_des_pos + virtObj ;
         Eigen::Vector4d des_orientation = ref_des_quat;
 
@@ -169,7 +178,7 @@ class IiwaRosMaster
             double angle = 0;
             Eigen::Vector3d ax =Eigen::Vector3d::UnitY();
             Utils<double>::quaternionToAxisAngle(Utils<double>::rotationMatrixToQuaternion(rdrot), ax, angle);
-            ax[1] *=-1;
+            ax[1] *=1;//--- WR: this -1 will cause robot do a mirror rotate in x direction
             Eigen::Vector4d qtemp =  Utils<double>::axisAngleToQuaterion(ax,angle);
             Eigen::Matrix3d rot =  Utils<double>::quaternionToRotationMatrix(qtemp) * Utils<double>::quaternionToRotationMatrix(ref_des_quat);
             des_orientation = Utils<double>::rotationMatrixToQuaternion(rot);
@@ -297,7 +306,7 @@ class IiwaRosMaster
         _plotPublisher.publish(_plotVar);
     }
 
-    void updateOptitrack(const geometry_msgs::PoseStamped::ConstPtr& msg, int k){
+    void updateOptitrack(const geometry_msgs::PoseStamped::ConstPtr& msg, int k){//--- wr: here updata for robot and hand, so there are 2 object in motion capture
         Eigen::Vector3d mkpos;
         Eigen::Vector4d mkori;
         mkpos << (double)msg->pose.position.x, (double)msg->pose.position.y, (double)msg->pose.position.z;

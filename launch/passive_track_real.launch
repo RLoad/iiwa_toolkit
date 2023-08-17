@@ -3,7 +3,7 @@
     </include> -->
      <!-- Select the robot name -->
     <arg name="robot_name" default="iiwa"/>
-    <arg name="model" default="7" />
+    <arg name="model" default="14" />
     <arg name="controller" default="TorqueController"/>
 
 
@@ -20,30 +20,6 @@
         <rosparam file="$(find iiwa_toolkit)/config/passive_track_params.yaml" command="load"/>
     </group>
 
-    <!-- <arg  name="ip_address"  default="128.178.145.248"/> -->
-		<!-- <arg  name="ip_address"  default="128.178.145.89"/> -->
-        <!-- <arg  name="ip_address"  default="192.168.0.50"/> -->
-        <!-- <arg  name="ip_address"  default="192.168.0.2"/> -->
-        <arg  name="ip_address"  default="192.168.1.1"/>
-	<arg  name="bias"	 default="False"/>
-	<arg  name="rate" 	 default="100"/>	
-	<arg  name="frame_id"    default="myframe"/>
-	<arg  name="alpha"	 default="0" />	
-	<arg  name="rot"	 default="0"/>
-	<arg  name="scale_x"	 default="1"/>
-	<arg  name="scale_y"	 default="1"/>
-	<arg  name="scale_z"	 default="1"/>
+    <!-- when real use, add the force sensor part here -->
 
-	<group ns="ft_sensor">
-		<param name="frame_id" type="str" value="$(arg frame_id)"/>
-		<node name="force_torque_sensor" pkg="netft_rdt_driver" type="netft_node" 
-		    args="--address $(arg ip_address) --rate $(arg rate) --bias $(arg bias) --rot $(arg rot) --alpha $(arg alpha) --scale_x $(arg scale_x) --scale_y $(arg scale_y) --scale_z $(arg scale_z)" 
-			 required="true" output="screen"/>
-	</group>
-
-    <!-- <node name="plotter"
-            pkg="rqt_plot"
-            type="rqt_plot"
-            args="/iiwa/plotvar/data[0] /iiwa/plotvar/data[1] /iiwa/plotvar/data[2]" >
-    </node> -->
 </launch>
