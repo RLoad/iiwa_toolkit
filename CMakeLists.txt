@@ -63,3 +63,9 @@ add_dependencies(damping_track ${PROJECT_NAME}_gencfg)
 add_executable(force_track src/node_force_track.cpp  src/force_control.cpp include/thirdparty/Utils.cpp ${MODEL_SOURCES})
 target_link_libraries(force_track ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
 add_dependencies(force_track ${PROJECT_NAME}_gencfg)
+
+
+add_executable(shared_control src/node_passive_shared_control.cpp  src/motion_capture.cpp src/passive_shared_control.cpp include/thirdparty/Utils.cpp ${MODEL_SOURCES})
+target_link_libraries(shared_control ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
+add_dependencies(shared_control ${PROJECT_NAME}_gencfg)
+
