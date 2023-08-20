@@ -1,0 +1,24 @@
+options:
+  is_optitrack_on: true
+  is_orientation_track_on: true
+
+  filter_gain: 0.2
+
+control:
+    dsGainPos: 5.0
+    lambda0Pos: 300.0
+    lambda1Pos: 300.0
+    dsGainOri: 5.0
+    lambda0Ori: 5.0
+    lambda1Ori: 2.75
+    mass_ee: 0.01
+
+target:
+    pos: [0.5, 0.0, 0.3]
+    quat: [0.7071068, 0.0, 0.7071068,  0.0]
+    # quat: [0.7071068, -0.7071068, 0.0, 0.0]
+
+
+leader: #---- WR: change this to the begin pose for leader
+    # pos: [1.2, 0., 0.0]
+    pos: [-1.08278,0.0428855,-0.0660272]

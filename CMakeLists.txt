@@ -26,6 +26,7 @@ generate_dynamic_reconfigure_options(
   cfg/marker_tracking_cfg_params.cfg
   cfg/damping_cfg_params.cfg
   cfg/force_cfg_params.cfg
+  cfg/passive_shared_cfg_params.cfg
 )
 
 find_package(Eigen3 REQUIRED eigen3) 
@@ -65,7 +66,7 @@ target_link_libraries(force_track ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
 add_dependencies(force_track ${PROJECT_NAME}_gencfg)
 
 
-add_executable(shared_control src/node_passive_shared_control.cpp  src/motion_capture.cpp src/passive_shared_control.cpp include/thirdparty/Utils.cpp ${MODEL_SOURCES})
-target_link_libraries(shared_control ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
-add_dependencies(shared_control ${PROJECT_NAME}_gencfg)
+add_executable(passive_shared_control src/node_passive_shared_control.cpp  src/motion_capture.cpp src/passive_shared_control.cpp include/thirdparty/Utils.cpp ${MODEL_SOURCES})
+target_link_libraries(passive_shared_control ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
+add_dependencies(passive_shared_control ${PROJECT_NAME}_gencfg)
 

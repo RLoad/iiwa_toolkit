@@ -102,7 +102,7 @@ public:
 
 
 
-class PassiveControl
+class PassiveSharedControl
 {
 private:
     Robot _robot;
@@ -120,9 +120,9 @@ private:
     std::unique_ptr<PassiveDS> dsContOri;
     
 public:
-    PassiveControl();
-    PassiveControl(const std::string& urdf_string,const std::string& end_effector);
-    ~PassiveControl();
+    PassiveSharedControl();
+    PassiveSharedControl(const std::string& urdf_string,const std::string& end_effector);
+    ~PassiveSharedControl();
     void updateRobot(const Eigen::VectorXd& jnt_p,const Eigen::VectorXd& jnt_v,const Eigen::VectorXd& jnt_t);
     
     void set_desired_pose(const Eigen::Vector3d& pos, const Eigen::Vector4d& quat);

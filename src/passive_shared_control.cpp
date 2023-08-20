@@ -17,7 +17,7 @@
 //|    GNU General Public License for more details.
 //|
 
-#include "passive_control.h"
+#include "passive_shared_control.h"
 
 PassiveDS::PassiveDS(const double& lam0, const double& lam1):eigVal0(lam0),eigVal1(lam1){
     set_damping_eigval(lam0,lam1);
@@ -64,7 +64,7 @@ Eigen::Vector3d PassiveDS::get_output(){ return control_output;}
 
 //************************************************
 
-PassiveControl::PassiveControl(const std::string& urdf_string,const std::string& end_effector)
+PassiveSharedControl::PassiveSharedControl(const std::string& urdf_string,const std::string& end_effector)
 {
     _tools.init_rbdyn(urdf_string, end_effector);
 
@@ -119,11 +119,11 @@ PassiveControl::PassiveControl(const std::string& urdf_string,const std::string&
 
 }
 
-PassiveControl::~PassiveControl(){}
+PassiveSharedControl::~PassiveSharedControl(){}
 
 
 
-void PassiveControl::updateRobot(const Eigen::VectorXd& jnt_p,const Eigen::VectorXd& jnt_v,const Eigen::VectorXd& jnt_t){
+void PassiveSharedControl::updateRobot(const Eigen::VectorXd& jnt_p,const Eigen::VectorXd& jnt_v,const Eigen::VectorXd& jnt_t){
     
 
     _robot.jnt_position = jnt_p;
@@ -162,31 +162,31 @@ void PassiveControl::updateRobot(const Eigen::VectorXd& jnt_p,const Eigen::Vecto
     //     _plotVar.data[i] = (_robot.ee_des_vel - _robot.ee_vel)[i];
 }
 
-Eigen::Vector3d PassiveControl::getEEpos(){
+Eigen::Vector3d PassiveSharedControl::getEEpos(){
     return _robot.ee_pos;
 }
 
-Eigen::Vector4d PassiveControl::getEEquat(){
+Eigen::Vector4d PassiveSharedControl::getEEquat(){
     return _robot.ee_quat;
 }
-Eigen::Vector3d PassiveControl::getEEVel(){
+Eigen::Vector3d PassiveSharedControl::getEEVel(){
     return _robot.ee_vel;
 }
-Eigen::Vector3d PassiveControl::getEEAngVel(){
+Eigen::Vector3d PassiveSharedControl::getEEAngVel(){
     return _robot.ee_angVel;
 }
 
 
-void PassiveControl::set_pos_gains(const double& ds, const double& lambda0,const double& lambda1){
+void PassiveSharedControl::set_pos_gains(const double& ds, const double& lambda0,const double& lambda1){
     dsGain_pos = ds;
     dsContPos->set_damping_eigval(lambda0,lambda1);
 
 }
-void PassiveControl::set_ori_gains(const double& ds, const double& lambda0,const double& lambda1){
+void PassiveSharedControl::set_ori_gains(const double& ds, const double& lambda0,const double& lambda1){
     dsGain_ori = ds;
     dsContOri->set_damping_eigval(lambda0,lambda1);
 }
-void PassiveControl::set_null_pos(const Eigen::VectorXd& nullPosition){
+void PassiveSharedControl::set_null_pos(const Eigen::VectorXd& nullPosition){
     if (nullPosition.size() == _robot.nulljnt_position.size() )
     {
         _robot.nulljnt_position = nullPosition;
@@ -196,28 +196,28 @@ void PassiveControl::set_null_pos(const Eigen::VectorXd& nullPosition){
 }
 
 
-void PassiveControl::set_desired_pose(const Eigen::Vector3d& pos, const Eigen::Vector4d& quat){
+void PassiveSharedControl::set_desired_pose(const Eigen::Vector3d& pos, const Eigen::Vector4d& quat){
     _robot.ee_des_pos = pos;
     _robot.ee_des_quat = quat;
     is_just_velocity = false;
 }
-void PassiveControl::set_desired_position(const Eigen::Vector3d& pos){
+void PassiveSharedControl::set_desired_position(const Eigen::Vector3d& pos){
     _robot.ee_des_pos = pos;
      is_just_velocity = false;
 }
-void PassiveControl::set_desired_quat(const Eigen::Vector4d& quat){
+void PassiveSharedControl::set_desired_quat(const Eigen::Vector4d& quat){
     _robot.ee_des_quat = quat;
 }
-void PassiveControl::set_desired_velocity(const Eigen::Vector3d& vel){
+void PassiveSharedControl::set_desired_velocity(const Eigen::Vector3d& vel){
      _robot.ee_des_vel = vel;
      is_just_velocity = true;
 }
 
 
-void PassiveControl::set_load(const double& mass ){
+void PassiveSharedControl::set_load(const double& mass ){
     load_added = mass;
 }
-void PassiveControl::computeTorqueCmd(){
+void PassiveSharedControl::computeTorqueCmd(){
     
     // desired position values
     Eigen::Vector3d deltaX = _robot.ee_des_pos - _robot.ee_pos;
@@ -235,8 +235,19 @@ void PassiveControl::computeTorqueCmd(){
     xgain(0,0) *= 1.5; 
 
     if(!is_just_velocity)
-        _robot.ee_des_vel = dsGain_pos*(1+std::exp(theta_g)) *deltaX;
+    {
+        ROS_WARN_STREAM_THROTTLE(0.2, "_robot.ee_des_vel old:"<< _robot.ee_des_vel);
 
+        double shared_control_gain=1.0;
+        _robot.ee_des_vel = _robot.ee_des_vel*shared_control_gain + (dsGain_pos*(1+std::exp(theta_g)) *deltaX)*(1-shared_control_gain);
+        
+        ROS_WARN_STREAM_THROTTLE(0.2, "_robot.ee_des_vel new:"<< _robot.ee_des_vel);
+
+    }
+    else
+    {
+        ROS_ERROR("Didn't get leader pose data");
+    }
     // desired angular values
     Eigen::Vector4d dqd = Utils<double>::slerpQuaternion(_robot.ee_quat, _robot.ee_des_quat, 0.5);    
     Eigen::Vector4d deltaQ = dqd -  _robot.ee_quat;

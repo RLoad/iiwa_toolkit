@@ -1,5 +1,20 @@
 //|
-
+//|    Copyright (C) 2020 Learning Algorithms and Systems Laboratory, EPFL, Switzerland
+//|    Authors:  Farshad Khadivr (maintainer)
+//|    email:   farshad.khadivar@epfl.ch
+//|    website: lasa.epfl.ch
+//|
+//|    This file is part of iiwa_toolkit.
+//|
+//|    iiwa_toolkit is free software: you can redistribute it and/or modify
+//|    it under the terms of the GNU General Public License as published by
+//|    the Free Software Foundation, either version 3 of the License, or
+//|    (at your option) any later version.
+//|
+//|    iiwa_toolkit is distributed in the hope that it will be useful,
+//|    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//|    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//|    GNU General Public License for more details.
 //|
 #include <mutex>
 #include <fstream>
@@ -13,6 +28,7 @@
 #include "ros/ros.h"
 #include <ros/package.h>
 #include <Eigen/Dense>
+
 #include "motion_capture.h"
 #include "passive_shared_control.h"
 #include "iiwa_toolkit/passive_shared_cfg_paramsConfig.h"
@@ -20,10 +36,13 @@
 
 #define No_JOINTS 7
 #define No_Robots 1
+#define TOTAL_No_MARKERS 2
+
 struct Options
 {
+    std::string control_mode;
     bool is_optitrack_on;
-    double filter_gain = 0.2;
+    double filter_gain = 0.;
 };
 
 struct feedback
@@ -41,6 +60,7 @@ class IiwaRosMaster
     _n(n), _loopRate(frequency), _dt(1.0f/frequency),_options(options){
         _stop =false;
 
+
     }
 
     ~IiwaRosMaster(){}
@@ -55,39 +75,41 @@ class IiwaRosMaster
             ns = "/"+robot_name;
         }
         std::cout << "the namespace is: " + ns << std::endl;
-        
         _feedback.jnt_position.setZero();
         _feedback.jnt_velocity.setZero();
         _feedback.jnt_torque.setZero();
         command_trq.setZero();
         command_plt.setZero();
-        
+
         _optiTrack = std::make_shared<environs::MotionCapture>(3,_dt);
         _optiTrack->setEntityStatic(0);
 
+        
         //!
-        _subRobotStates[0]= _n.subscribe<sensor_msgs::JointState> ("/iiwa/joint_states", 1,
+        _subRobotStates[0]= _n.subscribe<sensor_msgs::JointState> (ns+"/joint_states", 1,
                 boost::bind(&IiwaRosMaster::updateRobotStates,this,_1,0),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
         
         _subOptitrack[0] = _n.subscribe<geometry_msgs::PoseStamped>("/vrpn_client_node/iiwa_14_base/pose", 1,
             boost::bind(&IiwaRosMaster::updateOptitrack,this,_1,0),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
         _subOptitrack[1] = _n.subscribe<geometry_msgs::PoseStamped>("/vrpn_client_node/hand_f/pose", 1,
             boost::bind(&IiwaRosMaster::updateOptitrack,this,_1,1),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
-
-        // _subControl[0] = _n.subscribe<geometry_msgs::Pose>("/passive_control/pos_quat", 1,
-        //     boost::bind(&IiwaRosMaster::updateControlPos,this,_1),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
-        _subControl[0] = _n.subscribe<geometry_msgs::Pose>("/passive_control/vel_quat", 1,
-            boost::bind(&IiwaRosMaster::updateControlVel,this,_1),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
         
-        _TrqCmdPublisher = _n.advertise<std_msgs::Float64MultiArray>("/iiwa/TorqueController/command",1);
-        // _EEPosePublisher = _n.advertise<geometry_msgs::Pose>(ns+"/ee_info/Pose",1);
-        // _EEVelPublisher = _n.advertise<geometry_msgs::Twist>(ns+"/ee_info/Vel",1);
-        _EEPosePublisher = _n.advertise<geometry_msgs::Pose>("/iiwa/ee_info/Pose",1);
-        _EEVelPublisher = _n.advertise<geometry_msgs::Twist>("/iiwa/ee_info/Vel",1);
+        
+        _subControl[0] = _n.subscribe<geometry_msgs::Pose>("/passive_control/pos_quat", 1,
+            boost::bind(&IiwaRosMaster::updateControlPos,this,_1),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
+        _subControl[1] = _n.subscribe<geometry_msgs::Pose>("/passive_control/vel_quat", 1,
+            boost::bind(&IiwaRosMaster::updateControlVel,this,_1),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
+
+        _subDamping = _n.subscribe<std_msgs::Float64MultiArray>("/lwr/joint_controllers/passive_ds_eig", 1,
+            boost::bind(&IiwaRosMaster::updateDamping,this,_1),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
+
+        _TrqCmdPublisher = _n.advertise<std_msgs::Float64MultiArray>(ns+"/TorqueController/command",1);
+        _EEPosePublisher = _n.advertise<geometry_msgs::Pose>(ns+"/ee_info/Pose",1);
+        _EEVelPublisher = _n.advertise<geometry_msgs::Twist>(ns+"/ee_info/Vel",1);
 
         // Get the URDF XML from the parameter server
         std::string urdf_string, full_param;
-        std::string robot_description = "/iiwa/robot_description";
+        std::string robot_description = ns+"/robot_description";
         std::string end_effector;
         // gets the location of the robot description on the parameter server
         if (!_n.searchParam(robot_description, full_param)) {
@@ -105,24 +127,24 @@ class IiwaRosMaster
         ROS_INFO_STREAM_NAMED("Controller", "Received urdf from param server, parsing...");
 
         // Get the end-effector
-        _n.param<std::string>("params/end_effector", end_effector, "iiwa_link_ee");
+        _n.param<std::string>("params/end_effector", end_effector, robot_name+"_link_ee");
         // Initialize iiwa tools
         
         
         _controller = std::make_unique<PassiveSharedControl>(urdf_string, end_effector);
         
-
         double mass_ee;
         std::vector<double> dpos;
         std::vector<double> dquat;
         std::vector<double> leaderpos;
 
-        while(!_n.getParam("control/dsGainPos", ds_gain_pos)){ROS_INFO("waiting for the parameter dsGainsPos");}
-        while(!_n.getParam("control/dsGainOri", ds_gain_ori)){ROS_INFO("waiting for the parameter dsGainOri");}
-        while(!_n.getParam("control/lambda0Pos",lambda0_pos)){ROS_INFO("waiting for the parameter lambda0Pos");}
-        while(!_n.getParam("control/lambda1Pos",lambda1_pos)){ROS_INFO("waiting for the parameter lambda1Pos");}
-        while(!_n.getParam("control/lambda0Ori",lambda0_ori)){ROS_INFO("waiting for the parameter lambda0Ori");}
-        while(!_n.getParam("control/lambda1Ori",lambda1_ori)){ROS_INFO("waiting for the parameter lambda1Ori");}
+        while(!_n.getParam("control/dsGainPos", ds_gain_pos)){ROS_INFO("Wating For the Parameter dsGainPos");}
+        while(!_n.getParam("control/dsGainOri", ds_gain_ori)){ROS_INFO("Wating For the Parameter dsGainOri");}
+        while(!_n.getParam("control/lambda0Pos",lambda0_pos)){ROS_INFO("Wating For the Parameter lambda0Pos");}
+        while(!_n.getParam("control/lambda1Pos",lambda1_pos)){ROS_INFO("Wating For the Parameter lambda1Pos");}
+        while(!_n.getParam("control/lambda0Ori",lambda0_ori)){ROS_INFO("Wating For the Parameter lambda0Ori");}
+        while(!_n.getParam("control/lambda1Ori",lambda1_ori)){ROS_INFO("Wating For the Parameter lambda1Ori");}
+        
         while(!_n.getParam("options/is_orientation_track_on",is_ori_track)){ROS_INFO("waiting for the parameter is_orientation_track_on");}
         while(!_n.getParam("control/mass_ee",mass_ee)){ROS_INFO("waiting for the parameter mass_ee");}
         while(!_n.getParam("target/pos",dpos)){ROS_INFO("waiting for the parameter target_pos");}
@@ -131,9 +153,17 @@ class IiwaRosMaster
         
         
 
-
-
         double angle0 = 0.5*M_PI;
+        des_quat[0] = (std::cos(angle0/2));
+        des_quat.segment(1,3) = (std::sin(angle0/2))* Eigen::Vector3d::UnitY();
+        
+        while(!_n.getParam("target/pos",dpos)){ROS_INFO("Wating For the Parameter target_pos");}
+        while(!_n.getParam("target/quat",dquat)){ROS_INFO("Wating For the Parameter target_pos");}
+        for (size_t i = 0; i < des_pos.size(); i++)
+            des_pos(i) = dpos[i];
+        for (size_t i = 0; i < des_quat.size(); i++)
+            des_quat(i) = dquat[i]; 
+
         init_des_quat[0] = (std::cos(angle0/2));
         init_des_quat.segment(1,3) = (std::sin(angle0/2))* Eigen::Vector3d::UnitY();
         for (size_t i = 0; i < init_des_pos.size(); i++)
@@ -145,18 +175,16 @@ class IiwaRosMaster
 
         leader_pos = leader_ref_pos;
         ref_des_quat = init_des_quat;
-        _controller->set_desired_pose(init_des_pos,ref_des_quat);
+        
+        _controller->set_desired_pose(des_pos,des_quat);
         _controller->set_pos_gains(ds_gain_pos,lambda0_pos,lambda1_pos);
         _controller->set_ori_gains(ds_gain_ori,lambda0_ori,lambda1_ori);
-        _controller->set_load(mass_ee);
-        
         // plotting
-        _plotPublisher = _n.advertise<std_msgs::Float64MultiArray>("/iiwa/plotvar",1);
-
+        _plotPublisher = _n.advertise<std_msgs::Float64MultiArray>(ns+"/plotvar",1);
+        
         // dynamic configure:
         _dynRecCallback = boost::bind(&IiwaRosMaster::param_cfg_callback,this,_1,_2);
         _dynRecServer.setCallback(_dynRecCallback);
-
         //todo condition here
         return true;
     }
@@ -218,17 +246,16 @@ class IiwaRosMaster
         while(!_stop && ros::ok()){ 
             if (!_options.is_optitrack_on || _optiTrack->isOk()){
                 _mutex.lock();
-                updateAttractor();
-                _controller->updateRobot(_feedback.jnt_position,_feedback.jnt_velocity,_feedback.jnt_torque);
-                publishCommandTorque(_controller->getCmd());
-                publishPlotVariable(command_plt);
-                publishEEInfo();
+                    _controller->updateRobot(_feedback.jnt_position,_feedback.jnt_velocity,_feedback.jnt_torque);
+                    publishCommandTorque(_controller->getCmd());
+                    publishPlotVariable(command_plt);
+                    publishEEInfo();
 
-                // publishPlotVariable(_controller->getPlotVariable());
+                    // publishPlotVariable(_controller->getPlotVariable());
 
-                ROS_WARN_STREAM_THROTTLE(1, "eig0 eig1: "<<lambda0_pos<<", "<<lambda1_pos);
+                    // std::cerr<<"eig0 eig1: "<<lambda0_pos<<", "<<lambda1_pos<<std::endl;
+                    ROS_WARN_STREAM_THROTTLE(1, "eig0 eig1: "<<lambda0_pos<<", "<<lambda1_pos);
                     
-                
                 _mutex.unlock();
             }
         ros::spinOnce();
@@ -249,15 +276,17 @@ class IiwaRosMaster
 
     ros::Subscriber _subRobotStates[No_Robots];
 
+    ros::Subscriber _subControl[2];
 
-    ros::Subscriber _subOptitrack[2];  // optitrack markers pose
+    ros::Subscriber _subDamping;
 
-    ros::Subscriber _subControl[1];
+    ros::Subscriber _subOptitrack[TOTAL_No_MARKERS];  // optitrack markers pose
 
     ros::Publisher _TrqCmdPublisher;
-    ros::Publisher _plotPublisher;
     ros::Publisher _EEPosePublisher;
     ros::Publisher _EEVelPublisher;
+
+    ros::Publisher _plotPublisher;
 
     dynamic_reconfigure::Server<iiwa_toolkit::passive_shared_cfg_paramsConfig> _dynRecServer;
     dynamic_reconfigure::Server<iiwa_toolkit::passive_shared_cfg_paramsConfig>::CallbackType _dynRecCallback;
@@ -286,14 +315,15 @@ class IiwaRosMaster
 
     Eigen::Vector3d initial_object_pos ;
     bool is_ori_track = false;
-
+    
     double ds_gain_pos;
     double ds_gain_ori;
     double lambda0_pos;
     double lambda1_pos;
     double lambda0_ori;
     double lambda1_ori;
-
+    Eigen::Vector3d des_pos = {0.8 , 0., 0.3}; 
+    Eigen::Vector4d des_quat = Eigen::Vector4d::Zero();
 
   private:
 
@@ -303,6 +333,8 @@ class IiwaRosMaster
             _feedback.jnt_velocity[i] = (double)msg->velocity[i];
             _feedback.jnt_torque[i]   = (double)msg->effort[i];
         }
+        // std::cout << "joint ps : " << _feedback.jnt_position.transpose() << "\n";
+
     }
     
     void updateTorqueCommand(const std_msgs::Float64MultiArray::ConstPtr &msg, int k){
@@ -316,6 +348,7 @@ class IiwaRosMaster
             command_plt[i] = (double)msg->data[i];
         }
     }
+    // void updateBioTac(const biotac_sensors::BioTacHand &msg);
     void publishCommandTorque(const Eigen::VectorXd& cmdTrq){
         std_msgs::Float64MultiArray _cmd_jnt_torque;
         _cmd_jnt_torque.data.resize(No_JOINTS);
@@ -348,20 +381,26 @@ class IiwaRosMaster
         msg2.linear.x = vel[0];msg2.linear.y = vel[1];msg2.linear.z = vel[2];
         msg2.angular.x = angVel[0];msg2.angular.y = angVel[1];msg2.angular.z = angVel[2];
 
-        ROS_WARN_STREAM_THROTTLE(0.2, "msg1:"<<msg1);						
-        ROS_WARN_STREAM_THROTTLE(0.2, "msg2:"<<msg2);						
-
-
         _EEPosePublisher.publish(msg1);
         _EEVelPublisher.publish(msg2);
     }
+    //TODO clean the optitrack
+    void updateControlPos(const geometry_msgs::Pose::ConstPtr& msg){
+        Eigen::Vector3d pos;
+        Eigen::Vector4d quat;
 
-    void updateOptitrack(const geometry_msgs::PoseStamped::ConstPtr& msg, int k){//--- wr: here updata for robot and hand, so there are 2 object in motion capture
-        Eigen::Vector3d mkpos;
-        Eigen::Vector4d mkori;
-        mkpos << (double)msg->pose.position.x, (double)msg->pose.position.y, (double)msg->pose.position.z;
-        mkori << (double)msg->pose.orientation.w, (double)msg->pose.orientation.x, (double)msg->pose.orientation.y, (double)msg->pose.orientation.z;
-        _optiTrack->updateEntity(k,mkpos,mkori);
+        pos << (double)msg->position.x, (double)msg->position.y, (double)msg->position.z;
+        quat << (double)msg->orientation.w, (double)msg->orientation.x, (double)msg->orientation.y, (double)msg->orientation.z;
+        
+        if((pos.norm()>0)&&(pos.norm()<1.5)){
+            _controller->set_desired_position(pos);
+            if((quat.norm() >0)&&(quat.norm() < 1.1)){
+                quat.normalize();
+                _controller->set_desired_quat(quat);
+            }
+        }else{
+            ROS_WARN("INCORRECT POSITIONING"); 
+        }
     }
 
     void updateControlVel(const geometry_msgs::Pose::ConstPtr& msg){
@@ -378,6 +417,14 @@ class IiwaRosMaster
         }else{
             ROS_WARN("VELOCITY OUT OF BOUND");
         }
+    }
+
+    void updateOptitrack(const geometry_msgs::PoseStamped::ConstPtr& msg, int k){//--- wr: here updata for robot and hand, so there are 2 object in motion capture
+        Eigen::Vector3d mkpos;
+        Eigen::Vector4d mkori;
+        mkpos << (double)msg->pose.position.x, (double)msg->pose.position.y, (double)msg->pose.position.z;
+        mkori << (double)msg->pose.orientation.w, (double)msg->pose.orientation.x, (double)msg->pose.orientation.y, (double)msg->pose.orientation.z;
+        _optiTrack->updateEntity(k,mkpos,mkori);
     }
 
     void param_cfg_callback(iiwa_toolkit::passive_shared_cfg_paramsConfig& config, uint32_t level){
@@ -411,6 +458,8 @@ class IiwaRosMaster
             mirror_dir(2,2) = 1.;
         }
 
+        Eigen::Vector3d delta_pos = Eigen::Vector3d(config.dX_des,config.dY_des,config.dZ_des);
+
         Eigen::Vector4d q_x = Eigen::Vector4d::Zero();
         q_x(0) = std::cos(config.dX_des_angle/2);
         q_x(1) = std::sin(config.dX_des_angle/2);
@@ -427,13 +476,23 @@ class IiwaRosMaster
         Eigen::Matrix3d rotMat_z = Utils<double>::quaternionToRotationMatrix(q_z);
 
         //! this part has to be improved
-        Eigen::Matrix3d rotMat = rotMat_z*rotMat_y*rotMat_x * Utils<double>::quaternionToRotationMatrix(init_des_quat);
-     
+        Eigen::Matrix3d rotMat = rotMat_z*rotMat_y*rotMat_x * Utils<double>::quaternionToRotationMatrix(des_quat);
+        
         ref_des_quat = Utils<double>::rotationMatrixToQuaternion(rotMat);
-
-        config.shared_control_gain;
+    
+        _controller->set_desired_pose(des_pos+delta_pos,Utils<double>::rotationMatrixToQuaternion(rotMat));
     }
 
+    public:
+
+    void updateDamping(const std_msgs::Float64MultiArray::ConstPtr &msg){
+
+        lambda0_pos=msg->data[0];lambda1_pos=msg->data[1];
+
+        _controller->set_pos_gains(ds_gain_pos,lambda0_pos,lambda1_pos);
+        _controller->set_ori_gains(ds_gain_ori,lambda0_ori,lambda1_ori);
+
+    }
 };
 
 //****************************************************
@@ -445,6 +504,8 @@ int main (int argc, char **argv)
     ros::NodeHandle n;
 
     Options options;
+
+    while(!n.getParam("options/filter_gain", options.filter_gain)){ROS_INFO("Wating for the option setting");}
     while(!n.getParam("options/is_optitrack_on", options.is_optitrack_on)){ROS_INFO("Waiting for setting the options");}
     while(!n.getParam("options/filter_gain", options.filter_gain)){ROS_INFO("Waiting for setting the options");}
 
