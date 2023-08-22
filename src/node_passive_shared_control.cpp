@@ -9,6 +9,7 @@
 #include "sensor_msgs/JointState.h"
 #include "geometry_msgs/PoseStamped.h"
 #include "geometry_msgs/Twist.h"
+#include "std_msgs/Int8.h"
 
 #include "ros/ros.h"
 #include <ros/package.h>
@@ -84,6 +85,8 @@ class IiwaRosMaster
         // _EEVelPublisher = _n.advertise<geometry_msgs::Twist>(ns+"/ee_info/Vel",1);
         _EEPosePublisher = _n.advertise<geometry_msgs::Pose>("/iiwa/ee_info/Pose",1);
         _EEVelPublisher = _n.advertise<geometry_msgs::Twist>("/iiwa/ee_info/Vel",1);
+
+        _SharedControlGainPublisher = _n.advertise<std_msgs::Int8>("/shared_control_gain",1);
 
         // Get the URDF XML from the parameter server
         std::string urdf_string, full_param;
@@ -215,9 +218,16 @@ class IiwaRosMaster
         if (angle>3.0)
         {
             // ROS_WARN_STREAM_THROTTLE(0.2, "ROBOT run shared");
-            std::cout<<"ROBOT run shared"<<std::endl;					
+            std::cout<<"ROBOT run shared"<<std::endl;				
+            
+            	
 
             ee_pose_prev=ee_pos;
+            
+            std_msgs::Int8 msg_shared;
+            int shared_control_gain=1;
+            msg_shared.data=shared_control_gain;
+            _SharedControlGainPublisher.publish(msg_shared);
         }else
         {
             des_position = ee_pose_prev + virtObj;
@@ -227,8 +237,12 @@ class IiwaRosMaster
             std::cout<<"virtObj:"<<virtObj[0]<<","<<virtObj[1]<<","<<virtObj[2]<<std::endl;					
 
             //  ROS_WARN_STREAM_THROTTLE(0.2, "ee_pose_prev:"<<ee_pose_prev[0]<<","<<ee_pose_prev[1]<<","<<ee_pose_prev[2]);
-            //  ROS_WARN_STREAM_THROTTLE(0.2, "virtObj:"<<virtObj[0]<<","<<virtObj[1]<<","<<virtObj[2]);					
+            //  ROS_WARN_STREAM_THROTTLE(0.2, "virtObj:"<<virtObj[0]<<","<<virtObj[1]<<","<<virtObj[2]);
 
+            std_msgs::Int8 msg_shared;
+            int shared_control_gain=0;
+            msg_shared.data=shared_control_gain;
+            _SharedControlGainPublisher.publish(msg_shared);
         }
         
         if ((ee_pos -des_position).norm() > 1.){
@@ -286,6 +300,7 @@ class IiwaRosMaster
     ros::Publisher _plotPublisher;
     ros::Publisher _EEPosePublisher;
     ros::Publisher _EEVelPublisher;
+    ros::Publisher _SharedControlGainPublisher;
 
     dynamic_reconfigure::Server<iiwa_toolkit::passive_shared_cfg_paramsConfig> _dynRecServer;
     dynamic_reconfigure::Server<iiwa_toolkit::passive_shared_cfg_paramsConfig>::CallbackType _dynRecCallback;
