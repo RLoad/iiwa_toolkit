@@ -21,4 +21,4 @@ target:
 
 leader: #---- WR: change this to the begin pose for leader
     # pos: [1.2, 0., 0.0]
-    pos: [-1.08278,0.0428855,-0.0660272]
+    pos: [1.14263,-0.0990318,0.00644297]

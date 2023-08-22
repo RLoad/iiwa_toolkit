@@ -170,10 +170,13 @@ class IiwaRosMaster
         rotMat_opttrack(0,0)=0;rotMat_opttrack(0,1)=-1;rotMat_opttrack(0,2)=0;
         rotMat_opttrack(1,0)=1;rotMat_opttrack(1,1)=0;rotMat_opttrack(1,2)=0;
         rotMat_opttrack(2,0)=0;rotMat_opttrack(2,1)=0;rotMat_opttrack(2,2)=1;
+
+
+        std::cout << "==================================================================" << std::endl;
         
         marker_pos=rotMat_opttrack*marker_pos;
-        // std::cerr<<"marker_pos"<<marker_pos[0]<<","<<marker_pos[1]<<","<<marker_pos[2]<<std::endl;
-        ROS_WARN_STREAM_THROTTLE(0.2, "marker_pos:"<<marker_pos);						
+
+        std::cout<<"marker_pos:"<<marker_pos[0]<<","<<marker_pos[1]<<","<<marker_pos[2]<<std::endl;					
 
 
         Eigen::Matrix3d magnifying = Eigen::Matrix3d::Zero();
@@ -204,6 +207,29 @@ class IiwaRosMaster
             Eigen::Matrix3d rot =  Utils<double>::quaternionToRotationMatrix(qtemp) * Utils<double>::quaternionToRotationMatrix(ref_des_quat);
             des_orientation = Utils<double>::rotationMatrixToQuaternion(rot);
         }
+
+        double angle = 0;
+        Eigen::Vector3d ax =Eigen::Vector3d::UnitY();
+        Utils<double>::quaternionToAxisAngle(des_orientation, ax, angle);
+        
+        if (angle>3.0)
+        {
+            // ROS_WARN_STREAM_THROTTLE(0.2, "ROBOT run shared");
+            std::cout<<"ROBOT run shared"<<std::endl;					
+
+            ee_pose_prev=ee_pos;
+        }else
+        {
+            des_position = ee_pose_prev + virtObj;
+            // ROS_WARN_STREAM_THROTTLE(0.2, "HUMAN run shared");
+            std::cout<<"HUMAN run shared"<<std::endl;	
+            std::cout<<"ee_pose_prev:"<<ee_pose_prev[0]<<","<<ee_pose_prev[1]<<","<<ee_pose_prev[2]<<std::endl;					
+            std::cout<<"virtObj:"<<virtObj[0]<<","<<virtObj[1]<<","<<virtObj[2]<<std::endl;					
+
+            //  ROS_WARN_STREAM_THROTTLE(0.2, "ee_pose_prev:"<<ee_pose_prev[0]<<","<<ee_pose_prev[1]<<","<<ee_pose_prev[2]);
+            //  ROS_WARN_STREAM_THROTTLE(0.2, "virtObj:"<<virtObj[0]<<","<<virtObj[1]<<","<<virtObj[2]);					
+
+        }
         
         if ((ee_pos -des_position).norm() > 1.){
             _controller->set_desired_pose(init_des_pos,ref_des_quat);
@@ -226,7 +252,9 @@ class IiwaRosMaster
 
                 // publishPlotVariable(_controller->getPlotVariable());
 
-                ROS_WARN_STREAM_THROTTLE(1, "eig0 eig1: "<<lambda0_pos<<", "<<lambda1_pos);
+                // ROS_WARN_STREAM_THROTTLE(1.0, "eig0 eig1: "<<lambda0_pos<<", "<<lambda1_pos);
+                std::cout<<"eig0 eig1: "<<lambda0_pos<<", "<<lambda1_pos<<std::endl;					
+
                     
                 
                 _mutex.unlock();
@@ -294,6 +322,8 @@ class IiwaRosMaster
     double lambda0_ori;
     double lambda1_ori;
 
+    Eigen::Vector3d ee_pose_prev={0. , 0., 0.};
+
 
   private:
 
@@ -347,10 +377,6 @@ class IiwaRosMaster
 
         msg2.linear.x = vel[0];msg2.linear.y = vel[1];msg2.linear.z = vel[2];
         msg2.angular.x = angVel[0];msg2.angular.y = angVel[1];msg2.angular.z = angVel[2];
-
-        ROS_WARN_STREAM_THROTTLE(0.2, "msg1:"<<msg1);						
-        ROS_WARN_STREAM_THROTTLE(0.2, "msg2:"<<msg2);						
-
 
         _EEPosePublisher.publish(msg1);
         _EEVelPublisher.publish(msg2);

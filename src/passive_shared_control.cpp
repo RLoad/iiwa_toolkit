@@ -236,19 +236,44 @@ void PassiveSharedControl::computeTorqueCmd(){
 
     if(!is_just_velocity)
     {
-        ROS_WARN_STREAM_THROTTLE(0.2, "_robot.ee_des_vel old:"<< _robot.ee_des_vel);
+        int human_robot_cooperate=0;
+        if (human_robot_cooperate==1)//---- human point to desired area and robot assisate perform circle motion
+        {
+            double shared_control_gain=1.0;
+            _robot.ee_des_vel = _robot.ee_des_vel*shared_control_gain + (dsGain_pos*(1+std::exp(theta_g)) *deltaX)*(1-shared_control_gain);
+            _robot.ee_des_vel = _robot.ee_des_vel;// + circle_velocity;
 
-        double shared_control_gain=1.0;
-        _robot.ee_des_vel = _robot.ee_des_vel*shared_control_gain + (dsGain_pos*(1+std::exp(theta_g)) *deltaX)*(1-shared_control_gain);
-        
-        ROS_WARN_STREAM_THROTTLE(0.2, "_robot.ee_des_vel new:"<< _robot.ee_des_vel);
+        }else //---- only human do the tele operate and no robot assisate
+        {
+            double angle = 0;
+            Eigen::Vector3d ax =Eigen::Vector3d::UnitY();
+            Utils<double>::quaternionToAxisAngle(_robot.ee_des_quat, ax, angle);
+            
+            // double shared_control_gain=0.0;
+            if (angle>3.0)
+            {
+                std::cout<<"ROBOT run"<<std::endl;	
+                std::cout<<"_robot.ee_des_vel:"<<_robot.ee_des_vel[0]<<","<<_robot.ee_des_vel[1]<<","<<_robot.ee_des_vel[2]<<std::endl;					
 
+            }else
+            {
+                std::cout<<"HUMAN run"<<std::endl;	
+                std::cout<<"_robot.ee_des_vel:"<<_robot.ee_des_vel[0]<<","<<_robot.ee_des_vel[1]<<","<<_robot.ee_des_vel[2]<<std::endl;					
+
+                _robot.ee_des_vel = dsGain_pos*(1+std::exp(theta_g)) *deltaX;
+                // _robot.ee_des_vel = _robot.ee_des_vel*shared_control_gain + (dsGain_pos*(1+std::exp(theta_g)) *deltaX)*(1-shared_control_gain);
+            }             
+        }
     }
     else
     {
         ROS_ERROR("Didn't get leader pose data");
     }
     // desired angular values
+    _robot.ee_des_quat[0]=0.707;
+    _robot.ee_des_quat[1]=0.0;
+    _robot.ee_des_quat[2]=0.707;
+    _robot.ee_des_quat[3]=0.0;
     Eigen::Vector4d dqd = Utils<double>::slerpQuaternion(_robot.ee_quat, _robot.ee_des_quat, 0.5);    
     Eigen::Vector4d deltaQ = dqd -  _robot.ee_quat;
 
