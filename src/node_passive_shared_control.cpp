@@ -220,8 +220,8 @@ class IiwaRosMaster
             // ROS_WARN_STREAM_THROTTLE(0.2, "ROBOT run shared");
             std::cout<<"ROBOT run shared"<<std::endl;				
             
-            	
-
+            _first_robot=true;
+            
             ee_pose_prev=ee_pos;
             
             std_msgs::Int8 msg_shared;
@@ -230,6 +230,14 @@ class IiwaRosMaster
             _SharedControlGainPublisher.publish(msg_shared);
         }else
         {
+            if (_first_robot)
+            {
+                leader_pos=marker_pos;
+                virtObj =  mirror_dir * magnifying * (marker_pos - leader_pos) ;
+
+                _first_robot=false;
+            }
+
             des_position = ee_pose_prev + virtObj;
             // ROS_WARN_STREAM_THROTTLE(0.2, "HUMAN run shared");
             std::cout<<"HUMAN run shared"<<std::endl;	
@@ -243,6 +251,7 @@ class IiwaRosMaster
             int shared_control_gain=0;
             msg_shared.data=shared_control_gain;
             _SharedControlGainPublisher.publish(msg_shared);
+
         }
         
         if ((ee_pos -des_position).norm() > 1.){
@@ -337,7 +346,9 @@ class IiwaRosMaster
     double lambda0_ori;
     double lambda1_ori;
 
-    Eigen::Vector3d ee_pose_prev={0. , 0., 0.};
+    //--- for shared control trans parameter
+        Eigen::Vector3d ee_pose_prev={0. , 0., 0.};
+        bool _first_robot = true;
 
 
   private:
