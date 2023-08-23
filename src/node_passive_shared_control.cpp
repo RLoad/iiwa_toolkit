@@ -85,6 +85,7 @@ class IiwaRosMaster
         // _EEVelPublisher = _n.advertise<geometry_msgs::Twist>(ns+"/ee_info/Vel",1);
         _EEPosePublisher = _n.advertise<geometry_msgs::Pose>("/iiwa/ee_info/Pose",1);
         _EEVelPublisher = _n.advertise<geometry_msgs::Twist>("/iiwa/ee_info/Vel",1);
+        _SharedControlPosePublisher = _n.advertise<geometry_msgs::Pose>("/SharedControl/Pose",1);
 
         _SharedControlGainPublisher = _n.advertise<std_msgs::Int8>("/shared_control_gain",1);
 
@@ -179,7 +180,7 @@ class IiwaRosMaster
         
         marker_pos=rotMat_opttrack*marker_pos;
 
-        std::cout<<"marker_pos:"<<marker_pos[0]<<","<<marker_pos[1]<<","<<marker_pos[2]<<std::endl;					
+        // std::cout<<"marker_pos:"<<marker_pos[0]<<","<<marker_pos[1]<<","<<marker_pos[2]<<std::endl;					
 
 
         Eigen::Matrix3d magnifying = Eigen::Matrix3d::Zero();
@@ -241,8 +242,8 @@ class IiwaRosMaster
             des_position = ee_pose_prev + virtObj;
             // ROS_WARN_STREAM_THROTTLE(0.2, "HUMAN run shared");
             std::cout<<"HUMAN run shared"<<std::endl;	
-            std::cout<<"ee_pose_prev:"<<ee_pose_prev[0]<<","<<ee_pose_prev[1]<<","<<ee_pose_prev[2]<<std::endl;					
-            std::cout<<"virtObj:"<<virtObj[0]<<","<<virtObj[1]<<","<<virtObj[2]<<std::endl;					
+            // std::cout<<"ee_pose_prev:"<<ee_pose_prev[0]<<","<<ee_pose_prev[1]<<","<<ee_pose_prev[2]<<std::endl;					
+            // std::cout<<"virtObj:"<<virtObj[0]<<","<<virtObj[1]<<","<<virtObj[2]<<std::endl;					
 
             //  ROS_WARN_STREAM_THROTTLE(0.2, "ee_pose_prev:"<<ee_pose_prev[0]<<","<<ee_pose_prev[1]<<","<<ee_pose_prev[2]);
             //  ROS_WARN_STREAM_THROTTLE(0.2, "virtObj:"<<virtObj[0]<<","<<virtObj[1]<<","<<virtObj[2]);
@@ -259,6 +260,12 @@ class IiwaRosMaster
         }else{
 
             _controller->set_desired_pose(des_position,des_orientation);
+
+            geometry_msgs::Pose msg3;
+            msg3.position.x  = des_position[0];msg3.position.y  = des_position[1];msg3.position.z  = des_position[2];
+            msg3.orientation.w = des_orientation[0];msg3.orientation.x = des_orientation[1];msg3.orientation.y = des_orientation[2];msg3.orientation.z = des_orientation[3];
+
+            _SharedControlPosePublisher.publish(msg3);
         }
 
     }
@@ -310,6 +317,7 @@ class IiwaRosMaster
     ros::Publisher _EEPosePublisher;
     ros::Publisher _EEVelPublisher;
     ros::Publisher _SharedControlGainPublisher;
+    ros::Publisher _SharedControlPosePublisher;
 
     dynamic_reconfigure::Server<iiwa_toolkit::passive_shared_cfg_paramsConfig> _dynRecServer;
     dynamic_reconfigure::Server<iiwa_toolkit::passive_shared_cfg_paramsConfig>::CallbackType _dynRecCallback;

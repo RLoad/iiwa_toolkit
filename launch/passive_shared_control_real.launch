@@ -12,12 +12,12 @@
         <arg name="controller" value="$(arg controller)" />
     </include>
     
-    <node name="marker_following" pkg="iiwa_toolkit" type="marker_following" output="screen">
+    <node name="passive_shared_control" pkg="iiwa_toolkit" type="passive_shared_control" output="screen">
     </node>
 
-    <rosparam file="$(find iiwa_toolkit)/config/marker_following_params.yaml" command="load"/>
+    <rosparam file="$(find iiwa_toolkit)/config/passive_shared_control_params.yaml" command="load"/>
 
-    <node pkg="rqt_reconfigure" type="rqt_reconfigure" name="marker_tracking_control_gui" />
+    <node pkg="rqt_reconfigure" type="rqt_reconfigure" name="passive_shared_control_gui" />
 
 
     <!-- <arg name="server" default="128.178.145.104"/> -->
