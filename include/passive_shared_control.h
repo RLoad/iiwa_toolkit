@@ -118,6 +118,8 @@ private:
     void computeTorqueCmd();
     std::unique_ptr<PassiveDS> dsContPos;
     std::unique_ptr<PassiveDS> dsContOri;
+
+    Eigen::Vector3d des_pose_prev={0.8 , 0., 0.3};
     
 public:
     PassiveSharedControl();

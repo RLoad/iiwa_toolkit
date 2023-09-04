@@ -168,7 +168,7 @@ class IiwaRosMaster
     void updateAttractor(){
 
         Eigen::Vector3d marker_pos = _optiTrack->getRelativeEntity(1,0).pos;
-        Eigen::Vector3d ee_pos = _controller->getEEpos();
+        Eigen::Vector3d ee_pos = _controller->getEEpos();  
 
         Eigen::Matrix3d rotMat_opttrack;
         rotMat_opttrack(0,0)=0;rotMat_opttrack(0,1)=-1;rotMat_opttrack(0,2)=0;
@@ -195,6 +195,11 @@ class IiwaRosMaster
         Eigen::Vector3d des_position = init_des_pos + virtObj ;
         Eigen::Vector4d des_orientation = ref_des_quat;
 
+              
+        Eigen::Vector3d des_position_vel = (des_position- des_position_prev)/_dt;
+
+        des_position_prev=des_position;
+
         if (des_position[0] < 0.40){des_position[0] = 0.40;}else if(des_position[0] > 0.80){des_position[0] =  0.8;}
         if (des_position[1] > 0.80){des_position[1] = 0.80;}else if(des_position[1] < -0.8){des_position[1] = -0.8;}
         if (des_position[2] < 0.15){des_position[2] = 0.15;}else if(des_position[2] > 1.00){des_position[2] = 1.00;}
@@ -216,20 +221,8 @@ class IiwaRosMaster
         Eigen::Vector3d ax =Eigen::Vector3d::UnitY();
         Utils<double>::quaternionToAxisAngle(des_orientation, ax, angle);
         
-        if (angle>3.0)
-        {
-            // ROS_WARN_STREAM_THROTTLE(0.2, "ROBOT run shared");
-            std::cout<<"ROBOT run shared"<<std::endl;				
-            
-            _first_robot=true;
-            
-            ee_pose_prev=ee_pos;
-            
-            std_msgs::Int8 msg_shared;
-            int shared_control_gain=1;
-            msg_shared.data=shared_control_gain;
-            _SharedControlGainPublisher.publish(msg_shared);
-        }else
+        // if (angle<3.0 && des_position_vel.norm()<0.3 && des_position_vel.norm() >=0.1)
+        if (angle<2.0)
         {
             if (_first_robot)
             {
@@ -250,6 +243,22 @@ class IiwaRosMaster
 
             std_msgs::Int8 msg_shared;
             int shared_control_gain=0;
+            msg_shared.data=shared_control_gain;
+            _SharedControlGainPublisher.publish(msg_shared);
+
+        }else
+        {
+            
+
+            // ROS_WARN_STREAM_THROTTLE(0.2, "ROBOT run shared");
+            std::cout<<"ROBOT run shared"<<std::endl;				
+            
+            _first_robot=true;
+            
+            ee_pose_prev=ee_pos;
+            
+            std_msgs::Int8 msg_shared;
+            int shared_control_gain=1;
             msg_shared.data=shared_control_gain;
             _SharedControlGainPublisher.publish(msg_shared);
 
@@ -340,6 +349,8 @@ class IiwaRosMaster
 
     Eigen::Vector3d leader_ref_pos =  Eigen::Vector3d(1.3,0.0,0.0);
     Eigen::Vector3d leader_pos =  leader_ref_pos;
+
+    Eigen::Vector3d des_position_prev={0.8 , 0., 0.3};
 
     Eigen::Matrix3d mirror_dir = Eigen::Matrix3d::Identity();
 

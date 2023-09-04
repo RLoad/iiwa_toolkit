@@ -69,7 +69,7 @@ PassiveSharedControl::PassiveSharedControl(const std::string& urdf_string,const 
     _tools.init_rbdyn(urdf_string, end_effector);
 
     dsGain_pos = 5.00;
-    dsGain_ori = 2.50;
+    dsGain_ori = 6.50;
 
     dsContPos = std::make_unique<PassiveDS>( 100., 100.);
     dsContOri = std::make_unique<PassiveDS>(5., 5.);
@@ -239,29 +239,39 @@ void PassiveSharedControl::computeTorqueCmd(){
         double angle = 0;
         Eigen::Vector3d ax =Eigen::Vector3d::UnitY();
         Utils<double>::quaternionToAxisAngle(_robot.ee_des_quat, ax, angle);
+
+        Eigen::Vector3d des_pose_vel=(_robot.ee_des_pos-des_pose_prev)*200;
+
+        des_pose_prev=_robot.ee_des_pos;
+
+        std::cout<<"angle: "<<angle<<std::endl;	
+        std::cout<<"des_pose_vel.norm(): "<<des_pose_vel.norm()<<std::endl;	
         
         // double shared_control_gain=0.0;
-        if (angle>3.0)
-        {
-            std::cout<<"ROBOT run"<<std::endl;	
-            std::cout<<"_robot.ee_des_vel:"<<_robot.ee_des_vel[0]<<","<<_robot.ee_des_vel[1]<<","<<_robot.ee_des_vel[2]<<std::endl;					
-
-        }else
+        // if (angle<3.0 && des_pose_vel.norm()<=0.3 && des_pose_vel.norm()>=0.1)
+        if (angle<2.0)
         {
             std::cout<<"HUMAN run"<<std::endl;	
             int human_robot_coorp_circle=1;
             if (human_robot_coorp_circle==1)//---- human point to desired area and robot assisate perform circle motion
             {
-                std::cout<<"_robot.ee_des_vel before:"<<_robot.ee_des_vel[0]<<","<<_robot.ee_des_vel[1]<<","<<_robot.ee_des_vel[2]<<std::endl;					
-                // _robot.ee_des_vel = _robot.ee_des_vel + (dsGain_pos*(1+std::exp(theta_g)) *deltaX);
-                _robot.ee_des_vel = _robot.ee_des_vel;
-                std::cout<<"_robot.ee_des_vel  after:"<<_robot.ee_des_vel[0]<<","<<_robot.ee_des_vel[1]<<","<<_robot.ee_des_vel[2]<<std::endl;					
+                // std::cout<<"_robot.ee_des_vel before:"<<_robot.ee_des_vel[0]<<","<<_robot.ee_des_vel[1]<<","<<_robot.ee_des_vel[2]<<std::endl;					
+                // // _robot.ee_des_vel = _robot.ee_des_vel + (dsGain_pos*(1+std::exp(theta_g)) *deltaX);
+                // _robot.ee_des_vel = _robot.ee_des_vel;
+                // std::cout<<"_robot.ee_des_vel  after:"<<_robot.ee_des_vel[0]<<","<<_robot.ee_des_vel[1]<<","<<_robot.ee_des_vel[2]<<std::endl;					
             
             }else //---- only human do the tele operate and no robot assisate
             {
                 _robot.ee_des_vel = dsGain_pos*(1+std::exp(theta_g)) *deltaX;
             }
-            // 
+            //
+            
+        }else
+        {
+
+            std::cout<<"ROBOT run"<<std::endl;	
+            std::cout<<"_robot.ee_des_vel:"<<_robot.ee_des_vel[0]<<","<<_robot.ee_des_vel[1]<<","<<_robot.ee_des_vel[2]<<std::endl;					
+ 
         }             
 
     }
