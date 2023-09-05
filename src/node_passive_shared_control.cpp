@@ -180,15 +180,15 @@ class IiwaRosMaster
         
         marker_pos=rotMat_opttrack*marker_pos;
 
-        // std::cout<<"marker_pos:"<<marker_pos[0]<<","<<marker_pos[1]<<","<<marker_pos[2]<<std::endl;					
+        std::cout<<"marker_pos:"<<marker_pos[0]<<","<<marker_pos[1]<<","<<marker_pos[2]<<std::endl;					
 
 
         Eigen::Matrix3d magnifying = Eigen::Matrix3d::Zero();
-        magnifying.diagonal() = Eigen::Vector3d(1.,1.2,1.2);
+        magnifying.diagonal() = Eigen::Vector3d(0.8,0.8,0.8);
 
         Eigen::Vector3d virtObj =  mirror_dir * magnifying * (marker_pos - leader_pos) ;   
         
-        // std::cerr<<"virtObj"<<virtObj[0]<<","<<virtObj[1]<<","<<virtObj[2]<<std::endl;
+        std::cerr<<"virtObj: "<<virtObj[0]<<","<<virtObj[1]<<","<<virtObj[2]<<std::endl;
 
         // std::cerr<<"mirror_dir"<<mirror_dir<<std::endl;
 
@@ -215,14 +215,21 @@ class IiwaRosMaster
             Eigen::Vector4d qtemp =  Utils<double>::axisAngleToQuaterion(ax,angle);
             Eigen::Matrix3d rot =  Utils<double>::quaternionToRotationMatrix(qtemp) * Utils<double>::quaternionToRotationMatrix(ref_des_quat);
             des_orientation = Utils<double>::rotationMatrixToQuaternion(rot);
+
+            std::cerr<<"des_orientation: "<<des_orientation[0]<<","<<des_orientation[1]<<","<<des_orientation[2]<<","<<des_orientation[3]<<std::endl;
         }
 
         double angle = 0;
-        Eigen::Vector3d ax =Eigen::Vector3d::UnitY();
+        Eigen::Vector3d ax =Eigen::Vector3d::UnitZ();
         Utils<double>::quaternionToAxisAngle(des_orientation, ax, angle);
+
+        std::cerr<<"angle: "<<angle<<std::endl;
+        std::cout<<"ax: "<<ax[0]<<","<<ax[1]<<","<<ax[2]<<std::endl;	
+
+        // angle=0.5;
         
         // if (angle<3.0 && des_position_vel.norm()<0.3 && des_position_vel.norm() >=0.1)
-        if (angle<2.0)
+        if (angle>1.0 && ax[1]>0.95)
         {
             if (_first_robot)
             {
@@ -231,6 +238,8 @@ class IiwaRosMaster
 
                 _first_robot=false;
             }
+
+            virtObj[0]=0.0;
 
             des_position = ee_pose_prev + virtObj;
             // ROS_WARN_STREAM_THROTTLE(0.2, "HUMAN run shared");

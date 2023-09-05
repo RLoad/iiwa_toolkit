@@ -240,16 +240,18 @@ void PassiveSharedControl::computeTorqueCmd(){
         Eigen::Vector3d ax =Eigen::Vector3d::UnitY();
         Utils<double>::quaternionToAxisAngle(_robot.ee_des_quat, ax, angle);
 
+        // angle=0.5;
+
         Eigen::Vector3d des_pose_vel=(_robot.ee_des_pos-des_pose_prev)*200;
 
         des_pose_prev=_robot.ee_des_pos;
 
-        std::cout<<"angle: "<<angle<<std::endl;	
-        std::cout<<"des_pose_vel.norm(): "<<des_pose_vel.norm()<<std::endl;	
+        // std::cout<<"angle: "<<angle<<std::endl;	
+        // std::cout<<"des_pose_vel.norm(): "<<des_pose_vel.norm()<<std::endl;	
         
         // double shared_control_gain=0.0;
         // if (angle<3.0 && des_pose_vel.norm()<=0.3 && des_pose_vel.norm()>=0.1)
-        if (angle<2.0)
+        if (angle>1.0 && ax[1]>0.95)
         {
             std::cout<<"HUMAN run"<<std::endl;	
             int human_robot_coorp_circle=1;
