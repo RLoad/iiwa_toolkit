@@ -48,6 +48,8 @@ struct Robot
     Eigen::Vector3d ee_des_pos, ee_des_vel, ee_des_acc, ee_des_angVel, ee_des_angAcc;
     Eigen::Vector4d ee_des_quat;
 
+    int share_control;
+
 
     Eigen::MatrixXd jacob       = Eigen::MatrixXd(6, 7);
     Eigen::MatrixXd jacob_drv   = Eigen::MatrixXd(6, 7);
@@ -131,6 +133,7 @@ public:
     void set_desired_position(const Eigen::Vector3d& pos);
     void set_desired_quat(const Eigen::Vector4d& quat);
     void set_desired_velocity(const Eigen::Vector3d& vel);
+    void set_share_control(const int& share_control);
 
 
     void set_pos_gains(const double& ds, const double& lambda0,const double& lambda1);

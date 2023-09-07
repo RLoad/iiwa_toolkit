@@ -104,6 +104,8 @@ PassiveSharedControl::PassiveSharedControl(const std::string& urdf_string,const 
     _robot.ee_des_angVel.setZero();
     _robot.ee_des_angAcc.setZero();
 
+    _robot.share_control=1;   
+
 
     _robot.jacob.setZero();
     _robot.jacob.setZero();       
@@ -212,6 +214,9 @@ void PassiveSharedControl::set_desired_velocity(const Eigen::Vector3d& vel){
      _robot.ee_des_vel = vel;
      is_just_velocity = true;
 }
+void PassiveSharedControl::set_share_control(const int& share_control){
+     _robot.share_control = share_control;
+}
 
 
 void PassiveSharedControl::set_load(const double& mass ){
@@ -240,7 +245,8 @@ void PassiveSharedControl::computeTorqueCmd(){
         Eigen::Vector3d ax =Eigen::Vector3d::UnitY();
         Utils<double>::quaternionToAxisAngle(_robot.ee_des_quat, ax, angle);
 
-        // angle=0.5;
+        // std::cerr<<"angle: "<<angle<<std::endl;
+        // std::cout<<"ax: "<<ax[0]<<","<<ax[1]<<","<<ax[2]<<std::endl;
 
         Eigen::Vector3d des_pose_vel=(_robot.ee_des_pos-des_pose_prev)*200;
 
@@ -251,10 +257,10 @@ void PassiveSharedControl::computeTorqueCmd(){
         
         // double shared_control_gain=0.0;
         // if (angle<3.0 && des_pose_vel.norm()<=0.3 && des_pose_vel.norm()>=0.1)
-        if (angle>1.0 && ax[1]>0.95)
+        if (_robot.share_control==0)
         {
             std::cout<<"HUMAN run"<<std::endl;	
-            int human_robot_coorp_circle=1;
+            int human_robot_coorp_circle=0;
             if (human_robot_coorp_circle==1)//---- human point to desired area and robot assisate perform circle motion
             {
                 // std::cout<<"_robot.ee_des_vel before:"<<_robot.ee_des_vel[0]<<","<<_robot.ee_des_vel[1]<<","<<_robot.ee_des_vel[2]<<std::endl;					
@@ -272,7 +278,7 @@ void PassiveSharedControl::computeTorqueCmd(){
         {
 
             std::cout<<"ROBOT run"<<std::endl;	
-            std::cout<<"_robot.ee_des_vel:"<<_robot.ee_des_vel[0]<<","<<_robot.ee_des_vel[1]<<","<<_robot.ee_des_vel[2]<<std::endl;					
+            // std::cout<<"_robot.ee_des_vel:"<<_robot.ee_des_vel[0]<<","<<_robot.ee_des_vel[1]<<","<<_robot.ee_des_vel[2]<<std::endl;					
  
         }             
 

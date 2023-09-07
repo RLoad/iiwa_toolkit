@@ -19,6 +19,8 @@
 #include "iiwa_toolkit/passive_shared_cfg_paramsConfig.h"
 #include "dynamic_reconfigure/server.h"
 
+#include <stdlib.h>
+
 #define No_JOINTS 7
 #define No_Robots 1
 struct Options
@@ -202,7 +204,7 @@ class IiwaRosMaster
 
         if (des_position[0] < 0.40){des_position[0] = 0.40;}else if(des_position[0] > 0.80){des_position[0] =  0.8;}
         if (des_position[1] > 0.80){des_position[1] = 0.80;}else if(des_position[1] < -0.8){des_position[1] = -0.8;}
-        if (des_position[2] < 0.15){des_position[2] = 0.15;}else if(des_position[2] > 1.00){des_position[2] = 1.00;}
+        if (des_position[2] < -0.15){des_position[2] = -0.15;}else if(des_position[2] > 1.00){des_position[2] = 1.00;}
         
         
         if (is_ori_track){
@@ -223,13 +225,15 @@ class IiwaRosMaster
         Eigen::Vector3d ax =Eigen::Vector3d::UnitZ();
         Utils<double>::quaternionToAxisAngle(des_orientation, ax, angle);
 
-        std::cerr<<"angle: "<<angle<<std::endl;
-        std::cout<<"ax: "<<ax[0]<<","<<ax[1]<<","<<ax[2]<<std::endl;	
+        std::cerr<<"angle S: "<<angle<<std::endl;
+        std::cout<<"ax S: "<<ax[0]<<","<<ax[1]<<","<<ax[2]<<std::endl;	
 
         // angle=0.5;
+        int shared_control_gain=1;
         
         // if (angle<3.0 && des_position_vel.norm()<0.3 && des_position_vel.norm() >=0.1)
-        if (angle>1.0 && ax[1]>0.95)
+        // if (angle>1.0 && angle<1.8  && ax[1]>0.95)
+        if (ax[1]>0.95)
         {
             if (_first_robot)
             {
@@ -242,6 +246,11 @@ class IiwaRosMaster
             virtObj[0]=0.0;
 
             des_position = ee_pose_prev + virtObj;
+
+            if (des_position[0] < 0.40){des_position[0] = 0.40;}else if(des_position[0] > 0.80){des_position[0] =  0.8;}
+            if (des_position[1] > 0.80){des_position[1] = 0.80;}else if(des_position[1] < -0.8){des_position[1] = -0.8;}
+            if (des_position[2] < -0.15){des_position[2] = -0.15;}else if(des_position[2] > 1.00){des_position[2] = 1.00;}
+
             // ROS_WARN_STREAM_THROTTLE(0.2, "HUMAN run shared");
             std::cout<<"HUMAN run shared"<<std::endl;	
             // std::cout<<"ee_pose_prev:"<<ee_pose_prev[0]<<","<<ee_pose_prev[1]<<","<<ee_pose_prev[2]<<std::endl;					
@@ -251,7 +260,7 @@ class IiwaRosMaster
             //  ROS_WARN_STREAM_THROTTLE(0.2, "virtObj:"<<virtObj[0]<<","<<virtObj[1]<<","<<virtObj[2]);
 
             std_msgs::Int8 msg_shared;
-            int shared_control_gain=0;
+            shared_control_gain=0;
             msg_shared.data=shared_control_gain;
             _SharedControlGainPublisher.publish(msg_shared);
 
@@ -267,11 +276,13 @@ class IiwaRosMaster
             ee_pose_prev=ee_pos;
             
             std_msgs::Int8 msg_shared;
-            int shared_control_gain=1;
+            shared_control_gain=1;
             msg_shared.data=shared_control_gain;
             _SharedControlGainPublisher.publish(msg_shared);
 
         }
+
+        _controller->set_share_control(shared_control_gain);
         
         if ((ee_pos -des_position).norm() > 1.){
             _controller->set_desired_pose(init_des_pos,ref_des_quat);
@@ -285,6 +296,9 @@ class IiwaRosMaster
 
             _SharedControlPosePublisher.publish(msg3);
         }
+
+        // system(cmd);
+        // system("clear");
 
     }
     // run node

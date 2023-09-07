@@ -6,8 +6,8 @@ options:
 
 control:
     dsGainPos: 5.0
-    lambda0Pos: 300.0
-    lambda1Pos: 300.0
+    lambda0Pos: 400.0
+    lambda1Pos: 400.0
     dsGainOri: 5.0
     lambda0Ori: 5.0
     lambda1Ori: 2.75
