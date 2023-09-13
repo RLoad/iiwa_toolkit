@@ -376,7 +376,7 @@ class IiwaRosMaster
 //****************************************************
 int main (int argc, char **argv)
 {
-    float frequency = 200.0f;
+    float frequency = 1000.0f;
     ros::init(argc,argv, "iiwa_passive_track");
     ros::NodeHandle n;
 

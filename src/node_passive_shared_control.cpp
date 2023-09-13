@@ -233,6 +233,9 @@ class IiwaRosMaster
         
         // if (angle<3.0 && des_position_vel.norm()<0.3 && des_position_vel.norm() >=0.1)
         // if (angle>1.0 && angle<1.8  && ax[1]>0.95)
+
+        ax[1]=0.55;
+
         if (ax[1]>0.95)
         {
             if (_first_robot)
@@ -534,7 +537,7 @@ class IiwaRosMaster
 //****************************************************
 int main (int argc, char **argv)
 {
-    float frequency = 200.0f;
+    float frequency = 1000.0f;
     ros::init(argc,argv, "iiwa_passive_shared_control");
     ros::NodeHandle n;
 
