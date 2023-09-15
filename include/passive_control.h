@@ -45,6 +45,8 @@ struct Robot
     Eigen::Vector3d ee_pos, ee_vel, ee_acc, ee_angVel, ee_angAcc;
     Eigen::Vector4d ee_quat;
 
+    double Measure;
+
     Eigen::Vector3d ee_des_pos, ee_des_vel, ee_des_acc, ee_des_angVel, ee_des_angAcc;
     Eigen::Vector4d ee_des_quat;
 
@@ -145,6 +147,8 @@ public:
     Eigen::Vector3d getEEAngVel();
 
     Eigen::Vector4d getEEquat();
+
+    double getMeasure();
 
 };
 

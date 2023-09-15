@@ -84,6 +84,7 @@ PassiveControl::PassiveControl(const std::string& urdf_string,const std::string&
     _robot.ee_vel.setZero();   
     _robot.ee_acc.setZero();
 
+    _robot.Measure=0.0;   
     
     double angle0 = 0.25*M_PI;
     _robot.ee_quat[0] = (std::cos(angle0/2));
@@ -160,6 +161,17 @@ void PassiveControl::updateRobot(const Eigen::VectorXd& jnt_p,const Eigen::Vecto
 
     // for(int i = 0; i < 3; i++)
     //     _plotVar.data[i] = (_robot.ee_des_vel - _robot.ee_vel)[i];
+
+    //---- meausure manipulability of robto in each time
+        Eigen::MatrixXd matJacob=_robot.jacob * _robot.jacob.transpose();
+        double manipulability=matJacob.determinant();
+        manipulability=sqrt(manipulability);
+        _robot.Measure = manipulability;
+
+    //--- manipulability ellipsoid
+        Eigen::EigenSolver<Eigen::MatrixXd> solver(matJacob);
+        Eigen::VectorXd eigenValues = solver.eigenvalues().real();
+        Eigen::MatrixXd eigenVectors = solver.eigenvectors().real();
 }
 
 Eigen::Vector3d PassiveControl::getEEpos(){
@@ -175,7 +187,9 @@ Eigen::Vector3d PassiveControl::getEEVel(){
 Eigen::Vector3d PassiveControl::getEEAngVel(){
     return _robot.ee_angVel;
 }
-
+double PassiveControl::getMeasure(){
+    return _robot.Measure;
+}
 
 void PassiveControl::set_pos_gains(const double& ds, const double& lambda0,const double& lambda1){
     dsGain_pos = ds;

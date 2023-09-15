@@ -97,6 +97,7 @@ class IiwaRosMaster
         _TrqCmdPublisher = _n.advertise<std_msgs::Float64MultiArray>(ns+"/TorqueController/command",1);
         _EEPosePublisher = _n.advertise<geometry_msgs::Pose>(ns+"/ee_info/Pose",1);
         _EEVelPublisher = _n.advertise<geometry_msgs::Twist>(ns+"/ee_info/Vel",1);
+        _MeasurePublisher = _n.advertise<geometry_msgs::Twist>(ns+"/measure",1);
 
         // Get the URDF XML from the parameter server
         std::string urdf_string, full_param;
@@ -205,6 +206,7 @@ class IiwaRosMaster
     ros::Publisher _TrqCmdPublisher;
     ros::Publisher _EEPosePublisher;
     ros::Publisher _EEVelPublisher;
+    ros::Publisher _MeasurePublisher;
 
     ros::Publisher _plotPublisher;
 
@@ -277,6 +279,7 @@ class IiwaRosMaster
     void publishEEInfo(){
         geometry_msgs::Pose msg1;
         geometry_msgs::Twist msg2;
+        geometry_msgs::Twist msg3;
 
         Eigen::Vector3d pos = _controller->getEEpos();
         Eigen::Vector4d quat =  _controller->getEEquat();        
@@ -289,8 +292,14 @@ class IiwaRosMaster
         msg2.linear.x = vel[0];msg2.linear.y = vel[1];msg2.linear.z = vel[2];
         msg2.angular.x = angVel[0];msg2.angular.y = angVel[1];msg2.angular.z = angVel[2];
 
+
+        double meausure_manipu =  _controller->getMeasure();
+        msg3.linear.x = meausure_manipu;msg3.linear.y = vel[1];msg3.linear.z = vel[2];
+        msg3.angular.x = angVel[0];msg3.angular.y = angVel[1];msg3.angular.z = angVel[2];
+
         _EEPosePublisher.publish(msg1);
         _EEVelPublisher.publish(msg2);
+        _MeasurePublisher.publish(msg3);
     }
     //TODO clean the optitrack
     void updateControlPos(const geometry_msgs::Pose::ConstPtr& msg){
