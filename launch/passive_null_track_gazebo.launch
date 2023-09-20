@@ -4,15 +4,19 @@
 
     <arg name="iiwa_model_1" default="14"/>
 
-    <arg name="controller" default="PositionController"/>
-
     <include file="$(find iiwa_gazebo)/launch/iiwa_gazebo.launch">
         <arg name="robot_name_1" value="$(arg robot_name_1)"/>
         <arg name="iiwa_model_1" value="$(arg iiwa_model_1)"/>
-        <arg name="controller" value="$(arg controller)" />
     </include>
 
-    <node name="spawn_box" pkg="gazebo_ros" type="spawn_model" args="-file $(find box_spawner)/models/box1.urdf -x 0.5 -y 0.0 -z 0.0 -urdf -model box1" />
+    <group ns="/$(arg robot_name_1)">
+        <node name="passive_null_tracking" pkg="iiwa_toolkit" type="passive_null_track" output="screen">
+        </node>
+
+        <rosparam file="$(find iiwa_toolkit)/config/passive_null_track_params.yaml" command="load"/>
+    </group>
+
+    <!-- <node name="spawn_box" pkg="gazebo_ros" type="spawn_model" args="-file $(find box_spawner)/models/box1.urdf -x 0.5 -y 0.0 -z 0.0 -urdf -model box1" /> -->
 
 
     <!-- <node name="plotter"

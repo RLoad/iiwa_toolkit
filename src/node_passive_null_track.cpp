@@ -29,8 +29,8 @@
 #include <ros/package.h>
 #include <Eigen/Dense>
 
-#include "passive_control.h"
-#include "iiwa_toolkit/passive_cfg_paramsConfig.h"
+#include "passive_null_control.h"
+#include "iiwa_toolkit/passive_null_cfg_paramsConfig.h"
 #include "dynamic_reconfigure/server.h"
 
 #define No_JOINTS 7
@@ -125,7 +125,7 @@ class IiwaRosMaster
         // Initialize iiwa tools
         
         
-        _controller = std::make_unique<PassiveControl>(urdf_string, end_effector);
+        _controller = std::make_unique<PassiveNullControl>(urdf_string, end_effector);
         
 
         std::vector<double> dpos;
@@ -212,8 +212,8 @@ class IiwaRosMaster
 
     ros::Publisher _plotPublisher;
 
-    dynamic_reconfigure::Server<iiwa_toolkit::passive_cfg_paramsConfig> _dynRecServer;
-    dynamic_reconfigure::Server<iiwa_toolkit::passive_cfg_paramsConfig>::CallbackType _dynRecCallback;
+    dynamic_reconfigure::Server<iiwa_toolkit::passive_null_cfg_paramsConfig> _dynRecServer;
+    dynamic_reconfigure::Server<iiwa_toolkit::passive_null_cfg_paramsConfig>::CallbackType _dynRecCallback;
 
 
     feedback _feedback;
@@ -221,7 +221,7 @@ class IiwaRosMaster
     Eigen::VectorXd command_trq = Eigen::VectorXd(No_JOINTS);
     Eigen::VectorXd command_plt = Eigen::VectorXd(3);
 
-    std::unique_ptr<PassiveControl> _controller;
+    std::unique_ptr<PassiveNullControl> _controller;
 
     bool _stop;                        // Check for CTRL+C
     std::mutex _mutex;
@@ -338,7 +338,7 @@ class IiwaRosMaster
         }
     }
 
-    void param_cfg_callback(iiwa_toolkit::passive_cfg_paramsConfig& config, uint32_t level){
+    void param_cfg_callback(iiwa_toolkit::passive_null_cfg_paramsConfig& config, uint32_t level){
         ROS_INFO("Reconfigure request.. Updating the parameters ... ");
 
         double sc_pos_ds = config.Position_DSgain;
@@ -388,7 +388,7 @@ class IiwaRosMaster
 int main (int argc, char **argv)
 {
     float frequency = 1000.0f;
-    ros::init(argc,argv, "iiwa_passive_track");
+    ros::init(argc,argv, "iiwa_passive_null_track");
     ros::NodeHandle n;
 
     Options options;

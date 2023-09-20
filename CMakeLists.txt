@@ -27,6 +27,7 @@ generate_dynamic_reconfigure_options(
   cfg/damping_cfg_params.cfg
   cfg/force_cfg_params.cfg
   cfg/passive_shared_cfg_params.cfg
+  cfg/passive_null_cfg_params.cfg
 )
 
 find_package(Eigen3 REQUIRED eigen3) 
@@ -70,3 +71,6 @@ add_executable(passive_shared_control src/node_passive_shared_control.cpp  src/m
 target_link_libraries(passive_shared_control ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
 add_dependencies(passive_shared_control ${PROJECT_NAME}_gencfg)
 
+add_executable(passive_null_track src/node_passive_null_track.cpp  src/passive_null_control.cpp include/thirdparty/Utils.cpp ${MODEL_SOURCES})
+target_link_libraries(passive_null_track ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
+add_dependencies(passive_null_track ${PROJECT_NAME}_gencfg)
