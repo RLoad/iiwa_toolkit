@@ -45,7 +45,7 @@ struct Robot
     Eigen::Vector3d ee_pos, ee_vel, ee_acc, ee_angVel, ee_angAcc;
     Eigen::Vector4d ee_quat;
 
-    double Measure;
+    Eigen::VectorXd Measure = Eigen::VectorXd(13);
 
     Eigen::Vector3d ee_des_pos, ee_des_vel, ee_des_acc, ee_des_angVel, ee_des_angAcc;
     Eigen::Vector4d ee_des_quat;
@@ -120,7 +120,6 @@ private:
     void computeTorqueCmd();
     std::unique_ptr<PassiveNullDS> dsContPos;
     std::unique_ptr<PassiveNullDS> dsContOri;
-    
 public:
     PassiveNullControl();
     PassiveNullControl(const std::string& urdf_string,const std::string& end_effector);
@@ -148,7 +147,7 @@ public:
 
     Eigen::Vector4d getEEquat();
 
-    double getMeasure();
+    Eigen::VectorXd getMeasure();
 
 };
 

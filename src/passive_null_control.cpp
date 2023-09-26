@@ -84,7 +84,7 @@ PassiveNullControl::PassiveNullControl(const std::string& urdf_string,const std:
     _robot.ee_vel.setZero();   
     _robot.ee_acc.setZero();
 
-    _robot.Measure=0.0;   
+    _robot.Measure.setZero();   
     
     double angle0 = 0.25*M_PI;
     _robot.ee_quat[0] = (std::cos(angle0/2));
@@ -115,8 +115,14 @@ PassiveNullControl::PassiveNullControl(const std::string& urdf_string,const std:
     _robot.pseudo_inv_jacob.setZero();   
     _robot.pseudo_inv_jacobPos.setZero();
 
-    _robot.nulljnt_position << 0.0, 0.0, 0.0, -.75, 0., 0.0, 0.0;
-
+    //--- middle
+    // _robot.nulljnt_position << 0.0, 0.0, 0.0, -.75, 0., 0.0, 0.0;
+    //--- right
+    // _robot.nulljnt_position << 0.6590053837294496, 1.4907334858074615, -1.8296910450078991, -1.3719579419959391, -0.3195112954702344, -0.7669408312305244, 1.9642857845397614;
+    //--- lefts up
+    // _robot.nulljnt_position << -0.6642357314680876, 1.1121744140534728, 1.3385292763773986, -1.3719679345117264, 0.3401236323538894, -0.633087157410305, -1.3754183433769134;
+    //--- lefts down
+    _robot.nulljnt_position << -0.673120257256925, 1.4277378048631393, 1.749170059195766, -1.3719950211660006, 0.33084256189146366, -0.7452268699465625, -1.8706446357506925;
 
 }
 
@@ -166,12 +172,21 @@ void PassiveNullControl::updateRobot(const Eigen::VectorXd& jnt_p,const Eigen::V
         Eigen::MatrixXd matJacob=_robot.jacob * _robot.jacob.transpose();
         double manipulability=matJacob.determinant();
         manipulability=sqrt(manipulability);
-        _robot.Measure = manipulability;
+        _robot.Measure[0] = manipulability;
 
     //--- manipulability ellipsoid
         Eigen::EigenSolver<Eigen::MatrixXd> solver(matJacob);
         Eigen::VectorXd eigenValues = solver.eigenvalues().real();
         Eigen::MatrixXd eigenVectors = solver.eigenvectors().real();
+        for (size_t i = 1; i < 4; i++)
+        {
+            _robot.Measure[i] = eigenValues[i-1];
+        }
+        Eigen::VectorXd vec = Eigen::Map<Eigen::VectorXd>(eigenVectors.data(), eigenVectors.size());
+        for (size_t i = 4; i < 13; i++)
+        {
+            _robot.Measure[i] = vec[i-4];
+        }
 }
 
 Eigen::Vector3d PassiveNullControl::getEEpos(){
@@ -187,7 +202,7 @@ Eigen::Vector3d PassiveNullControl::getEEVel(){
 Eigen::Vector3d PassiveNullControl::getEEAngVel(){
     return _robot.ee_angVel;
 }
-double PassiveNullControl::getMeasure(){
+Eigen::VectorXd PassiveNullControl::getMeasure(){
     return _robot.Measure;
 }
 
@@ -281,31 +296,39 @@ void PassiveNullControl::computeTorqueCmd(){
     //sum up:
     Eigen::VectorXd tmp_jnt_trq = tmp_jnt_trq_pos + tmp_jnt_trq_ang;
 
-    // null pos control
-    Eigen::MatrixXd tempMat2 =  Eigen::MatrixXd::Identity(7,7) - _robot.jacob.transpose()* _robot.pseudo_inv_jacob* _robot.jacob;
-    Eigen::VectorXd nullgains = Eigen::VectorXd::Zero(7);
-    nullgains << 5.,80,10.,30,5.,2.,2.;
-    Eigen::VectorXd er_null = _robot.jnt_position -_robot.nulljnt_position;
-    if(er_null.norm()<1.5){
-        first = false;
-    }
-    if(er_null.norm()>2e-1){
-        er_null = 0.2*er_null.normalized();
-    }
-    Eigen::VectorXd tmp_null_trq = Eigen::VectorXd::Zero(7);
-    for (int i =0; i<7; i++){ 
-        tmp_null_trq[i] = -nullgains[i] * er_null[i];
-        tmp_null_trq[i] +=-1. * _robot.jnt_velocity[i];
-    }
-    if (first){
-        _trq_cmd = tmp_null_trq;
-        ROS_INFO_ONCE("going to the first pose ");                 
-    }else{
-        ROS_INFO_ONCE("Tracking in process");
-        _trq_cmd = tmp_jnt_trq + 10.*tempMat2 * tmp_null_trq;
-    }
-    
-    
+    //----------------------- null pos control
+    //--- fashard old code
+        Eigen::MatrixXd tempMat2 =  Eigen::MatrixXd::Identity(7,7) - _robot.jacob.transpose()* _robot.pseudo_inv_jacob* _robot.jacob;
+        Eigen::VectorXd nullgains = Eigen::VectorXd::Zero(7);
+        nullgains << 5.,80,10.,30,5.,2.,2.;
+        Eigen::VectorXd er_null = _robot.jnt_position -_robot.nulljnt_position;
+        ROS_INFO_ONCE("!!!!!!!!!!!!!!!!   er_null.norm(): %f", er_null.norm());           
+        if(er_null.norm()<1.5){
+            first = false;
+        }
+        if(er_null.norm()>2e-1){
+            er_null = 0.2*er_null.normalized();
+        }
+        Eigen::VectorXd tmp_null_trq = Eigen::VectorXd::Zero(7);
+        for (int i =0; i<7; i++){
+            tmp_null_trq[i] = -nullgains[i] * er_null[i];
+            tmp_null_trq[i] +=-1. * _robot.jnt_velocity[i];
+        }
+        if (first){
+            _trq_cmd = tmp_null_trq;
+            ROS_INFO_ONCE("!!!!!!!!!!!!!!!!going to the first pose!!!!!!!!!!!!!!!!!!!!!!");                 
+        }else{
+            ROS_INFO_ONCE("!!!!!!!!!!!!!!!!!!Tracking in process!!!!!!!!!!!!!!!!!!!!!!!");
+            _trq_cmd = tmp_jnt_trq + 10.*tempMat2 * tmp_null_trq;
+        }
+
+    //--- wr new null control
+        // Eigen::MatrixXd null_jacob =  Eigen::MatrixXd::Identity(7,7) - (_robot.jacob.transpose()*_robot.pseudo_inv_jacob)*_robot.jacob;
+        // Eigen::VectorXd tmp_null_trq = Eigen::VectorXd::Zero(7);
+        // Eigen::VectorXd null_joint_vel = Eigen::VectorXd::Zero(7);
+        // null_joint_vel << -.75, 0.0, 0.0, -.75, 0., 0.0, 0.0;
+        // tmp_null_trq=null_jacob*null_joint_vel;
+        // _trq_cmd = tmp_jnt_trq + tmp_null_trq;
     
     // Gravity Compensationn
     // the gravity compensation should've been here, but a server form iiwa tools is doing the job.
