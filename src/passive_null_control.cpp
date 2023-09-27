@@ -116,13 +116,13 @@ PassiveNullControl::PassiveNullControl(const std::string& urdf_string,const std:
     _robot.pseudo_inv_jacobPos.setZero();
 
     //--- middle
-    // _robot.nulljnt_position << 0.0, 0.0, 0.0, -.75, 0., 0.0, 0.0;
+    _robot.nulljnt_position << 0.0, 0.0, 0.0, -.75, 0., 0.0, 0.0;
     //--- right
     // _robot.nulljnt_position << 0.6590053837294496, 1.4907334858074615, -1.8296910450078991, -1.3719579419959391, -0.3195112954702344, -0.7669408312305244, 1.9642857845397614;
-    //--- lefts up
+    //--- lefts up joint6 vertical
     // _robot.nulljnt_position << -0.6642357314680876, 1.1121744140534728, 1.3385292763773986, -1.3719679345117264, 0.3401236323538894, -0.633087157410305, -1.3754183433769134;
     //--- lefts down
-    _robot.nulljnt_position << -0.673120257256925, 1.4277378048631393, 1.749170059195766, -1.3719950211660006, 0.33084256189146366, -0.7452268699465625, -1.8706446357506925;
+    // _robot.nulljnt_position << -0.673120257256925, 1.4277378048631393, 1.749170059195766, -1.3719950211660006, 0.33084256189146366, -0.7452268699465625, -1.8706446357506925;
 
 }
 
@@ -186,6 +186,20 @@ void PassiveNullControl::updateRobot(const Eigen::VectorXd& jnt_p,const Eigen::V
         for (size_t i = 4; i < 13; i++)
         {
             _robot.Measure[i] = vec[i-4];
+        }
+
+    //--- force ellipsoid
+        Eigen::EigenSolver<Eigen::MatrixXd> solver_f(_robot.pseudo_inv_jacob);
+        Eigen::VectorXd eigenValues_f = solver_f.eigenvalues().real();
+        Eigen::MatrixXd eigenVectors_f = solver_f.eigenvectors().real();
+        for (size_t i = 13; i < 16; i++)
+        {
+            _robot.Measure[i] = eigenValues_f[i-13];
+        }
+        Eigen::VectorXd vec_f = Eigen::Map<Eigen::VectorXd>(eigenVectors_f.data(), eigenVectors_f.size());
+        for (size_t i = 16; i < 25; i++)
+        {
+            _robot.Measure[i] = vec_f[i-16];
         }
 }
 
