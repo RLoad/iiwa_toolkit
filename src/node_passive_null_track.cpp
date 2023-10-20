@@ -329,9 +329,9 @@ class IiwaRosMaster
         Eigen::Vector4d quat;
         vel << (double)msg->position.x, (double)msg->position.y, (double)msg->position.z;
         quat << (double)msg->orientation.w, (double)msg->orientation.x, (double)msg->orientation.y, (double)msg->orientation.z;
-        if(vel.norm()<1.){
+        if(vel.norm()<2.){
             _controller->set_desired_velocity(vel);
-            if((quat.norm() > 0)&&(quat.norm() < 1.1)){
+            if((quat.norm() > 0)&&(quat.norm() < 2.1)){
                 quat.normalize();
                 _controller->set_desired_quat(quat);
             }

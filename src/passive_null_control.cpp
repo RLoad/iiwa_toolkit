@@ -169,38 +169,80 @@ void PassiveNullControl::updateRobot(const Eigen::VectorXd& jnt_p,const Eigen::V
     //     _plotVar.data[i] = (_robot.ee_des_vel - _robot.ee_vel)[i];
 
     //---- meausure manipulability of robto in each time
-        Eigen::MatrixXd matJacob=_robot.jacob * _robot.jacob.transpose();
+        // Eigen::MatrixXd matJacob=_robot.jacob * _robot.jacob.transpose();
+        Eigen::MatrixXd matJacob=_robot.jacobPos * _robot.jacobPos.transpose();
         double manipulability=matJacob.determinant();
         manipulability=sqrt(manipulability);
         _robot.Measure[0] = manipulability;
 
     //--- manipulability ellipsoid
-        Eigen::EigenSolver<Eigen::MatrixXd> solver(matJacob);
-        Eigen::VectorXd eigenValues = solver.eigenvalues().real();
-        Eigen::MatrixXd eigenVectors = solver.eigenvectors().real();
-        for (size_t i = 1; i < 4; i++)
-        {
-            _robot.Measure[i] = eigenValues[i-1];
-        }
-        Eigen::VectorXd vec = Eigen::Map<Eigen::VectorXd>(eigenVectors.data(), eigenVectors.size());
-        for (size_t i = 4; i < 13; i++)
-        {
-            _robot.Measure[i] = vec[i-4];
-        }
+        // //--- only get eigen vector value
+        //     Eigen::EigenSolver<Eigen::MatrixXd> solver(_robot.pseudo_inv_jacobPos);
+        //     Eigen::VectorXd eigenValues = solver.eigenvalues().real();
+        //     Eigen::MatrixXd eigenVectors = solver.eigenvectors().real();
+        //     for (size_t i = 1; i < 4; i++)
+        //     {
+        //         _robot.Measure[i] = eigenValues[i-1];
+        //     }
+        //     Eigen::VectorXd vec = Eigen::Map<Eigen::VectorXd>(eigenVectors.data(), eigenVectors.size());
+        //     for (size_t i = 4; i < 13; i++)
+        //     {
+        //         _robot.Measure[i] = vec[i-4];
+        //     }
+
+            // std::cerr<< "--------------------------------------------------------------------------------"<<std::endl;
+            // std::cerr<< "_robot.pseudo_inv_jacobPos: "<<_robot.pseudo_inv_jacobPos<<std::endl;
+            // std::cerr<< "eigenValues: "<<eigenValues<<std::endl;
+            // std::cerr<< "eigenVectors_U: "<<eigenVectors<<std::endl;
+
+        //--- Compute SVD
+            // Eigen::JacobiSVD<Eigen::MatrixXd> svd(_robot.jacob, Eigen::ComputeFullU | Eigen::ComputeFullV);
+            Eigen::JacobiSVD<Eigen::MatrixXd> svd(_robot.jacob, Eigen::ComputeFullU | Eigen::ComputeFullV);
+            //--- Get singular values and U matrix
+            Eigen::VectorXd eigenValues = svd.singularValues();
+            Eigen::MatrixXd eigenVectors_U = svd.matrixU();
+            Eigen::MatrixXd eigenVectors_U_sub = eigenVectors_U.block(0,0,3,3);
+            for (size_t i = 1; i < 4; i++)
+            {
+                _robot.Measure[i] = eigenValues[i-1];
+            }
+            Eigen::VectorXd vec = Eigen::Map<Eigen::VectorXd>(eigenVectors_U_sub.data(), eigenVectors_U_sub.size());
+            for (size_t i = 4; i < 13; i++)
+            {
+                _robot.Measure[i] = vec[i-4];
+            }
+        
 
     //--- force ellipsoid
-        Eigen::EigenSolver<Eigen::MatrixXd> solver_f(_robot.pseudo_inv_jacob);
-        Eigen::VectorXd eigenValues_f = solver_f.eigenvalues().real();
-        Eigen::MatrixXd eigenVectors_f = solver_f.eigenvectors().real();
-        for (size_t i = 13; i < 16; i++)
-        {
-            _robot.Measure[i] = eigenValues_f[i-13];
-        }
-        Eigen::VectorXd vec_f = Eigen::Map<Eigen::VectorXd>(eigenVectors_f.data(), eigenVectors_f.size());
-        for (size_t i = 16; i < 25; i++)
-        {
-            _robot.Measure[i] = vec_f[i-16];
-        }
+        // //--- only get eigen vector value
+        //     Eigen::EigenSolver<Eigen::MatrixXd> solver_f(matJacob);
+        //     Eigen::VectorXd eigenValues_f = solver_f.eigenvalues().real();
+        //     Eigen::MatrixXd eigenVectors_f = solver_f.eigenvectors().real();
+        //     for (size_t i = 13; i < 16; i++)
+        //     {
+        //         _robot.Measure[i] = eigenValues_f[i-13];
+        //     }
+        //     Eigen::VectorXd vec_f = Eigen::Map<Eigen::VectorXd>(eigenVectors_f.data(), eigenVectors_f.size());
+        //     for (size_t i = 16; i < 25; i++)
+        //     {
+        //         _robot.Measure[i] = vec_f[i-16];
+        //     }
+
+        //--- Compute SVD
+            Eigen::JacobiSVD<Eigen::MatrixXd> svd_f(_robot.jacob.transpose(), Eigen::ComputeFullU | Eigen::ComputeFullV);
+            //--- Get singular values and U matrix
+            Eigen::VectorXd eigenValues_f = svd_f.singularValues();
+            Eigen::MatrixXd eigenVectors_f_U = svd_f.matrixU();
+            Eigen::MatrixXd eigenVectors_f_U_sub = eigenVectors_f_U.block(0,0,3,3);
+            for (size_t i = 13; i < 16; i++)
+            {
+                _robot.Measure[i] = eigenValues_f[i-13];
+            }
+            Eigen::VectorXd vec_f = Eigen::Map<Eigen::VectorXd>(eigenVectors_f_U_sub.data(), eigenVectors_f_U_sub.size());
+            for (size_t i = 16; i < 25; i++)
+            {
+                _robot.Measure[i] = vec_f[i-16];
+            }
 }
 
 Eigen::Vector3d PassiveNullControl::getEEpos(){
@@ -335,6 +377,8 @@ void PassiveNullControl::computeTorqueCmd(){
             ROS_INFO_ONCE("!!!!!!!!!!!!!!!!!!Tracking in process!!!!!!!!!!!!!!!!!!!!!!!");
             _trq_cmd = tmp_jnt_trq + 10.*tempMat2 * tmp_null_trq;
         }
+
+        // _trq_cmd = tmp_jnt_trq;
 
     //--- wr new null control
         // Eigen::MatrixXd null_jacob =  Eigen::MatrixXd::Identity(7,7) - (_robot.jacob.transpose()*_robot.pseudo_inv_jacob)*_robot.jacob;
