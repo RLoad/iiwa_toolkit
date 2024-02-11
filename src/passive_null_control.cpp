@@ -115,8 +115,12 @@ PassiveNullControl::PassiveNullControl(const std::string& urdf_string,const std:
     _robot.pseudo_inv_jacob.setZero();   
     _robot.pseudo_inv_jacobPos.setZero();
 
+    _robot.pseudo_inv_jacob_trans.setZero();   
+
     //--- middle
     _robot.nulljnt_position << 0.0, 0.0, 0.0, -.75, 0., 0.0, 0.0;
+    //  _robot.nulljnt_position << -0.0, 0.682, 0.0, -1.372, 0.0, -0.484, 0.0;
+    //  _robot.nulljnt_position << -0.0, 0.682, 0.0, -1.372, 0.0, -0.484, 0.0;
     //--- right
     // _robot.nulljnt_position << 0.6590053837294496, 1.4907334858074615, -1.8296910450078991, -1.3719579419959391, -0.3195112954702344, -0.7669408312305244, 1.9642857845397614;
     //--- lefts up joint6 vertical
@@ -153,6 +157,8 @@ void PassiveNullControl::updateRobot(const Eigen::VectorXd& jnt_p,const Eigen::V
     _robot.pseudo_inv_jacobPos = pseudo_inverse(Eigen::MatrixXd(_robot.jacobPos * _robot.jacobPos.transpose()) );
     // _robot.pseudo_inv_jacobPJnt = pseudo_inverse(Eigen::MatrixXd(_robot.jacobPos.transpose() * _robot.jacobPos ) );
     _robot.pseudo_inv_jacobJnt = pseudo_inverse(Eigen::MatrixXd(_robot.jacob.transpose() * _robot.jacob ) );
+
+    _robot.pseudo_inv_jacob_trans =Eigen::MatrixXd(_robot.jacob.transpose()* _robot.jacob).inverse()*_robot.jacob.transpose();
     
     auto ee_state = _tools.perform_fk(robot_state);
     _robot.ee_pos = ee_state.translation;
@@ -354,10 +360,40 @@ void PassiveNullControl::computeTorqueCmd(){
 
     //----------------------- null pos control
     //--- fashard old code
+        // Eigen::MatrixXd tempMat2 =  Eigen::MatrixXd::Identity(7,7) - _robot.jacob.transpose()* _robot.pseudo_inv_jacob* _robot.jacob;
+        // Eigen::VectorXd nullgains = Eigen::VectorXd::Zero(7);
+        // nullgains << 5.,80,10.,30,5.,2.,2.;
+        // Eigen::VectorXd er_null = _robot.jnt_position -_robot.nulljnt_position;
+        // ROS_INFO_ONCE("!!!!!!!!!!!!!!!!   er_null.norm(): %f", er_null.norm());           
+        // if(er_null.norm()<1.5){
+        //     first = false;
+        // }
+        // if(er_null.norm()>2e-1){
+        //     er_null = 0.2*er_null.normalized();
+        // }
+        // Eigen::VectorXd tmp_null_trq = Eigen::VectorXd::Zero(7);
+        // for (int i =0; i<7; i++){
+        //     tmp_null_trq[i] = -nullgains[i] * er_null[i];
+        //     tmp_null_trq[i] +=-1. * _robot.jnt_velocity[i];
+        // }
+        // if (first){
+        //     _trq_cmd = tmp_null_trq;
+        //     ROS_INFO_ONCE("!!!!!!!!!!!!!!!!going to the first pose!!!!!!!!!!!!!!!!!!!!!!");                 
+        // }else{
+        //     ROS_INFO_ONCE("!!!!!!!!!!!!!!!!!!Tracking in process!!!!!!!!!!!!!!!!!!!!!!!");
+        //     _trq_cmd = tmp_jnt_trq + 10.*tempMat2 * tmp_null_trq;
+        // }
+
+        // // _trq_cmd = tmp_jnt_trq;
+
+    //--- fashard old code modify
         Eigen::MatrixXd tempMat2 =  Eigen::MatrixXd::Identity(7,7) - _robot.jacob.transpose()* _robot.pseudo_inv_jacob* _robot.jacob;
         Eigen::VectorXd nullgains = Eigen::VectorXd::Zero(7);
         nullgains << 5.,80,10.,30,5.,2.,2.;
         Eigen::VectorXd er_null = _robot.jnt_position -_robot.nulljnt_position;
+
+        er_null << 0.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
+
         ROS_INFO_ONCE("!!!!!!!!!!!!!!!!   er_null.norm(): %f", er_null.norm());           
         if(er_null.norm()<1.5){
             first = false;
@@ -387,7 +423,34 @@ void PassiveNullControl::computeTorqueCmd(){
         // null_joint_vel << -.75, 0.0, 0.0, -.75, 0., 0.0, 0.0;
         // tmp_null_trq=null_jacob*null_joint_vel;
         // _trq_cmd = tmp_jnt_trq + tmp_null_trq;
-    
+
+    //--- wr null based on  https://arxiv.org/pdf/2212.11215.pdf
+        // Eigen::MatrixXd tempMat2 =  Eigen::MatrixXd::Identity(7,7) - _robot.jacob.transpose()* _robot.pseudo_inv_jacob_trans;
+        // Eigen::VectorXd nullgains = Eigen::VectorXd::Zero(7);
+        // nullgains << 5.,80,10.,30,5.,2.,2.;
+        // Eigen::VectorXd er_null = _robot.jnt_position -_robot.nulljnt_position;
+        // ROS_INFO_ONCE("!!!!!!!!!!!!!!!!   er_null.norm(): %f", er_null.norm());           
+        // if(er_null.norm()<1.5){
+        //     first = false;
+        // }
+        // if(er_null.norm()>2e-1){
+        //     er_null = 0.2*er_null.normalized();
+        // }
+        // Eigen::VectorXd tmp_null_trq = Eigen::VectorXd::Zero(7);
+        // for (int i =0; i<7; i++){
+        //     tmp_null_trq[i] = -nullgains[i] * er_null[i];
+        //     tmp_null_trq[i] +=-1. * _robot.jnt_velocity[i];
+        // }
+        // if (first){
+        //     _trq_cmd = tmp_null_trq;
+        //     ROS_INFO_ONCE("!!!!!!!!!!!!!!!!going to the first pose!!!!!!!!!!!!!!!!!!!!!!");                 
+        // }else{
+        //     ROS_INFO_ONCE("!!!!!!!!!!!!!!!!!!Tracking in process!!!!!!!!!!!!!!!!!!!!!!!");
+        //     _trq_cmd = tmp_jnt_trq + 10.*tempMat2 * tmp_null_trq;
+        // }
+
+
+
     // Gravity Compensationn
     // the gravity compensation should've been here, but a server form iiwa tools is doing the job.
    

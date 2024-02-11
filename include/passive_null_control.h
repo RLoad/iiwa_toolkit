@@ -61,6 +61,8 @@ struct Robot
     Eigen::MatrixXd pseudo_inv_jacobJnt       = Eigen::MatrixXd(7,7);
     Eigen::MatrixXd pseudo_inv_jacobPos    = Eigen::MatrixXd(3,3);
     Eigen::MatrixXd pseudo_inv_jacobPJnt    = Eigen::MatrixXd(7,7);
+
+    Eigen::MatrixXd pseudo_inv_jacob_trans       = Eigen::MatrixXd(7,7);
     // public:
         // EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
