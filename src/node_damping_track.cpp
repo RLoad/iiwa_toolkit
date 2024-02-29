@@ -340,7 +340,7 @@ class IiwaRosMaster
         if(desired_vel.norm()<1.&&desired_z_vel.norm()<1.){
             _controller->set_desired_and_z_velocity(desired_vel,desired_z_vel);
         }else{
-            ROS_WARN("VELOCITY OUT OF BOUND");
+            ROS_WARN("Damping matrix VELOCITY OUT OF BOUND");
         }
     }
 
