@@ -50,6 +50,7 @@ void PassiveDS::updateDampingMatrix(const Eigen::Vector3d& ref_vel){
         Dmat = Eigen::Matrix3d::Identity();
     }
     // otherwise just use the last computed basis
+    ROS_WARN_STREAM_THROTTLE(1, "DampingMatrix:"<< Dmat);
 }
 
 void PassiveDS::update(const Eigen::Vector3d& vel, const Eigen::Vector3d& des_vel){
@@ -59,6 +60,8 @@ void PassiveDS::update(const Eigen::Vector3d& vel, const Eigen::Vector3d& des_ve
     control_output = - Dmat * vel;
     // compute control
     control_output += eigVal0*des_vel;
+
+    ROS_WARN_STREAM_THROTTLE(1, "control_output:"<< control_output);
 }
 Eigen::Vector3d PassiveDS::get_output(){ return control_output;}
 
@@ -271,6 +274,8 @@ void PassiveControl::computeTorqueCmd(){
     dsContPos->update(_robot.ee_vel,_robot.ee_des_vel);
     Eigen::Vector3d wrenchPos = dsContPos->get_output() + load_added * 9.8*Eigen::Vector3d::UnitZ();   
     Eigen::VectorXd tmp_jnt_trq_pos = _robot.jacobPos.transpose() * wrenchPos;
+
+    ROS_WARN_STREAM_THROTTLE(1, "wrenchPos:"<< wrenchPos);
 
     // Orientation
     dsContOri->update(_robot.ee_angVel,_robot.ee_des_angVel);
