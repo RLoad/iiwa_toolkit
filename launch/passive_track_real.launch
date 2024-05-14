@@ -21,8 +21,8 @@
     </group>
 
     <!-- when real use, add the force sensor part here -->
-    <!-- <arg  name="ip_address"  default="128.178.145.248"/> -->
-		<arg  name="ip_address"  default="128.178.145.89"/>
+    <arg  name="ip_address"  default="128.178.145.248"/>
+		<!-- <arg  name="ip_address"  default="128.178.145.89"/> -->
         <!-- <arg  name="ip_address"  default="192.168.0.50"/> -->
         <!-- <arg  name="ip_address"  default="192.168.0.2"/> -->
         <!-- <arg  name="ip_address"  default="192.168.1.1"/> -->

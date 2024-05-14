@@ -321,6 +321,7 @@ void DampingControl::computeTorqueCmd(){
             Tran_rot_eigen(1,0)=0;Tran_rot_eigen(1,1)=0;Tran_rot_eigen(1,2)=1;
             Tran_rot_eigen(2,0)=0;Tran_rot_eigen(2,1)=1;Tran_rot_eigen(2,2)=0;
             _robot.ee_des_z_vel_for_DMatrix=Tran_rot_eigen*_robot.ee_des_vel_for_DMatrix;
+            ROS_WARN_THROTTLE(0.1, "didn't get desired vel");
         }
     // desired angular values
     Eigen::Vector4d dqd = Utils<double>::slerpQuaternion(_robot.ee_quat, _robot.ee_des_quat, 0.5);    
