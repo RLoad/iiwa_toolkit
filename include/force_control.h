@@ -1,7 +1,7 @@
 //|
 //|    Copyright (C) 2020 Learning Algorithms and Systems Laboratory, EPFL, Switzerland
 //|    Authors:  Farshad Khadivr (maintainer)
-//|    email:   farshad.khadivar@epfl.ch
+//|    email:   rui.wu@epfl.ch
 //|    website: lasa.epfl.ch
 //|
 //|    This file is part of iiwa_toolkit.
