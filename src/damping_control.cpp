@@ -224,6 +224,9 @@ void DampingControl::updateRobot(const Eigen::VectorXd& jnt_p,const Eigen::Vecto
     _robot.ee_pos = ee_state.translation;
     _robot.ee_quat[0] = ee_state.orientation.w();
     _robot.ee_quat.segment(1,3) = ee_state.orientation.vec();
+
+    _robot.joint_inertia = _tools.get_joint_inertia(robot_state);
+    _robot.task_inertiaPos = jointToTaskInertia(_robot.jacobPos, _robot.joint_inertia);
     
 
     Eigen::VectorXd vel = _robot.jacob * _robot.jnt_velocity;
@@ -249,6 +252,11 @@ Eigen::Vector3d DampingControl::getEEAngVel(){
     return _robot.ee_angVel;
 }
 
+Eigen::MatrixXd DampingControl::jointToTaskInertia(const Eigen::MatrixXd& Jac, const Eigen::MatrixXd& joint_inertia){
+    Eigen::MatrixXd task_inertia_inverse = Jac * joint_inertia.inverse() * Jac.transpose();
+    Eigen::MatrixXd task_inertia = task_inertia_inverse.inverse();
+    return task_inertia;
+}
 
 void DampingControl::set_pos_gains(const double& ds, const double& lambda0,const double& lambda1){
     dsGain_pos = ds;

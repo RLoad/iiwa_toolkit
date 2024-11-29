@@ -48,6 +48,8 @@ struct Robot
     Eigen::Vector3d ee_des_pos, ee_des_vel, ee_des_acc, ee_des_angVel, ee_des_angAcc, ee_des_vel_for_DMatrix, ee_des_z_vel_for_DMatrix,ee_des_vel_for_DMatrix_ANGLE,ee_des_z_vel_for_DMatrix_ANGLE;
     Eigen::Vector4d ee_des_quat;
 
+    Eigen::MatrixXd task_inertiaPos       = Eigen::MatrixXd(6,6);
+    Eigen::MatrixXd joint_inertia       = Eigen::MatrixXd(7,7);
 
     Eigen::MatrixXd jacob       = Eigen::MatrixXd(6, 7);
     Eigen::MatrixXd jacob_drv   = Eigen::MatrixXd(6, 7);
@@ -146,6 +148,8 @@ public:
     Eigen::Vector3d getEEAngVel();
 
     Eigen::Vector4d getEEquat();
+
+    Eigen::MatrixXd jointToTaskInertia(const Eigen::MatrixXd& Jac, const Eigen::MatrixXd& joint_inertia);
 
 };
 
