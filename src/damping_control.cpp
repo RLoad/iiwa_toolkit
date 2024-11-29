@@ -18,6 +18,7 @@
 //|
 
 #include "damping_control.h"
+#include <fstream> // Include for file handling
 
 DampingDS::DampingDS(const double& lam0, const double& lam1):eigVal0(lam0),eigVal1(lam1){
     set_damping_eigval(lam0,lam1);
@@ -187,6 +188,8 @@ DampingControl::DampingControl(const std::string& urdf_string,const std::string&
     _robot.pseudo_inv_jacob.setZero();   
     _robot.pseudo_inv_jacobPos.setZero();
 
+    _robot.Measure.setZero();
+
     _robot.nulljnt_position << 0.0, 0.0, 0.0, -.75, 0., 0.0, 0.0;
 
 
@@ -233,6 +236,108 @@ void DampingControl::updateRobot(const Eigen::VectorXd& jnt_p,const Eigen::Vecto
 
     // for(int i = 0; i < 3; i++)
     //     _plotVar.data[i] = (_robot.ee_des_vel - _robot.ee_vel)[i];
+
+
+
+    
+    // --- Measure manipulability ---
+    Eigen::MatrixXd matJacobPos = _robot.jacobPos * _robot.jacobPos.transpose();
+    double manipulability = std::sqrt(matJacobPos.determinant());
+    _robot.Measure[0] = manipulability; // Store manipulability Measure
+
+    // --- Compute manipulability ellipsoid ---
+    Eigen::JacobiSVD<Eigen::MatrixXd> svd_m(_robot.jacobPos, Eigen::ComputeFullU | Eigen::ComputeFullV);
+    Eigen::VectorXd eigenValues_m = svd_m.singularValues();
+    Eigen::MatrixXd eigenVectors_m_U = svd_m.matrixU();
+    Eigen::MatrixXd eigenVectors_m_U_sub = eigenVectors_m_U.block(0, 0, 3, 3);
+
+    for (size_t i = 1; i < 4; i++) {
+        _robot.Measure[i] = eigenValues_m[i - 1]; // Store eigenvalues
+    }
+    Eigen::VectorXd vec_m = Eigen::Map<Eigen::VectorXd>(eigenVectors_m_U_sub.data(), eigenVectors_m_U_sub.size());
+    for (size_t i = 4; i < 13; i++) {
+        _robot.Measure[i] = vec_m[i - 4]; // Store eigenvectors
+    }
+
+    // --- Compute force ellipsoid ---
+    Eigen::JacobiSVD<Eigen::MatrixXd> svd_f(_robot.jacob.transpose(), Eigen::ComputeFullU | Eigen::ComputeFullV);
+    Eigen::VectorXd eigenValues_f = svd_f.singularValues();
+    Eigen::MatrixXd eigenVectors_f_U = svd_f.matrixU();
+    Eigen::MatrixXd eigenVectors_f_U_sub = eigenVectors_f_U.block(0, 0, 3, 3);
+
+    for (size_t i = 13; i < 16; i++) {
+        _robot.Measure[i] = eigenValues_f[i - 13]; // Store eigenvalues
+    }
+    Eigen::VectorXd vec_f = Eigen::Map<Eigen::VectorXd>(eigenVectors_f_U_sub.data(), eigenVectors_f_U_sub.size());
+    for (size_t i = 16; i < 25; i++) {
+        _robot.Measure[i] = vec_f[i - 16]; // Store eigenvectors
+    }
+
+    // --- Save data to TXT ---
+    std::string recPath="/home/ros/ros_ws/src/iiwa_toolkit/Data/";
+
+    std::ofstream file(recPath + "robot_data.txt", std::ios::app); // Open in append mode
+    if (file.is_open()) {
+
+        // Save joint positions
+        file << "Joint Positions: ";
+        for (size_t i = 0; i < _robot.jnt_position.size(); ++i) {
+            file << _robot.jnt_position[i] << " ";
+        }
+        file << "\n";
+
+        // Save end-effector position
+        file << "End-Effector Position: ";
+        for (size_t i = 0; i < 3; ++i) {
+            file << _robot.ee_pos[i] << " ";
+        }
+        file << "\n";
+
+        // Save end-effector quaternion (orientation)
+        file << "End-Effector Quaternion: ";
+        for (size_t i = 0; i < 4; ++i) {
+            file << _robot.ee_quat[i] << " ";
+        }
+        file << "\n";
+
+        // Save manipulability Measure
+        file << "Manipulability: " << manipulability << "\n";
+
+        // Save manipulability ellipsoid eigenvalues
+        file << "Manipulability Ellipsoid Eigenvalues: ";
+        for (size_t i = 0; i < 3; ++i) {
+            file << eigenValues_m[i] << " ";
+        }
+        file << "\n";
+
+        // Save manipulability ellipsoid eigenvectors
+        file << "Manipulability Ellipsoid Eigenvectors: ";
+        for (size_t i = 0; i < eigenVectors_m_U_sub.size(); ++i) {
+            file << eigenVectors_m_U_sub(i) << " ";
+        }
+        file << "\n";
+
+        // Save force ellipsoid eigenvalues
+        file << "Force Ellipsoid Eigenvalues: ";
+        for (size_t i = 0; i < 3; ++i) {
+            file << eigenValues_f[i] << " ";
+        }
+        file << "\n";
+
+        // Save force ellipsoid eigenvectors
+        file << "Force Ellipsoid Eigenvectors: ";
+        for (size_t i = 0; i < eigenVectors_f_U_sub.size(); ++i) {
+            file << eigenVectors_f_U_sub(i) << " ";
+        }
+        file << "\n";
+
+        file << "----------------------------------------\n"; // Separator for readability
+        file.close();
+    } else {
+        std::cerr << "Error: Unable to open file for writing!" << std::endl;
+    }
+
+
 }
 
 Eigen::Vector3d DampingControl::getEEpos(){

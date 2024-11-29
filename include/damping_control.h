@@ -30,6 +30,7 @@
 #include <Eigen/Dense>
 #include <iiwa_tools/iiwa_tools.h>
 #include "thirdparty/Utils.h"
+#include <sys/stat.h>
 
 
 struct Robot
@@ -59,6 +60,8 @@ struct Robot
     Eigen::MatrixXd pseudo_inv_jacobJnt       = Eigen::MatrixXd(7,7);
     Eigen::MatrixXd pseudo_inv_jacobPos    = Eigen::MatrixXd(3,3);
     Eigen::MatrixXd pseudo_inv_jacobPJnt    = Eigen::MatrixXd(7,7);
+
+    Eigen::VectorXd Measure = Eigen::VectorXd(25);
     // public:
         // EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };

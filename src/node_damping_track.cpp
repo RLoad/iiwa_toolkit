@@ -64,6 +64,8 @@ class IiwaRosMaster
 
     ~IiwaRosMaster(){}
 
+    std::ofstream file_robot_pose_;
+
     bool init(){
         std::string ns = _n.getNamespace();
         std::string robot_name;
@@ -167,6 +169,8 @@ class IiwaRosMaster
     //
     // run node
     void run(){
+
+        
         while(!_stop && ros::ok()){ 
             _mutex.lock();
                 _controller->updateRobot(_feedback.jnt_position,_feedback.jnt_velocity,_feedback.jnt_torque);
@@ -184,6 +188,7 @@ class IiwaRosMaster
         ros::spinOnce();
         _loopRate.sleep();
         }
+
         publishCommandTorque(Eigen::VectorXd::Zero(No_JOINTS));
         ros::spinOnce();
         _loopRate.sleep();
