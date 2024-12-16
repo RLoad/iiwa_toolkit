@@ -103,6 +103,8 @@ class IiwaRosMaster
         _EEPosePublisher = _n.advertise<geometry_msgs::Pose>(ns+"/ee_info/Pose",1);
         _EEVelPublisher = _n.advertise<geometry_msgs::Twist>(ns+"/ee_info/Vel",1);
 
+        
+
         // Get the URDF XML from the parameter server
         std::string urdf_string, full_param;
         std::string robot_description = ns+"/robot_description";

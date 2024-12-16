@@ -74,3 +74,8 @@ add_dependencies(passive_shared_control ${PROJECT_NAME}_gencfg)
 add_executable(passive_null_track src/node_passive_null_track.cpp  src/passive_null_control.cpp include/thirdparty/Utils.cpp ${MODEL_SOURCES})
 target_link_libraries(passive_null_track ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
 add_dependencies(passive_null_track ${PROJECT_NAME}_gencfg)
+
+
+catkin_install_python(PROGRAMS src/optimal_manipulability_node.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
