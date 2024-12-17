@@ -180,6 +180,8 @@ DampingControl::DampingControl(const std::string& urdf_string,const std::string&
     _robot.ee_des_vel_for_DMatrix_ANGLE.setZero();
     _robot.ee_des_z_vel_for_DMatrix_ANGLE.setZero();
 
+    _robot.null_space_optimal.setZero();
+
 
     _robot.jacob.setZero();
     _robot.jacob.setZero();       
@@ -414,6 +416,11 @@ void DampingControl::set_desired_and_z_velocity(const Eigen::Vector3d& desired_v
      _robot.ee_des_vel_for_DMatrix = desired_vel;
      _robot.ee_des_z_vel_for_DMatrix = desired_vel_z;
     //  std::cerr<<"desired_vel: "<<desired_vel(0)<<","<<desired_vel(1)<<","<<desired_vel(2)<<"\n";
+}
+
+void DampingControl::set_null_space(const Eigen::Matrix<double, 7, 1>& desired_null_space){
+     _robot.null_space_optimal = desired_null_space;
+     std::cerr<<"null_space_optimal: "<<_robot.null_space_optimal(0)<<","<<_robot.null_space_optimal(1)<<","<<_robot.null_space_optimal(2)<<"\n";
 }
 
 void DampingControl::set_load(const double& mass ){

@@ -103,7 +103,9 @@ class IiwaRosMaster
         _EEPosePublisher = _n.advertise<geometry_msgs::Pose>(ns+"/ee_info/Pose",1);
         _EEVelPublisher = _n.advertise<geometry_msgs::Twist>(ns+"/ee_info/Vel",1);
 
-        
+        _subNullStates= _n.subscribe<sensor_msgs::JointState> (ns+"/optimal/null_space_state", 1,
+                boost::bind(&IiwaRosMaster::updateNullStates,this,_1,0),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
+       
 
         // Get the URDF XML from the parameter server
         std::string urdf_string, full_param;
@@ -220,6 +222,8 @@ class IiwaRosMaster
 
     ros::Publisher _plotPublisher;
 
+    ros::Subscriber _subNullStates;
+
     dynamic_reconfigure::Server<iiwa_toolkit::damping_cfg_paramsConfig> _dynRecServer;
     dynamic_reconfigure::Server<iiwa_toolkit::damping_cfg_paramsConfig>::CallbackType _dynRecCallback;
 
@@ -254,6 +258,16 @@ class IiwaRosMaster
             _feedback.jnt_torque[i]   = (double)msg->effort[i];
         }
         // std::cout << "joint ps : " << _feedback.jnt_position.transpose() << "\n";
+
+    }
+
+    void updateNullStates(const sensor_msgs::JointState::ConstPtr &msg, int k){
+        Eigen::Matrix<double, 7, 1> desired_null_space_opt;
+        desired_null_space_opt << (double)msg->position[0], (double)msg->position[1], (double)msg->position[2],
+                        (double)msg->position[3], (double)msg->position[4], (double)msg->position[5],
+                        (double)msg->position[6];
+        // std::cout << "joint ps : " << _feedback.jnt_position.transpose() << "\n";
+        _controller->set_null_space(desired_null_space_opt);
 
     }
     
