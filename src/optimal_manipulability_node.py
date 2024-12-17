@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 import rospy
 from geometry_msgs.msg import Pose
-from sensor_msgs.msg import JointState
+from std_msgs.msg import Float64MultiArray  # Import Float64MultiArray
 import sys
 
-class Joint_optimal:
+class JointOptimal:
     def __init__(self):
         # Node initialization
         rospy.init_node('Joint_optimal', anonymous=True)
 
-        # Subscriber: listens to /passive_control/pos_quat
+        # Subscriber: listens to /desired_pose
         self.sub_control = rospy.Subscriber(
             "/desired_pose",  # Input topic
             Pose,
@@ -17,46 +17,51 @@ class Joint_optimal:
             queue_size=100
         )
 
-        # Publisher: publishes to null_space_state
+        # Publisher: publishes to /optimal/null_space_state as Float64MultiArray
         self.pub_null_space_state = rospy.Publisher(
             "/optimal/null_space_state",  # Output topic
-            JointState,
+            Float64MultiArray,           # Change message type
             queue_size=100
         )
 
+        # Store current position and orientation
+        self.current_position = None
+        self.current_orientation = None
+
     def calculate_optimal(self):
-        # ------------- optimal here ------------
+        """
+        Process the Pose data and calculate an optimal 7D vector.
+        """
+        # Check if current position and orientation exist
+        if self.current_position and self.current_orientation:
+            # Create a Float64MultiArray message
+            float_array_msg = Float64MultiArray()
+            
+            # Example: Pack 7 values into the Float64MultiArray data
+            float_array_msg.data = [
+                self.current_position["x"],
+                self.current_position["y"],
+                self.current_position["z"],
+                self.current_orientation["x"],
+                self.current_orientation["y"],
+                self.current_orientation["z"],
+                self.current_orientation["w"]
+            ]
 
-
-
-        # Create a new JointState message
-        joint_state_msg = JointState()
-        joint_state_msg.header.stamp = rospy.Time.now()  # Add a timestamp
-
-        # Define joint names for the 7 joints
-        joint_state_msg.name = [
-            "joint_1", "joint_2", "joint_3",
-            "joint_4", "joint_5", "joint_6", "joint_7"
-        ]
-
-        # Process Pose data into JointState position values
-        # For this example, map position and orientation to 7 joints
-        joint_state_msg.position = [
-            1,1,1,1,1,1,1
-        ]
-
-        # Example: Set velocities and efforts to 0 for all joints
-        joint_state_msg.velocity = [0.0] * 7
-        joint_state_msg.effort = [0.0] * 7
-
-        # Publish the JointState message
-        self.pub_null_space_state.publish(joint_state_msg)
-        rospy.loginfo(f"Published JointState: {joint_state_msg}")
+            # Publish the Float64MultiArray message
+            self.pub_null_space_state.publish(float_array_msg)
+            rospy.loginfo(f"Published Float64MultiArray: {float_array_msg.data}")
+        else:
+            rospy.logwarn("No Pose data received yet!")
 
     def callback_pose(self, msg):
+        """
+        Callback function for the Pose subscriber.
+        Stores Pose data and triggers optimal calculation.
+        """
         rospy.loginfo(f"Received Pose: Position: {msg.position}, Orientation: {msg.orientation}")
 
-        # Store the position and orientation into a new parameter (instance variable)
+        # Store the position and orientation into instance variables
         self.current_position = {
             "x": msg.position.x,
             "y": msg.position.y,
@@ -68,20 +73,22 @@ class Joint_optimal:
             "z": msg.orientation.z,
             "w": msg.orientation.w
         }
-        
+
+        # Trigger calculation of the optimal null-space state
+        self.calculate_optimal()
 
     def run(self):
         """
         Keeps the node running.
         """
-        rospy.loginfo("Joint_optimal node started. Listening to /passive_control/pos_quat...")
+        rospy.loginfo("Joint_optimal node started. Listening to /desired_pose...")
         rospy.spin()
 
 if __name__ == '__main__':
     try:
-        sys.stderr.write("----------qqqqq----------------------------------\n")
-        node = Joint_optimal()
+        sys.stderr.write("---------- Node Starting ----------------------------------\n")
+        node = JointOptimal()
         node.run()
-        sys.stderr.write("------------wwwww---------------------------------\n")
+        sys.stderr.write("------------ Node Shutting Down ---------------------------\n")
     except rospy.ROSInterruptException:
         pass
