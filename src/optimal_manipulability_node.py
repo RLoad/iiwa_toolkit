@@ -11,11 +11,10 @@ class Joint_optimal:
 
         # Subscriber: listens to /passive_control/pos_quat
         self.sub_control = rospy.Subscriber(
-            "/passive_control/pos_quat",  # Input topic
+            "/desired_pose",  # Input topic
             Pose,
             self.callback_pose,
-            queue_size=100,
-            transport_hints=rospy.transport_hints.TransportHints().reliable().tcp_nodelay()
+            queue_size=100
         )
 
         # Publisher: publishes to null_space_state
@@ -53,7 +52,6 @@ class Joint_optimal:
         # Publish the JointState message
         self.pub_null_space_state.publish(joint_state_msg)
         rospy.loginfo(f"Published JointState: {joint_state_msg}")
-        sys.stderr.write("--------------//////////////--------------------\n")
 
     def callback_pose(self, msg):
         rospy.loginfo(f"Received Pose: Position: {msg.position}, Orientation: {msg.orientation}")
@@ -70,7 +68,6 @@ class Joint_optimal:
             "z": msg.orientation.z,
             "w": msg.orientation.w
         }
-        sys.stderr.write("-------------------------------------------------\n")
         
 
     def run(self):

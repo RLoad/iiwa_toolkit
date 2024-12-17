@@ -18,6 +18,9 @@
 
     <node name="spawn_box" pkg="gazebo_ros" type="spawn_model" args="-file $(find box_spawner)/models/box1.urdf -x 0.4 -y 0.0 -z 0.0 -urdf -model box1" />
     
+    <node name="optimal_control" pkg="iiwa_toolkit" type="optimal_manipulability_node.py" output="screen">
+    </node> <!-- Properly closed this node tag -->
+    
     <!-- <node name="plotter"
             pkg="rqt_plot"
             type="rqt_plot"
