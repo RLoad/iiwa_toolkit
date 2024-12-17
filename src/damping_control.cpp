@@ -420,7 +420,7 @@ void DampingControl::set_desired_and_z_velocity(const Eigen::Vector3d& desired_v
 
 void DampingControl::set_null_space(const Eigen::Matrix<double, 7, 1>& desired_null_space){
      _robot.null_space_optimal = desired_null_space;
-     std::cerr<<"null_space_optimal: "<<_robot.null_space_optimal(0)<<","<<_robot.null_space_optimal(1)<<","<<_robot.null_space_optimal(2)<<"\n";
+     std::cerr<<"null_space_optimal in damping controller: "<<_robot.null_space_optimal(0)<<","<<_robot.null_space_optimal(1)<<","<<_robot.null_space_optimal(2)<<"\n";
 }
 
 void DampingControl::set_load(const double& mass ){
