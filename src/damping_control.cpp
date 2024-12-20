@@ -506,7 +506,7 @@ void DampingControl::computeTorqueCmd(){
     Eigen::MatrixXd tempMat2 =  Eigen::MatrixXd::Identity(7,7) - _robot.jacob.transpose()* _robot.pseudo_inv_jacob* _robot.jacob;
     Eigen::VectorXd nullgains = Eigen::VectorXd::Zero(7);
     nullgains << 5.,80,10.,30,5.,2.,2.;
-    Eigen::VectorXd er_null = _robot.jnt_position -_robot.nulljnt_position;
+    Eigen::VectorXd er_null = _robot.jnt_position -_robot.null_space_optimal;
     if(er_null.norm()<1.5){
         first = false;
     }
