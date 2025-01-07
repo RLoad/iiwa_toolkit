@@ -523,7 +523,7 @@ void DampingControl::computeTorqueCmd(){
         ROS_INFO_ONCE("going to the first pose ");                 
     }else{
         ROS_INFO_ONCE("Tracking in process");
-        _trq_cmd = tmp_jnt_trq;// + 10.*tempMat2 * tmp_null_trq;
+        _trq_cmd = tmp_jnt_trq + 10.*tempMat2 * tmp_null_trq;
     }
     
     

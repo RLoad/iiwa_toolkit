@@ -57,7 +57,7 @@ class JointOptimal:
         self.robot = DHRobot([L1, L2, L3, L4, L5, L6, L7], name='7DOF_Robot')
         self.Htmp_init = None
 
-        self.n = np.array([1, 0, 0])  # Descallback_poseired task-space direction (3x1)
+        self.n = np.array([0, 0, 1])  # Descallback_poseired task-space direction (3x1)
 
         # Define bounds for joint angles
         lb = np.array([-2.967, -2.094, -2.967, -2.094, -2.967, -2.094, -3.054])
