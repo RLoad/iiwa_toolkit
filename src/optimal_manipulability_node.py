@@ -23,9 +23,9 @@ class JointOptimal:
             queue_size=100
         )
         
-        # Subscriber: listens to /iiwa/join_states
+        # Subscriber: listens to /iiwa/joint_states
         self.joint_control = rospy.Subscriber(
-            "/iiwa/join_states",  # Input topic
+            "/iiwa/joint_states",  # Input topic
             JointState,
             self.callback_jtstate,
             queue_size=100
@@ -178,8 +178,6 @@ class JointOptimal:
         if self.first_iter is True:
             self.calculate_optimal()
             self.first_iter = False
-
-
 
     def run(self):
         """
