@@ -47,6 +47,11 @@ class JointOptimal:
 
         self.current_iteration = 0
 
+        # define self.Joint_optimal_configure = Float64MultiArray() as a 7D vector
+        self.Joint_optimal_configure = Float64MultiArray()
+        self.Joint_optimal_configure.data = [0, 0, 0, 0, 0, 0, 0]
+
+
         # Define DH parameters for each link
         L1 = RevoluteDH(a=0, alpha=-np.pi/2, d=0.360, offset=0)
         L2 = RevoluteDH(a=0, alpha=np.pi/2, d=0, offset=0)
@@ -59,7 +64,7 @@ class JointOptimal:
         self.robot = DHRobot([L1, L2, L3, L4, L5, L6, L7], name='7DOF_Robot')
         self.Htmp_init = None
 
-        self.n = np.array([1, 0, 0])  # Descallback_poseired task-space direction (3x1)
+        self.n = np.array([0, 0, 1])  # Descallback_poseired task-space direction (3x1)
 
         # Define bounds for joint angles
         lb = np.array([-2.967, -2.094, -2.967, -2.094, -2.967, -2.094, -3.054])
@@ -106,7 +111,7 @@ class JointOptimal:
         # Check if current position and orientation exist
         if self.current_jt_position is not None:
             # Create a Float64MultiArray message
-            Joint_optimal_configure = Float64MultiArray()
+            
 
             # Define constraints as a dictionary
             constraints = ({'type': 'ineq', 'fun': lambda qT: self.manipulabilityConstraints(qT)[0]},
@@ -137,11 +142,11 @@ class JointOptimal:
             #     self.current_orientation["w"]
             # ]
 
-            Joint_optimal_configure.data = qT_opt
+            self.Joint_optimal_configure.data = qT_opt
 
             # Publish the Float64MultiArray message
-            self.pub_null_space_state.publish(Joint_optimal_configure)
-            rospy.loginfo(f"Published Float64MultiArray: {Joint_optimal_configure.data}")
+            self.pub_null_space_state.publish(self.Joint_optimal_configure)
+            rospy.loginfo(f"Published Float64MultiArray: {self.Joint_optimal_configure.data}")
         else:
             rospy.logwarn("No Pose data received yet!")
 
@@ -189,6 +194,8 @@ class JointOptimal:
         if self.current_iteration == 8000:
             print("Calculating optimal")
             self.calculate_optimal()
+
+        self.pub_null_space_state.publish(self.Joint_optimal_configure)
 
         #if self.first_iter is True:
         #    self.calculate_optimal()
