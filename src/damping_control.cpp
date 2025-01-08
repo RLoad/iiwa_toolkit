@@ -194,9 +194,16 @@ DampingControl::DampingControl(const std::string& urdf_string,const std::string&
 
     _robot.Measure.setZero();
 
+    //--- middle
     _robot.nulljnt_position << 0.0, 0.0, 0.0, -.75, 0., 0.0, 0.0;
+    //  _robot.nulljnt_position << -0.0, 0.682, 0.0, -1.372, 0.0, -0.484, 0.0;
+    //  _robot.nulljnt_position << -0.0, 0.682, 0.0, -1.372, 0.0, -0.484, 0.0;
+    // //--- right
     // _robot.nulljnt_position << 0.6590053837294496, 1.4907334858074615, -1.8296910450078991, -1.3719579419959391, -0.3195112954702344, -0.7669408312305244, 1.9642857845397614;
-
+    //--- lefts up joint6 vertical
+    _robot.nulljnt_position << -0.6642357314680876, 1.1121744140534728, 1.3385292763773986, -1.3719679345117264, 0.3401236323538894, -0.633087157410305, -1.3754183433769134;
+    //--- lefts down
+    // _robot.nulljnt_position << -0.673120257256925, 1.4277378048631393, 1.749170059195766, -1.3719950211660006, 0.33084256189146366, -0.7452268699465625, -1.8706446357506925;
 
 }
 
@@ -355,7 +362,7 @@ void DampingControl::updateRobot(const Eigen::VectorXd& jnt_p,const Eigen::Vecto
         file << "----------------------------------------\n"; // Separator for readability
         file.close();
     } else {
-        std::cerr << "Error: Unable to open file for writing!" << std::endl;
+        // std::cerr << "Error: Unable to open file for writing!" << std::endl;
     }
 
 

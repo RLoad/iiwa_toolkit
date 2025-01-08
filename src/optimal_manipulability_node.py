@@ -45,6 +45,8 @@ class JointOptimal:
         self.current_orientation = None
         self.current_jt_position = None
 
+        self.current_iteration = 0
+
         # Define DH parameters for each link
         L1 = RevoluteDH(a=0, alpha=-np.pi/2, d=0.360, offset=0)
         L2 = RevoluteDH(a=0, alpha=np.pi/2, d=0, offset=0)
@@ -57,7 +59,7 @@ class JointOptimal:
         self.robot = DHRobot([L1, L2, L3, L4, L5, L6, L7], name='7DOF_Robot')
         self.Htmp_init = None
 
-        self.n = np.array([0, 0, -1])  # Descallback_poseired task-space direction (3x1)
+        self.n = np.array([1, 0, 0])  # Descallback_poseired task-space direction (3x1)
 
         # Define bounds for joint angles
         lb = np.array([-2.967, -2.094, -2.967, -2.094, -2.967, -2.094, -3.054])
@@ -78,8 +80,10 @@ class JointOptimal:
         # Compute Jacobian at qT
         J = Jfun(qT)  # J should return a 6x7 Jacobian
         
+        
         # Compute the cost
         CmanT = np.linalg.norm(J.T @ self.n)
+        print(CmanT)
         return CmanT
 
     # Define the nonlinear constraints
@@ -98,6 +102,7 @@ class JointOptimal:
         """
         Process the Pose data and calculate an optimal 7D vector.
         """
+        print("optimal loop")
         # Check if current position and orientation exist
         if self.current_jt_position is not None:
             # Create a Float64MultiArray message
@@ -116,7 +121,11 @@ class JointOptimal:
             # Display results
             qT_opt = result.x
             CmanT_min = result.fun
-            
+
+            print("???????????????????????????????????????????????????????????")
+            print("optimal done")
+            print(CmanT_min)
+            print(qT_opt)
             # Example: Pack 7 values into the Float64MultiArray data
             # Joint_optimal_configure.data = [
             #     self.current_position["x"],
@@ -141,7 +150,7 @@ class JointOptimal:
         Callback function for the Pose subscriber.
         Stores Pose data.
         """
-        rospy.loginfo(f"Received Pose: Position: {msg.position}, Orientation: {msg.orientation}")
+        # rospy.loginfo(f"Received Pose: Position: {msg.position}, Orientation: {msg.orientation}")
 
         # Store the position and orientation into instance variables
         self.current_position = {
@@ -163,17 +172,30 @@ class JointOptimal:
         Callback function for the JointState subscriber.
         Stores JointState data and triggers optimal calculation.
         """
-        rospy.loginfo(f"Received JointState: Position: {msg.position}")
-        
+        # rospy.loginfo(f"Received JointState: Position: {msg.position}")
+        self.current_iteration += 1
+
+        #print(self.current_iteration)
+
         # Store the joint position into instance variables
         self.current_jt_position = np.array([msg.position[0], msg.position[1], msg.position[2], msg.position[3], msg.position[4], msg.position[5], msg.position[6]])
 
         
         self.Htmp_init = self.robot.fkine(self.current_jt_position)
 
-        if self.first_iter is True:
+        # print current iteration each 1000 iterations
+        if self.current_iteration % 1000 == 0:
+            print(self.current_iteration)
+        if self.current_iteration == 8000:
+            print("Calculating optimal")
             self.calculate_optimal()
-            self.first_iter = False
+
+        #if self.first_iter is True:
+        #    self.calculate_optimal()
+        #    self.first_iter = False
+
+
+        
 
     def run(self):
         """

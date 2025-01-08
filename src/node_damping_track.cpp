@@ -102,6 +102,9 @@ class IiwaRosMaster
         _TrqCmdPublisher = _n.advertise<std_msgs::Float64MultiArray>(ns+"/TorqueController/command",1);
         _EEPosePublisher = _n.advertise<geometry_msgs::Pose>(ns+"/ee_info/Pose",1);
         _EEVelPublisher = _n.advertise<geometry_msgs::Twist>(ns+"/ee_info/Vel",1);
+
+         _subNullStates = _n.subscribe<std_msgs::Float64MultiArray>("/optimal/null_space_state", 1,
+            boost::bind(&IiwaRosMaster::updateNullStates,this,_1),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
         
 
         // Get the URDF XML from the parameter server
@@ -219,6 +222,8 @@ class IiwaRosMaster
 
     ros::Publisher _plotPublisher;
 
+    ros::Subscriber _subNullStates;
+
     dynamic_reconfigure::Server<iiwa_toolkit::damping_cfg_paramsConfig> _dynRecServer;
     dynamic_reconfigure::Server<iiwa_toolkit::damping_cfg_paramsConfig>::CallbackType _dynRecCallback;
 
@@ -253,6 +258,38 @@ class IiwaRosMaster
             _feedback.jnt_torque[i]   = (double)msg->effort[i];
         }
         // std::cout << "joint ps : " << _feedback.jnt_position.transpose() << "\n";
+
+    }
+
+    void updateNullStates(const std_msgs::Float64MultiArray::ConstPtr& msg)
+    {
+        // Check the size of the incoming data
+        if (msg->data.size() != 7)
+        {
+            ROS_WARN("Received Float64MultiArray does not contain 7 elements!");
+            return;
+        }
+
+        // Save incoming data to Eigen::Matrix<double, 7, 1>
+        Eigen::Matrix<double, 7, 1> desired_null_space_opt;
+        desired_null_space_opt << msg->data[0], msg->data[1], msg->data[2],
+                                 msg->data[3], msg->data[4], msg->data[5], msg->data[6];
+
+        // Print the data for verification
+        std::cout << "Desired Null Space Optimization:\n"
+                  << desired_null_space_opt.transpose() << std::endl;
+
+        // Example: Call a controller to set the null space
+        // Assuming _controller is a class member and set_null_space is a method
+        if (_controller)
+        {
+            _controller->set_null_space(desired_null_space_opt);
+            ROS_INFO("Controller null space updated.");
+        }
+        else
+        {
+            ROS_WARN("Controller is not initialized!");
+        }
 
     }
     
