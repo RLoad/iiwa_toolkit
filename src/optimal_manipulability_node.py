@@ -57,7 +57,7 @@ class JointOptimal:
         self.robot = DHRobot([L1, L2, L3, L4, L5, L6, L7], name='7DOF_Robot')
         self.Htmp_init = None
 
-        self.n = np.array([0, 0, 1])  # Descallback_poseired task-space direction (3x1)
+        self.n = np.array([0, 0, -1])  # Descallback_poseired task-space direction (3x1)
 
         # Define bounds for joint angles
         lb = np.array([-2.967, -2.094, -2.967, -2.094, -2.967, -2.094, -3.054])
@@ -76,7 +76,7 @@ class JointOptimal:
     def manipulabilityCost(self, qT, Jfun):
 
         # Compute Jacobian at qT
-        J = self.Jfun(qT)  # J should return a 6x7 Jacobian
+        J = Jfun(qT)  # J should return a 6x7 Jacobian
         
         # Compute the cost
         CmanT = np.linalg.norm(J.T @ self.n)
@@ -91,7 +91,7 @@ class JointOptimal:
         return c, ceq
 
     # Define the objective function
-    def objective(self,qT):
+    def objective(self,qT, computeJacobian):
         return self.manipulabilityCost(qT, self.computeJacobian)
 
     def calculate_optimal(self):
@@ -99,14 +99,16 @@ class JointOptimal:
         Process the Pose data and calculate an optimal 7D vector.
         """
         # Check if current position and orientation exist
-        if self.current_jt_position:
+        if self.current_jt_position is not None:
             # Create a Float64MultiArray message
             Joint_optimal_configure = Float64MultiArray()
 
             # Define constraints as a dictionary
             constraints = ({'type': 'ineq', 'fun': lambda qT: self.manipulabilityConstraints(qT)[0]},
                             {'type': 'eq', 'fun': lambda qT: self.manipulabilityConstraints(qT)[1]})
-
+            
+            print(self.current_jt_position)
+            print(self.bounds)
             # Solve the optimization problem
             result = minimize(self.objective, self.current_jt_position, args=(self.robot,), method='SLSQP', 
                             bounds=self.bounds, constraints=constraints, options={'disp': True, "maxiter": 10000})
@@ -164,15 +166,9 @@ class JointOptimal:
         rospy.loginfo(f"Received JointState: Position: {msg.position}")
         
         # Store the joint position into instance variables
-        self.current_jt_position = {
-            "jt1": msg.position[0],
-            "jt2": msg.position[1],
-            "jt3": msg.position[2],
-            "jt4": msg.position[3],
-            "jt5": msg.position[4],
-            "jt6": msg.position[5],
-            "jt7": msg.position[6],
-        }
+        self.current_jt_position = np.array([msg.position[0], msg.position[1], msg.position[2], msg.position[3], msg.position[4], msg.position[5], msg.position[6]])
+
+        
         self.Htmp_init = self.robot.fkine(self.current_jt_position)
 
         if self.first_iter is True:
