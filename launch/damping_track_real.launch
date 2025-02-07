@@ -34,6 +34,15 @@
 	<arg  name="scale_y"	 default="1"/>
 	<arg  name="scale_z"	 default="1"/>
 
+    <group ns="ft_sensor">
+		<param name="frame_id" type="str" value="$(arg frame_id)"/>
+		<node name="force_torque_sensor" pkg="netft_rdt_driver" type="netft_node" 
+		    args="--address $(arg ip_address) --rate $(arg rate) --bias $(arg bias) --rot $(arg rot) --alpha $(arg alpha) --scale_x $(arg scale_x) --scale_y $(arg scale_y) --scale_z $(arg scale_z)" 
+			 required="true" output="screen"/>
+	</group>
+
+    <!-- <node name="optimal_control" pkg="iiwa_toolkit" type="optimal_manipulability_node.py" output="screen">
+    </node> Properly closed this node tag -->
 
     <!-- <node name="plotter"
             pkg="rqt_plot"
