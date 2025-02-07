@@ -43,4 +43,7 @@
 			 required="true" output="screen"/>
 	</group>
 
+    <node name="optimal_control" pkg="iiwa_toolkit" type="optimal_manipulability_node.py" output="screen">
+    </node> <!-- Properly closed this node tag -->
+
 </launch>
