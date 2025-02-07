@@ -50,6 +50,8 @@ struct Robot
     Eigen::Vector3d ee_des_pos, ee_des_vel, ee_des_acc, ee_des_angVel, ee_des_angAcc;
     Eigen::Vector4d ee_des_quat;
 
+    Eigen::Matrix<double, 7, 1> null_space_optimal;
+
 
     Eigen::MatrixXd jacob       = Eigen::MatrixXd(6, 7);
     Eigen::MatrixXd jacob_drv   = Eigen::MatrixXd(6, 7);
@@ -132,6 +134,7 @@ public:
     void set_desired_position(const Eigen::Vector3d& pos);
     void set_desired_quat(const Eigen::Vector4d& quat);
     void set_desired_velocity(const Eigen::Vector3d& vel);
+    void set_null_space(const Eigen::Matrix<double, 7, 1>& desired_null_space);
 
 
     void set_pos_gains(const double& ds, const double& lambda0,const double& lambda1);
@@ -149,7 +152,7 @@ public:
 
     Eigen::Vector4d getEEquat();
 
-    Eigen::VectorXd getMeasure();
+    // Eigen::VectorXd getMeasure();
 
 };
 

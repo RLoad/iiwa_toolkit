@@ -104,6 +104,12 @@ PassiveNullControl::PassiveNullControl(const std::string& urdf_string,const std:
     _robot.ee_des_acc.setZero();
     _robot.ee_des_angVel.setZero();
     _robot.ee_des_angAcc.setZero();
+    // _robot.ee_des_vel_for_DMatrix.setZero();
+    // _robot.ee_des_z_vel_for_DMatrix.setZero();
+    // _robot.ee_des_vel_for_DMatrix_ANGLE.setZero();
+    // _robot.ee_des_z_vel_for_DMatrix_ANGLE.setZero();
+
+    _robot.null_space_optimal.setZero();
 
 
     _robot.jacob.setZero();
@@ -118,11 +124,11 @@ PassiveNullControl::PassiveNullControl(const std::string& urdf_string,const std:
     _robot.pseudo_inv_jacob_trans.setZero();   
 
     //--- middle
-    // _robot.nulljnt_position << 0.0, 0.0, 0.0, -.75, 0., 0.0, 0.0;
+    _robot.nulljnt_position << 0.0, 0.0, 0.0, -.75, 0., 0.0, 0.0;
     //  _robot.nulljnt_position << -0.0, 0.682, 0.0, -1.372, 0.0, -0.484, 0.0;
     //  _robot.nulljnt_position << -0.0, 0.682, 0.0, -1.372, 0.0, -0.484, 0.0;
     //--- right
-    _robot.nulljnt_position << 0.6590053837294496, 1.4907334858074615, -1.8296910450078991, -1.3719579419959391, -0.3195112954702344, -0.7669408312305244, 1.9642857845397614;
+    // _robot.nulljnt_position << 0.6590053837294496, 1.4907334858074615, -1.8296910450078991, -1.3719579419959391, -0.3195112954702344, -0.7669408312305244, 1.9642857845397614;
     //--- lefts up joint6 vertical
     // _robot.nulljnt_position << -0.6642357314680876, 1.1121744140534728, 1.3385292763773986, -1.3719679345117264, 0.3401236323538894, -0.633087157410305, -1.3754183433769134;
     //--- lefts down
@@ -175,80 +181,133 @@ void PassiveNullControl::updateRobot(const Eigen::VectorXd& jnt_p,const Eigen::V
     //     _plotVar.data[i] = (_robot.ee_des_vel - _robot.ee_vel)[i];
 
     //---- meausure manipulability of robto in each time
-        // Eigen::MatrixXd matJacob=_robot.jacob * _robot.jacob.transpose();
-        Eigen::MatrixXd matJacob=_robot.jacobPos * _robot.jacobPos.transpose();
-        double manipulability=matJacob.determinant();
-        manipulability=sqrt(manipulability);
-        _robot.Measure[0] = manipulability;
+    Eigen::MatrixXd JJt = _robot.jacobPos * _robot.jacobPos.transpose();
+    Eigen::MatrixXd invJJt = JJt.inverse();
+    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> solver(JJt);
 
-    //--- manipulability ellipsoid
-        // //--- only get eigen vector value
-        //     Eigen::EigenSolver<Eigen::MatrixXd> solver(_robot.pseudo_inv_jacobPos);
-        //     Eigen::VectorXd eigenValues = solver.eigenvalues().real();
-        //     Eigen::MatrixXd eigenVectors = solver.eigenvectors().real();
-        //     for (size_t i = 1; i < 4; i++)
-        //     {
-        //         _robot.Measure[i] = eigenValues[i-1];
-        //     }
-        //     Eigen::VectorXd vec = Eigen::Map<Eigen::VectorXd>(eigenVectors.data(), eigenVectors.size());
-        //     for (size_t i = 4; i < 13; i++)
-        //     {
-        //         _robot.Measure[i] = vec[i-4];
-        //     }
 
-            // std::cerr<< "--------------------------------------------------------------------------------"<<std::endl;
-            // std::cerr<< "_robot.pseudo_inv_jacobPos: "<<_robot.pseudo_inv_jacobPos<<std::endl;
-            // std::cerr<< "eigenValues: "<<eigenValues<<std::endl;
-            // std::cerr<< "eigenVectors_U: "<<eigenVectors<<std::endl;
+    if (solver.info() != Eigen::Success) {
+        std::cerr << "Eigen decomposition failed!" << std::endl;
+    }
 
-        //--- Compute SVD
-            // Eigen::JacobiSVD<Eigen::MatrixXd> svd(_robot.jacob, Eigen::ComputeFullU | Eigen::ComputeFullV);
-            Eigen::JacobiSVD<Eigen::MatrixXd> svd(_robot.jacob, Eigen::ComputeFullU | Eigen::ComputeFullV);
-            //--- Get singular values and U matrix
-            Eigen::VectorXd eigenValues = svd.singularValues();
-            Eigen::MatrixXd eigenVectors_U = svd.matrixU();
-            Eigen::MatrixXd eigenVectors_U_sub = eigenVectors_U.block(0,0,3,3);
-            for (size_t i = 1; i < 4; i++)
-            {
-                _robot.Measure[i] = eigenValues[i-1];
-            }
-            Eigen::VectorXd vec = Eigen::Map<Eigen::VectorXd>(eigenVectors_U_sub.data(), eigenVectors_U_sub.size());
-            for (size_t i = 4; i < 13; i++)
-            {
-                _robot.Measure[i] = vec[i-4];
-            }
-        
+    // Velocity Ellipsoid
+    Eigen::VectorXd eigenValues_v = solver.eigenvalues();
+    Eigen::MatrixXd eigenVectors_v = solver.eigenvectors();
 
-    //--- force ellipsoid
-        // //--- only get eigen vector value
-        //     Eigen::EigenSolver<Eigen::MatrixXd> solver_f(matJacob);
-        //     Eigen::VectorXd eigenValues_f = solver_f.eigenvalues().real();
-        //     Eigen::MatrixXd eigenVectors_f = solver_f.eigenvectors().real();
-        //     for (size_t i = 13; i < 16; i++)
-        //     {
-        //         _robot.Measure[i] = eigenValues_f[i-13];
-        //     }
-        //     Eigen::VectorXd vec_f = Eigen::Map<Eigen::VectorXd>(eigenVectors_f.data(), eigenVectors_f.size());
-        //     for (size_t i = 16; i < 25; i++)
-        //     {
-        //         _robot.Measure[i] = vec_f[i-16];
-        //     }
+    
+    // --- Measure manipulability ---
+    Eigen::MatrixXd matJacobPos = _robot.jacobPos * _robot.jacobPos.transpose();
+    double manipulability = std::sqrt(matJacobPos.determinant());
+    _robot.Measure[0] = manipulability; // Store manipulability Measure
 
-        //--- Compute SVD
-            Eigen::JacobiSVD<Eigen::MatrixXd> svd_f(_robot.jacob.transpose(), Eigen::ComputeFullU | Eigen::ComputeFullV);
-            //--- Get singular values and U matrix
-            Eigen::VectorXd eigenValues_f = svd_f.singularValues();
-            Eigen::MatrixXd eigenVectors_f_U = svd_f.matrixU();
-            Eigen::MatrixXd eigenVectors_f_U_sub = eigenVectors_f_U.block(0,0,3,3);
-            for (size_t i = 13; i < 16; i++)
-            {
-                _robot.Measure[i] = eigenValues_f[i-13];
-            }
-            Eigen::VectorXd vec_f = Eigen::Map<Eigen::VectorXd>(eigenVectors_f_U_sub.data(), eigenVectors_f_U_sub.size());
-            for (size_t i = 16; i < 25; i++)
-            {
-                _robot.Measure[i] = vec_f[i-16];
-            }
+    // --- Compute manipulability ellipsoid ---
+    Eigen::JacobiSVD<Eigen::MatrixXd> svd_m(_robot.jacobPos, Eigen::ComputeFullU | Eigen::ComputeFullV);
+    Eigen::VectorXd eigenValues_m = svd_m.singularValues();
+    Eigen::MatrixXd eigenVectors_m_U = svd_m.matrixU();
+    Eigen::MatrixXd eigenVectors_m_U_sub = eigenVectors_m_U.block(0, 0, 3, 3);
+
+    for (size_t i = 1; i < 4; i++) {
+        _robot.Measure[i] = eigenValues_v[i - 1]; // Store eigenvalues
+    }
+    Eigen::VectorXd vec_v = Eigen::Map<Eigen::VectorXd>(eigenVectors_v.data(), eigenVectors_v.size());
+    for (size_t i = 4; i < 13; i++) {
+        _robot.Measure[i] = vec_v[i - 4]; // Store eigenvectors
+    }
+
+    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> solver_invJJt(invJJt);
+    // Force Ellipsoid
+    Eigen::VectorXd eigenValues_f2 = solver_invJJt.eigenvalues();
+    Eigen::MatrixXd eigenVectors_f2 = solver_invJJt.eigenvectors();
+
+    // --- Compute force ellipsoid ---
+    Eigen::JacobiSVD<Eigen::MatrixXd> svd_f(_robot.jacob.transpose(), Eigen::ComputeFullU | Eigen::ComputeFullV);
+    Eigen::VectorXd eigenValues_f = svd_f.singularValues();
+    Eigen::MatrixXd eigenVectors_f_U = svd_f.matrixU();
+    Eigen::MatrixXd eigenVectors_f_U_sub = eigenVectors_f_U.block(0, 0, 3, 3);
+
+    for (size_t i = 13; i < 16; i++) {
+        _robot.Measure[i] = eigenValues_f2[i - 13]; // Store eigenvalues
+    }
+    Eigen::VectorXd vec_f2 = Eigen::Map<Eigen::VectorXd>(eigenVectors_f2.data(), eigenVectors_f2.size());
+    for (size_t i = 16; i < 25; i++) {
+        _robot.Measure[i] = vec_f2[i - 16]; // Store eigenvectors
+    }
+
+    // --- Save data to TXT ---
+    std::string recPath="/home/ros/ros_ws/src/iiwa_toolkit/Data/";
+    // std::cerr << "-------------------------------------------------" << std::endl;
+    std::ofstream file(recPath + "robot_data.txt", std::ios::app); // Open in append mode
+    if (file.is_open()) {
+        // --- save the time stamp
+        file << "time: ";
+        file << ros::Time::now() << "\n";
+        // std::cerr << "????????????????????????????????????????????" << std::endl;
+        // Save joint positions
+        file << "Joint Positions: ";
+        for (size_t i = 0; i < _robot.jnt_position.size(); ++i) {
+            file << _robot.jnt_position[i] << " ";
+        }
+        file << "\n";
+
+        // Save end-effector position
+        file << "End-Effector Position: ";
+        for (size_t i = 0; i < 3; ++i) {
+            file << _robot.ee_pos[i] << " ";
+        }
+        file << "\n";
+
+        // Save end-effector quaternion (orientation)
+        file << "End-Effector Quaternion: ";
+        for (size_t i = 0; i < 4; ++i) {
+            file << _robot.ee_quat[i] << " ";
+        }
+        file << "\n";
+
+        // Save manipulability Measure
+        file << "Manipulability: " << manipulability << "\n";
+
+        // Save manipulability ellipsoid eigenvalues
+        file << "Manipulability Ellipsoid Eigenvalues: ";
+        for (size_t i = 0; i < 3; ++i) {
+            file << eigenValues_v[i] << " ";
+        }
+        file << "\n";
+
+        // Save manipulability ellipsoid eigenvectors
+        file << "Manipulability Ellipsoid Eigenvectors: ";
+        for (size_t i = 0; i < eigenVectors_v.size(); ++i) {
+            file << eigenVectors_v(i) << " ";
+        }
+        file << "\n";
+
+        // Save force ellipsoid eigenvalues
+        file << "Force Ellipsoid Eigenvalues: ";
+        for (size_t i = 0; i < 3; ++i) {
+            file << eigenValues_f2[i] << " ";
+        }
+        file << "\n";
+
+        // Save force ellipsoid eigenvectors
+        file << "Force Ellipsoid Eigenvectors: ";
+        for (size_t i = 0; i < eigenVectors_f2.size(); ++i) {
+            file << eigenVectors_f2(i) << " ";
+        }
+        file << "\n";
+
+        // Save force ellipsoid eigenvectors
+        file << "joint effort: ";
+        for (size_t i = 0; i < _trq_cmd.size(); ++i) {
+            file << _trq_cmd(i) << " ";
+        }
+        file << "\n";
+
+        file << "----------------------------------------\n"; // Separator for readability
+        file.close();
+    } else {
+        std::cerr << "Error: Unable to open file for writing!" << std::endl;
+    }
+
+
 }
 
 Eigen::Vector3d PassiveNullControl::getEEpos(){
@@ -264,9 +323,9 @@ Eigen::Vector3d PassiveNullControl::getEEVel(){
 Eigen::Vector3d PassiveNullControl::getEEAngVel(){
     return _robot.ee_angVel;
 }
-Eigen::VectorXd PassiveNullControl::getMeasure(){
-    return _robot.Measure;
-}
+// Eigen::VectorXd PassiveNullControl::getMeasure(){
+//     return _robot.Measure;
+// }
 
 void PassiveNullControl::set_pos_gains(const double& ds, const double& lambda0,const double& lambda1){
     dsGain_pos = ds;
@@ -304,6 +363,10 @@ void PassiveNullControl::set_desired_velocity(const Eigen::Vector3d& vel){
      is_just_velocity = true;
 }
 
+void PassiveNullControl::set_null_space(const Eigen::Matrix<double, 7, 1>& desired_null_space){
+     _robot.null_space_optimal = desired_null_space;
+    //  std::cerr<<"null_space_optimal in damping controller: "<<_robot.null_space_optimal(0)<<","<<_robot.null_space_optimal(1)<<","<<_robot.null_space_optimal(2)<<"\n";
+}
 
 void PassiveNullControl::set_load(const double& mass ){
     load_added = mass;
@@ -326,8 +389,16 @@ void PassiveNullControl::computeTorqueCmd(){
     xgain(0,0) *= 1.5; 
 
     if(!is_just_velocity)
-        _robot.ee_des_vel = dsGain_pos*(1+std::exp(theta_g)) *deltaX;
-
+        {
+            _robot.ee_des_vel = dsGain_pos*(1+std::exp(theta_g)) *deltaX;
+            // _robot.ee_des_vel_for_DMatrix = dsGain_pos*(1+std::exp(theta_g)) *deltaX;
+            Eigen::MatrixXd Tran_rot_eigen(3,3);
+            Tran_rot_eigen(0,0)=1;Tran_rot_eigen(0,1)=0;Tran_rot_eigen(0,2)=0;
+            Tran_rot_eigen(1,0)=0;Tran_rot_eigen(1,1)=0;Tran_rot_eigen(1,2)=1;
+            Tran_rot_eigen(2,0)=0;Tran_rot_eigen(2,1)=1;Tran_rot_eigen(2,2)=0;
+            // _robot.ee_des_z_vel_for_DMatrix=Tran_rot_eigen*_robot.ee_des_vel_for_DMatrix;
+            ROS_WARN_THROTTLE(0.1, "didn't get desired vel");
+        }    
     // desired angular values
     Eigen::Vector4d dqd = Utils<double>::slerpQuaternion(_robot.ee_quat, _robot.ee_des_quat, 0.5);    
     Eigen::Vector4d deltaQ = dqd -  _robot.ee_quat;
@@ -343,7 +414,21 @@ void PassiveNullControl::computeTorqueCmd(){
 
     double theta_gq = (-.5/(4*maxDq*maxDq)) * tmp_angular_vel.transpose() * tmp_angular_vel;
     _robot.ee_des_angVel  = 2 * dsGain_ori*(1+std::exp(theta_gq)) * tmp_angular_vel;
+    // _robot.ee_des_vel_for_DMatrix_ANGLE  = 2 * dsGain_ori*(1+std::exp(theta_gq)) * tmp_angular_vel;
+    Eigen::MatrixXd Tran_rot_eigen(3,3);
+    Tran_rot_eigen(0,0)=1;Tran_rot_eigen(0,1)=0;Tran_rot_eigen(0,2)=0;
+    Tran_rot_eigen(1,0)=0;Tran_rot_eigen(1,1)=0;Tran_rot_eigen(1,2)=1;
+    Tran_rot_eigen(2,0)=0;Tran_rot_eigen(2,1)=1;Tran_rot_eigen(2,2)=0;
+    // _robot.ee_des_z_vel_for_DMatrix_ANGLE  = Tran_rot_eigen*_robot.ee_des_vel_for_DMatrix_ANGLE;
 
+
+    //----- wr ------ set ref_dzvel small if some code didn't send this comment
+        // if (std::isnan(_robot.ee_des_z_vel_for_DMatrix.norm())) {
+        //     ROS_WARN_THROTTLE(0.1, "ref_dzvel is generating NaN. Setting the output near to zero.");
+        //     _robot.ee_des_z_vel_for_DMatrix.setZero();
+        //     _robot.ee_des_z_vel_for_DMatrix= {0.0 , 0.0, 0.00001};
+        // }
+        
     // -----------------------get desired force in task space
     dsContPos->update(_robot.ee_vel,_robot.ee_des_vel);
     Eigen::Vector3d wrenchPos = dsContPos->get_output() + load_added * 9.8*Eigen::Vector3d::UnitZ();   
@@ -358,96 +443,35 @@ void PassiveNullControl::computeTorqueCmd(){
     //sum up:
     Eigen::VectorXd tmp_jnt_trq = tmp_jnt_trq_pos + tmp_jnt_trq_ang;
 
-    //----------------------- null pos control
-    //--- fashard old code
-        // Eigen::MatrixXd tempMat2 =  Eigen::MatrixXd::Identity(7,7) - _robot.jacob.transpose()* _robot.pseudo_inv_jacob* _robot.jacob;
-        // Eigen::VectorXd nullgains = Eigen::VectorXd::Zero(7);
-        // nullgains << 5.,80,10.,30,5.,2.,2.;
-        // Eigen::VectorXd er_null = _robot.jnt_position -_robot.nulljnt_position;
-        // ROS_INFO_ONCE("!!!!!!!!!!!!!!!!   er_null.norm(): %f", er_null.norm());           
-        // if(er_null.norm()<1.5){
-        //     first = false;
-        // }
-        // if(er_null.norm()>2e-1){
-        //     er_null = 0.2*er_null.normalized();
-        // }
-        // Eigen::VectorXd tmp_null_trq = Eigen::VectorXd::Zero(7);
-        // for (int i =0; i<7; i++){
-        //     tmp_null_trq[i] = -nullgains[i] * er_null[i];
-        //     tmp_null_trq[i] +=-1. * _robot.jnt_velocity[i];
-        // }
-        // if (first){
-        //     _trq_cmd = tmp_null_trq;
-        //     ROS_INFO_ONCE("!!!!!!!!!!!!!!!!going to the first pose!!!!!!!!!!!!!!!!!!!!!!");                 
-        // }else{
-        //     ROS_INFO_ONCE("!!!!!!!!!!!!!!!!!!Tracking in process!!!!!!!!!!!!!!!!!!!!!!!");
-        //     _trq_cmd = tmp_jnt_trq + 10.*tempMat2 * tmp_null_trq;
-        // }
-
-        // // _trq_cmd = tmp_jnt_trq;
-
-    //--- fashard old code modify
-        Eigen::MatrixXd tempMat2 =  Eigen::MatrixXd::Identity(7,7) - _robot.jacob.transpose()* _robot.pseudo_inv_jacob* _robot.jacob;
-        Eigen::VectorXd nullgains = Eigen::VectorXd::Zero(7);
-        nullgains << 5.,80,10.,30,5.,2.,2.;
-        Eigen::VectorXd er_null = _robot.jnt_position -_robot.nulljnt_position;
-
-        er_null << 0.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-
-        ROS_INFO_ONCE("!!!!!!!!!!!!!!!!   er_null.norm(): %f", er_null.norm());           
-        if(er_null.norm()<1.5){
-            first = false;
-        }
-        if(er_null.norm()>2e-1){
-            er_null = 0.2*er_null.normalized();
-        }
-        Eigen::VectorXd tmp_null_trq = Eigen::VectorXd::Zero(7);
-        for (int i =0; i<7; i++){
-            tmp_null_trq[i] = -nullgains[i] * er_null[i];
-            tmp_null_trq[i] +=-1. * _robot.jnt_velocity[i];
-        }
-        if (first){
-            _trq_cmd = tmp_null_trq;
-            ROS_INFO_ONCE("!!!!!!!!!!!!!!!!going to the first pose!!!!!!!!!!!!!!!!!!!!!!");                 
-        }else{
-            ROS_INFO_ONCE("!!!!!!!!!!!!!!!!!!Tracking in process!!!!!!!!!!!!!!!!!!!!!!!");
-            _trq_cmd = tmp_jnt_trq + 10.*tempMat2 * tmp_null_trq;
-        }
-
-        // _trq_cmd = tmp_jnt_trq;
-
-    //--- wr new null control
-        // Eigen::MatrixXd null_jacob =  Eigen::MatrixXd::Identity(7,7) - (_robot.jacob.transpose()*_robot.pseudo_inv_jacob)*_robot.jacob;
-        // Eigen::VectorXd tmp_null_trq = Eigen::VectorXd::Zero(7);
-        // Eigen::VectorXd null_joint_vel = Eigen::VectorXd::Zero(7);
-        // null_joint_vel << -.75, 0.0, 0.0, -.75, 0., 0.0, 0.0;
-        // tmp_null_trq=null_jacob*null_joint_vel;
-        // _trq_cmd = tmp_jnt_trq + tmp_null_trq;
-
-    //--- wr null based on  https://arxiv.org/pdf/2212.11215.pdf
-        // Eigen::MatrixXd tempMat2 =  Eigen::MatrixXd::Identity(7,7) - _robot.jacob.transpose()* _robot.pseudo_inv_jacob_trans;
-        // Eigen::VectorXd nullgains = Eigen::VectorXd::Zero(7);
-        // nullgains << 5.,80,10.,30,5.,2.,2.;
-        // Eigen::VectorXd er_null = _robot.jnt_position -_robot.nulljnt_position;
-        // ROS_INFO_ONCE("!!!!!!!!!!!!!!!!   er_null.norm(): %f", er_null.norm());           
-        // if(er_null.norm()<1.5){
-        //     first = false;
-        // }
-        // if(er_null.norm()>2e-1){
-        //     er_null = 0.2*er_null.normalized();
-        // }
-        // Eigen::VectorXd tmp_null_trq = Eigen::VectorXd::Zero(7);
-        // for (int i =0; i<7; i++){
-        //     tmp_null_trq[i] = -nullgains[i] * er_null[i];
-        //     tmp_null_trq[i] +=-1. * _robot.jnt_velocity[i];
-        // }
-        // if (first){
-        //     _trq_cmd = tmp_null_trq;
-        //     ROS_INFO_ONCE("!!!!!!!!!!!!!!!!going to the first pose!!!!!!!!!!!!!!!!!!!!!!");                 
-        // }else{
-        //     ROS_INFO_ONCE("!!!!!!!!!!!!!!!!!!Tracking in process!!!!!!!!!!!!!!!!!!!!!!!");
-        //     _trq_cmd = tmp_jnt_trq + 10.*tempMat2 * tmp_null_trq;
-        // }
+    // null pos control
+    Eigen::MatrixXd tempMat2 =  Eigen::MatrixXd::Identity(7,7) - _robot.jacob.transpose()* _robot.pseudo_inv_jacob* _robot.jacob;
+    Eigen::VectorXd nullgains = Eigen::VectorXd::Zero(7);
+    nullgains << 5.,80,10.,30,5.,2.,2.;
+    // if null_space_optimal is zero vector
+    if(_robot.null_space_optimal.norm() < 1e-6) 
+    {
+        printf("null_space_optimal is zero vector\n");
+        _robot.null_space_optimal = _robot.nulljnt_position;
+    }
+    Eigen::VectorXd er_null = _robot.jnt_position -_robot.null_space_optimal;
+    if(er_null.norm()<1.5){
+        first = false;
+    }
+    if(er_null.norm()>2e-1){
+        er_null = 0.2*er_null.normalized();
+    }
+    Eigen::VectorXd tmp_null_trq = Eigen::VectorXd::Zero(7);
+    for (int i =0; i<7; i++){ 
+        tmp_null_trq[i] = -nullgains[i] * er_null[i];
+        tmp_null_trq[i] +=-1. * _robot.jnt_velocity[i];
+    }
+    if (first){
+        _trq_cmd = tmp_null_trq;
+        ROS_INFO_ONCE("going to the first pose ");                 
+    }else{
+        ROS_INFO_ONCE("Tracking in process");
+        _trq_cmd = tmp_jnt_trq + 10.*tempMat2 * tmp_null_trq;
+    }
 
 
 
