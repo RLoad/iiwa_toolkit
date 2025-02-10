@@ -45,6 +45,8 @@ class JointOptimal:
         self.current_orientation = None
         self.current_jt_position = None
 
+        self.optimal_state = False
+
         self.current_iteration = 0
 
         # define self.Joint_optimal_configure = Float64MultiArray() as a 7D vector
@@ -131,6 +133,7 @@ class JointOptimal:
             print("optimal done")
             print(CmanT_min)
             print(qT_opt)
+            self.optimal_state = True
             # Example: Pack 7 values into the Float64MultiArray data
             # Joint_optimal_configure.data = [
             #     self.current_position["x"],
@@ -188,18 +191,29 @@ class JointOptimal:
         
         self.Htmp_init = self.robot.fkine(self.current_jt_position)
 
-        # print current iteration each 1000 iterations
-        if self.current_iteration % 1000 == 0:
-            print(self.current_iteration)
-        if self.current_iteration == 8000:
-            print("Calculating optimal")
-            self.calculate_optimal()
+        # #------------hide this part to make better triger----------------
+        # # print current iteration each 1000 iterations
+        # if self.current_iteration % 1000 == 0:
+        #     print(self.current_iteration)
+        # if self.current_iteration == 4000:
+        #     print("Calculating optimal")
+        #     self.calculate_optimal()
 
-        self.pub_null_space_state.publish(self.Joint_optimal_configure)
+        # self.pub_null_space_state.publish(self.Joint_optimal_configure)
 
-        #if self.first_iter is True:
-        #    self.calculate_optimal()
-        #    self.first_iter = False
+        # #if self.first_iter is True:
+        # #    self.calculate_optimal()
+        # #    self.first_iter = False
+
+        # #--------------------------------------------------
+        print(f"optimal state: ----------- {self.optimal_state}")
+        if self.current_iteration >= 3000:
+            if self.optimal_state == False:
+                self.calculate_optimal()
+                #-- wait 3 seconds before next iteration
+                rospy.sleep(0.5)
+                self.optimal_state = False
+            self.pub_null_space_state.publish(self.Joint_optimal_configure)
 
 
         
