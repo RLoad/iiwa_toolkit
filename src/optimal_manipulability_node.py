@@ -206,14 +206,14 @@ class JointOptimal:
         # #    self.first_iter = False
 
         # #--------------------------------------------------
-        print(f"optimal state: ----------- {self.optimal_state}")
-        if self.current_iteration >= 3000:
-            if self.optimal_state == False:
-                self.calculate_optimal()
-                #-- wait 3 seconds before next iteration
-                rospy.sleep(0.5)
-                self.optimal_state = False
-            self.pub_null_space_state.publish(self.Joint_optimal_configure)
+        # print(f"optimal state: ----------- {self.optimal_state}")
+        # if self.current_iteration >= 3000:
+        #     if self.optimal_state == False:
+        #         self.calculate_optimal()
+        #         #-- wait 3 seconds before next iteration
+        #         rospy.sleep(0.5)
+        #         self.optimal_state = False
+        #     self.pub_null_space_state.publish(self.Joint_optimal_configure)
 
 
         
