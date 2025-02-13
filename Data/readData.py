@@ -2,7 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Reading and processing data from Force.txt
-force_file = 'semester-project-Maksymiliann/data_plot_saved/realRobotSurfOptimal/Force.txt'
+path='/home/ros/ros_ws/src/iiwa_toolkit/Data/'
+# exp_name = 'RealRobotSshapeSurfWithOpt'
+# exp_name = 'realRobotSshapeSurfNoOpt'
+# exp_name = 'A_RealRSurfOnlyCircleNoOpt'
+# exp_name = 'A_RealRSurfOnlyCirclewithOPT'
+exp_name = 'B_RealRSurfOnlyCirclewithOPT_smallCircle'
+# exp_name = 'B_RealRSurfOnlyCircleNoOPT_smallCircle/2'
+force_file = path+exp_name+'/Force.txt'
 
 force_time = []
 real_force_filtered = []
@@ -47,7 +54,7 @@ plt.legend()
 plt.xlabel('Time (s)')
 plt.ylabel('Force (N)')
 plt.title('Real vs Desired Forces over Time')
-plt.ylim([-25, 5])
+plt.ylim([-30, 10])
 plt.grid(True)
 plt.show()
 
@@ -58,12 +65,12 @@ plt.legend()
 plt.xlabel('Time (s)')
 plt.ylabel('Error (N)')
 plt.title('Error between Desired and Real Force in Z-direction')
-plt.ylim([-25, 5])
+plt.ylim([-10, 10])
 plt.grid(True)
 plt.show()
 
 # Reading and processing data from robot_data.txt
-robot_file = 'semester-project-Maksymiliann/data_plot_saved/realRobotSurfOptimal/robot_data.txt'
+robot_file = path+exp_name+'/robot_data.txt'
 
 robot_time = []
 joint_positions = []
@@ -112,10 +119,6 @@ mean_effort_per_time = np.mean(joint_effort, axis=1)
 max_joint_effort = np.max(joint_effort)
 
 # Displaying Results
-print('Mean Effort at Each Time Step:')
-for time, effort in zip(robot_time, mean_effort_per_time):
-    print(f'Time {time:.4f} - Mean Effort: {effort:.4f}')
-
 print(f'Maximum Effort Across All Joints and Time Steps: {max_joint_effort:.4f}')
 
 # Plotting Joint Efforts
@@ -126,7 +129,7 @@ plt.legend()
 plt.xlabel('Time (s)')
 plt.ylabel('Effort')
 plt.title('Joint Efforts over Time')
-plt.ylim([-25, 5])
+plt.ylim([-20, 20])
 plt.grid(True)
 plt.show()
 
@@ -137,7 +140,7 @@ plt.legend()
 plt.xlabel('Time (s)')
 plt.ylabel('Mean Effort')
 plt.title('Mean Joint Effort Over Time')
-plt.ylim([-25, 5])
+plt.ylim([-10, 10])
 plt.grid(True)
 plt.show()
 
@@ -150,6 +153,6 @@ plt.legend()
 plt.xlabel('Time (s)')
 plt.ylabel('Position (m)')
 plt.title('End-Effector Position over Time')
-plt.ylim([-25, 5])
+# plt.ylim([-10, 10])
 plt.grid(True)
 plt.show()
