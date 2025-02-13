@@ -7,8 +7,22 @@ path='/home/ros/ros_ws/src/iiwa_toolkit/Data/'
 # exp_name = 'realRobotSshapeSurfNoOpt'
 # exp_name = 'A_RealRSurfOnlyCircleNoOpt'
 # exp_name = 'A_RealRSurfOnlyCirclewithOPT'
-exp_name = 'B_RealRSurfOnlyCirclewithOPT_smallCircle'
+# exp_name = 'B_RealRSurfOnlyCirclewithOPT_smallCircle'
 # exp_name = 'B_RealRSurfOnlyCircleNoOPT_smallCircle/2'
+exp_name = 'C_MIDS_cricle_without_opt'
+# exp_name = 'C_with_opt'
+
+# here save all figures into folder with name as exp_name
+fig_path = path+exp_name+'/figures/'
+import os
+if not os.path.exists(fig_path):
+    os.makedirs(fig_path)
+
+
+
+
+
+# ----------------read data -------------
 force_file = path+exp_name+'/Force.txt'
 
 force_time = []
@@ -56,6 +70,7 @@ plt.ylabel('Force (N)')
 plt.title('Real vs Desired Forces over Time')
 plt.ylim([-30, 10])
 plt.grid(True)
+plt.savefig(fig_path+'Real_vs_Desired_Forces.png')
 plt.show()
 
 # Plotting Z-direction Force Error
@@ -67,6 +82,7 @@ plt.ylabel('Error (N)')
 plt.title('Error between Desired and Real Force in Z-direction')
 plt.ylim([-10, 10])
 plt.grid(True)
+plt.savefig(fig_path+'Force_Error.png')
 plt.show()
 
 # Reading and processing data from robot_data.txt
@@ -131,6 +147,7 @@ plt.ylabel('Effort')
 plt.title('Joint Efforts over Time')
 plt.ylim([-20, 20])
 plt.grid(True)
+plt.savefig(fig_path+'Joint_Efforts.png')
 plt.show()
 
 # Plotting Mean Effort Over Time
@@ -142,6 +159,7 @@ plt.ylabel('Mean Effort')
 plt.title('Mean Joint Effort Over Time')
 plt.ylim([-10, 10])
 plt.grid(True)
+plt.savefig(fig_path+'Mean_Joint_Effort.png')
 plt.show()
 
 # Plotting End-Effector Position
@@ -155,4 +173,9 @@ plt.ylabel('Position (m)')
 plt.title('End-Effector Position over Time')
 # plt.ylim([-10, 10])
 plt.grid(True)
+plt.savefig(fig_path+'End-Effector_Position.png')
 plt.show()
+
+
+
+
