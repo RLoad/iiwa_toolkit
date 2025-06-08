@@ -49,7 +49,13 @@ include_directories(${EIGEN3_INCLUDE_DIR})
 add_executable(limbo_interface src/node_limbo_interface.cpp ${MODEL_SOURCES})
 target_link_libraries(limbo_interface ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
 
-add_executable(passive_track src/node_passive_track.cpp  src/passive_control.cpp include/thirdparty/Utils.cpp ${MODEL_SOURCES})
+# ---for ros1
+# add_executable(passive_track src/node_passive_track.cpp  src/passive_control.cpp include/thirdparty/Utils.cpp ${MODEL_SOURCES})
+# target_link_libraries(passive_track ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
+# add_dependencies(passive_track ${PROJECT_NAME}_gencfg)
+
+# ---for ros2
+add_executable(passive_track src/node_passive_track_for_ROS2.cpp  src/passive_control.cpp include/thirdparty/Utils.cpp ${MODEL_SOURCES})
 target_link_libraries(passive_track ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
 add_dependencies(passive_track ${PROJECT_NAME}_gencfg)
 
