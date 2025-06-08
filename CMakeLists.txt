@@ -49,15 +49,13 @@ include_directories(${EIGEN3_INCLUDE_DIR})
 add_executable(limbo_interface src/node_limbo_interface.cpp ${MODEL_SOURCES})
 target_link_libraries(limbo_interface ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
 
-# ---for ros1
-# add_executable(passive_track src/node_passive_track.cpp  src/passive_control.cpp include/thirdparty/Utils.cpp ${MODEL_SOURCES})
-# target_link_libraries(passive_track ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
-# add_dependencies(passive_track ${PROJECT_NAME}_gencfg)
-
-# ---for ros2
-add_executable(passive_track src/node_passive_track_for_ROS2.cpp  src/passive_control.cpp include/thirdparty/Utils.cpp ${MODEL_SOURCES})
+add_executable(passive_track src/node_passive_track.cpp  src/passive_control.cpp include/thirdparty/Utils.cpp ${MODEL_SOURCES})
 target_link_libraries(passive_track ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
 add_dependencies(passive_track ${PROJECT_NAME}_gencfg)
+
+add_executable(passive_twist_track src/node_passive_twist_track.cpp  src/passive_twist_control.cpp include/thirdparty/Utils.cpp ${MODEL_SOURCES})
+target_link_libraries(passive_twist_track ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
+add_dependencies(passive_twist_track ${PROJECT_NAME}_gencfg)
 
 
 add_executable(marker_following src/node_marker_following.cpp  src/motion_capture.cpp src/passive_control.cpp include/thirdparty/Utils.cpp ${MODEL_SOURCES})

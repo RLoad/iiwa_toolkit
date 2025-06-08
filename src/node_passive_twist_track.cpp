@@ -24,12 +24,13 @@
 #include "sensor_msgs/JointState.h"
 #include "geometry_msgs/PoseStamped.h"
 #include "geometry_msgs/Twist.h"
+#include "geometry_msgs/TwistStamped.h"
 
 #include "ros/ros.h"
 #include <ros/package.h>
 #include <Eigen/Dense>
 
-#include "passive_control.h"
+#include "passive_twist_control.h"
 #include "iiwa_toolkit/passive_cfg_paramsConfig.h"
 #include "dynamic_reconfigure/server.h"
 
@@ -92,6 +93,8 @@ class IiwaRosMaster
             boost::bind(&IiwaRosMaster::updateControlPos,this,_1),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
         _subControl[1] = _n.subscribe<geometry_msgs::PoseStamped>("/passive_control/vel_quat", 1,
             boost::bind(&IiwaRosMaster::updateControlVel,this,_1),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
+        _subControlTwist = _n.subscribe<geometry_msgs::TwistStamped>("/passive_control/twist", 1,
+            boost::bind(&IiwaRosMaster::updateCTwistToControlVel,this,_1),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
 
         _subDamping = _n.subscribe<std_msgs::Float64MultiArray>("/lwr/joint_controllers/passive_ds_eig", 1,
             boost::bind(&IiwaRosMaster::updateDamping,this,_1),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
@@ -200,6 +203,8 @@ class IiwaRosMaster
     ros::Subscriber _subRobotStates[No_Robots];
 
     ros::Subscriber _subControl[2];
+
+    ros::Subscriber _subControlTwist;
 
     ros::Subscriber _subDamping;
 
@@ -337,6 +342,19 @@ class IiwaRosMaster
             ROS_WARN("VELOCITY OUT OF BOUND");
         }
     }
+
+    // void updateCTwistToControlVel(const geometry_msgs::TwistStamped::ConstPtr& msg){
+    //     Eigen::Vector3d vel;
+    //     Eigen::Vector3d angVel;
+    //     vel << (double)msg->twist.linear.x, (double)msg->twist.linear.y, (double)msg->twist.linear.z;
+    //     angVel << (double)msg->twist.angular.x, (double)msg->twist.angular.y, (double)msg->twist.angular.z;
+
+    //     if(vel.norm()<1. && angVel.norm()<1.){
+    //         _controller->set_desired_twist(vel, angVel,_dt);
+    //     }else{
+    //         ROS_WARN("VELOCITY OUT OF BOUND");
+    //     }
+    // }
 
     void param_cfg_callback(iiwa_toolkit::passive_cfg_paramsConfig& config, uint32_t level){
         ROS_INFO("Reconfigure request.. Updating the parameters ... ");
