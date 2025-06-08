@@ -322,7 +322,7 @@ class IiwaRosMaster
         }
     }
 
-    void updateControlVel(const geometry_msgs::Pose::ConstPtr& msg){
+    void updateControlVel(const geometry_msgs::PoseStamped::ConstPtr& msg){
         Eigen::Vector3d vel;
         Eigen::Vector4d quat;
         vel << (double)msg->pose.position.x, (double)msg->pose.position.y, (double)msg->pose.position.z;
