@@ -231,10 +231,9 @@ void PassiveControl::set_desired_velocity(const Eigen::Vector3d& vel){
 }
 void PassiveControl::set_desired_twist(
     const Eigen::Vector3d& vel,
-    const Eigen::Vector3d& angVel,
-    const double& dt){
+    const Eigen::Vector3d& angVel){
     // 1) Record that we're in velocity‐only mode
-    is_just_velocity = true;
+    is_use_twist = true;
 
     // 2) Set desired linear velocity
     _robot.ee_des_vel = vel;
@@ -248,35 +247,43 @@ void PassiveControl::set_desired_twist(
       _robot.ee_quat[3]
     );
 
-    //    Magnitude of angular speed:
-    double omega = angVel.norm();
-    Eigen::Quaterniond q_delta;
-    if (omega < 1e-6) {
-      // small‐angle approx: q_delta ≈ [1, ½ωΔt]
-      q_delta.w() = 1.0;
-      q_delta.x() = 0.5 * angVel.x() * dt;
-      q_delta.y() = 0.5 * angVel.y() * dt;
-      q_delta.z() = 0.5 * angVel.z() * dt;
-    } else {
-      // exact axis–angle:
-      double theta = omega * dt;
-      Eigen::Vector3d axis = angVel / omega;
-      q_delta = Eigen::AngleAxisd(theta, axis);
-    }
-    q_delta.normalize();
+    _robot.ee_des_angVel = angVel;
 
-    // 4) Compute the new desired quaternion
-    Eigen::Quaterniond q_new = (q_delta * q_current).normalized();
+    // //    Magnitude of angular speed:
+    // double omega = angVel.norm();
+    // Eigen::Quaterniond q_delta;
+    // if (omega < 1e-6) {
+    //   // small‐angle approx: q_delta ≈ [1, ½ωΔt]
+    //   q_delta.w() = 1.0;
+    //   q_delta.x() = 0.5 * angVel.x() * dt;
+    //   q_delta.y() = 0.5 * angVel.y() * dt;
+    //   q_delta.z() = 0.5 * angVel.z() * dt;
+    //   // log warning
+    //   ROS_WARN_STREAM_THROTTLE(1, "Angular velocity is too small, using small-angle approximation.");
+        
+    // } else {
+    //   // exact axis–angle:
+    //   double theta = omega * dt;
+    //   Eigen::Vector3d axis = angVel / omega;
+    //   q_delta = Eigen::AngleAxisd(theta, axis);
+    //     // log information
+    //     ROS_INFO_STREAM_THROTTLE(1, "Using exact axis-angle for angular velocity, axis= " << axis.transpose() << ", theta = " << theta);
+    // }
+    // q_delta.normalize();
 
-    // 5) Store back into your robot struct [w, x, y, z]
-    _robot.ee_des_quat[0] = q_new.w();
-    _robot.ee_des_quat[1] = q_new.x();
-    _robot.ee_des_quat[2] = q_new.y();
-    _robot.ee_des_quat[3] = q_new.z();
+    // // 4) Compute the new desired quaternion
+    // Eigen::Quaterniond q_new = (q_delta * q_current).normalized();
 
-    // log information
-    ROS_INFO_STREAM_THROTTLE(1, "Setting desired twist: vel = " << vel.transpose() << ", angVel = " << angVel.transpose() << ", dt = " << dt);
-    ROS_INFO_STREAM_THROTTLE(1, "New desired quaternion: " << _robot.ee_des_quat.transpose());
+    // // 5) Store back into your robot struct [w, x, y, z]
+    // _robot.ee_des_quat[0] = q_new.w();
+    // _robot.ee_des_quat[1] = q_new.x();
+    // _robot.ee_des_quat[2] = q_new.y();
+    // _robot.ee_des_quat[3] = q_new.z();
+
+    // // log information
+    // ROS_INFO_STREAM_THROTTLE(1, "Setting desired twist: vel = " << vel.transpose() << ", angVel = " << angVel.transpose() << ", dt = " << dt);
+    // ROS_INFO_STREAM_THROTTLE(1, "New desired quaternion: " << _robot.ee_des_quat.transpose());
+    // ROS_INFO_STREAM_THROTTLE(1, "real quaternion: " << _robot.ee_quat.transpose());
 }
 
 void PassiveControl::set_load(const double& mass ){
@@ -303,20 +310,26 @@ void PassiveControl::computeTorqueCmd(){
         _robot.ee_des_vel = dsGain_pos*(1+std::exp(theta_g)) *deltaX;
 
     // desired angular values
-    Eigen::Vector4d dqd = Utils<double>::slerpQuaternion(_robot.ee_quat, _robot.ee_des_quat, 0.5);    
-    Eigen::Vector4d deltaQ = dqd -  _robot.ee_quat;
+    if(!is_use_twist)
+        {Eigen::Vector4d dqd = Utils<double>::slerpQuaternion(_robot.ee_quat, _robot.ee_des_quat, 0.5);    
+        Eigen::Vector4d deltaQ = dqd -  _robot.ee_quat;
 
-    Eigen::Vector4d qconj = _robot.ee_quat;
-    qconj.segment(1,3) = -1 * qconj.segment(1,3);
-    Eigen::Vector4d temp_angVel = Utils<double>::quaternionProduct(deltaQ, qconj);
+        Eigen::Vector4d qconj = _robot.ee_quat;
+        qconj.segment(1,3) = -1 * qconj.segment(1,3);
+        Eigen::Vector4d temp_angVel = Utils<double>::quaternionProduct(deltaQ, qconj);
 
-    Eigen::Vector3d tmp_angular_vel = temp_angVel.segment(1,3);
-    double maxDq = 0.2;
-    if (tmp_angular_vel.norm() > maxDq)
-        tmp_angular_vel = maxDq * tmp_angular_vel.normalized();
+        Eigen::Vector3d tmp_angular_vel = temp_angVel.segment(1,3);
+        double maxDq = 0.2;
+        if (tmp_angular_vel.norm() > maxDq)
+            tmp_angular_vel = maxDq * tmp_angular_vel.normalized();
 
-    double theta_gq = (-.5/(4*maxDq*maxDq)) * tmp_angular_vel.transpose() * tmp_angular_vel;
-    _robot.ee_des_angVel  = 2 * dsGain_ori*(1+std::exp(theta_gq)) * tmp_angular_vel;
+        double theta_gq = (-.5/(4*maxDq*maxDq)) * tmp_angular_vel.transpose() * tmp_angular_vel;
+        _robot.ee_des_angVel  = 2 * dsGain_ori*(1+std::exp(theta_gq)) * tmp_angular_vel;
+    }else{
+        // if we are using twist, then we should not change the desired angular velocity
+
+    }
+    
 
     // -----------------------get desired force in task space
     dsContPos->update(_robot.ee_vel,_robot.ee_des_vel);

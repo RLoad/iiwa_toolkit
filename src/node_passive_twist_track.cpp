@@ -91,7 +91,7 @@ class IiwaRosMaster
         //     boost::bind(&IiwaRosMaster::updateOptitrack,this,_1,0),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
         _subControl[0] = _n.subscribe<geometry_msgs::Pose>("/passive_control/pos_quat", 1,
             boost::bind(&IiwaRosMaster::updateControlPos,this,_1),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
-        _subControl[1] = _n.subscribe<geometry_msgs::PoseStamped>("/passive_control/vel_quat", 1,
+        _subControl[1] = _n.subscribe<geometry_msgs::Pose>("/passive_control/vel_quat", 1,
             boost::bind(&IiwaRosMaster::updateControlVel,this,_1),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
         _subControlTwist = _n.subscribe<geometry_msgs::TwistStamped>("/passive_control/twist", 1,
             boost::bind(&IiwaRosMaster::updateCTwistToControlVel,this,_1),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
@@ -327,11 +327,11 @@ class IiwaRosMaster
         }
     }
 
-    void updateControlVel(const geometry_msgs::PoseStamped::ConstPtr& msg){
+    void updateControlVel(const geometry_msgs::Pose::ConstPtr& msg){
         Eigen::Vector3d vel;
         Eigen::Vector4d quat;
-        vel << (double)msg->pose.position.x, (double)msg->pose.position.y, (double)msg->pose.position.z;
-        quat << (double)msg->pose.orientation.w, (double)msg->pose.orientation.x, (double)msg->pose.orientation.y, (double)msg->pose.orientation.z;
+        vel << (double)msg->position.x, (double)msg->position.y, (double)msg->position.z;
+        quat << (double)msg->orientation.w, (double)msg->orientation.x, (double)msg->orientation.y, (double)msg->orientation.z;
         if(vel.norm()<1.){
             _controller->set_desired_velocity(vel);
             if((quat.norm() > 0)&&(quat.norm() < 1.1)){
@@ -343,18 +343,18 @@ class IiwaRosMaster
         }
     }
 
-    // void updateCTwistToControlVel(const geometry_msgs::TwistStamped::ConstPtr& msg){
-    //     Eigen::Vector3d vel;
-    //     Eigen::Vector3d angVel;
-    //     vel << (double)msg->twist.linear.x, (double)msg->twist.linear.y, (double)msg->twist.linear.z;
-    //     angVel << (double)msg->twist.angular.x, (double)msg->twist.angular.y, (double)msg->twist.angular.z;
+    void updateCTwistToControlVel(const geometry_msgs::TwistStamped::ConstPtr& msg){
+        Eigen::Vector3d vel;
+        Eigen::Vector3d angVel;
+        vel << (double)msg->twist.linear.x, (double)msg->twist.linear.y, (double)msg->twist.linear.z;
+        angVel << (double)msg->twist.angular.x, (double)msg->twist.angular.y, (double)msg->twist.angular.z;
 
-    //     if(vel.norm()<1. && angVel.norm()<1.){
-    //         _controller->set_desired_twist(vel, angVel,_dt);
-    //     }else{
-    //         ROS_WARN("VELOCITY OUT OF BOUND");
-    //     }
-    // }
+        if(vel.norm()<1. && angVel.norm()<1.){
+            _controller->set_desired_twist(vel, angVel);
+        }else{
+            ROS_WARN("TWIST OUT OF BOUND");
+        }
+    }
 
     void param_cfg_callback(iiwa_toolkit::passive_cfg_paramsConfig& config, uint32_t level){
         ROS_INFO("Reconfigure request.. Updating the parameters ... ");

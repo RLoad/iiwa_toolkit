@@ -112,6 +112,7 @@ private:
 
     bool first = true;
     bool is_just_velocity = false;
+    bool is_use_twist = false;
     double dsGain_pos;
     double dsGain_ori;
     double load_added = 0.;
@@ -131,7 +132,7 @@ public:
     void set_desired_position(const Eigen::Vector3d& pos);
     void set_desired_quat(const Eigen::Vector4d& quat);
     void set_desired_velocity(const Eigen::Vector3d& vel);
-    void set_desired_twist(const Eigen::Vector3d& vel,const Eigen::Vector3d& angVel,const double& dt);
+    void set_desired_twist(const Eigen::Vector3d& vel,const Eigen::Vector3d& angVel);
 
 
     void set_pos_gains(const double& ds, const double& lambda0,const double& lambda1);
