@@ -234,6 +234,7 @@ void PassiveControl::set_desired_twist(
     const Eigen::Vector3d& angVel){
     // 1) Record that we're in velocity‐only mode
     is_use_twist = true;
+    is_just_velocity = true;
 
     // 2) Set desired linear velocity
     _robot.ee_des_vel = vel;
