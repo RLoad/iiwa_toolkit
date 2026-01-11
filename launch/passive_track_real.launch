@@ -42,4 +42,10 @@
 			 required="true" output="screen"/>
 	</group>
 
+    <!-- Launch RViz with robot visualization -->
+    <include file="$(find iiwa_description)/launch/display_iiwa.launch">
+        <arg name="gui" value="false" />
+    </include>
+
+
 </launch>
