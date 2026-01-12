@@ -118,7 +118,7 @@ PassiveControl::PassiveControl(const std::string& urdf_string,const std::string&
     _robot.pseudo_inv_jacob.setZero();   
     _robot.pseudo_inv_jacobPos.setZero();
 
-    _robot.nulljnt_position << 0.0, 0.0, 0.0, -.75, 0., 0.0, 0.0;
+    _robot.nulljnt_position << 0.0, 0.0, 0.0, 0., 0.0, 0.0;
 
 
 }
@@ -290,7 +290,7 @@ void PassiveControl::set_desired_twist(
 void PassiveControl::set_load(const double& mass ){
     load_added = mass;
 }
-void PassiveControl::computeTorqueCmd(){
+void PassiveControl::computeTorqueCmd(bool wrench_only){
     
     // desired position values
     Eigen::Vector3d deltaX = _robot.ee_des_pos - _robot.ee_pos;
@@ -344,14 +344,20 @@ void PassiveControl::computeTorqueCmd(){
     Eigen::Vector3d wrenchAng   = dsContOri->get_output();
     Eigen::VectorXd tmp_jnt_trq_ang = _robot.jacobAng.transpose() * wrenchAng;
 
+    if (wrench_only){
+        _wrench_cmd.head(3) = wrenchAng;
+        _wrench_cmd.tail(3) = wrenchPos;
+        return;
+    }
+
 
     //sum up:
     Eigen::VectorXd tmp_jnt_trq = tmp_jnt_trq_pos + tmp_jnt_trq_ang;
 
     // null pos control
-    Eigen::MatrixXd tempMat2 =  Eigen::MatrixXd::Identity(7,7) - _robot.jacob.transpose()* _robot.pseudo_inv_jacob* _robot.jacob;
-    Eigen::VectorXd nullgains = Eigen::VectorXd::Zero(7);
-    nullgains << 5.,80,10.,30,5.,2.,2.;
+    Eigen::MatrixXd tempMat2 =  Eigen::MatrixXd::Identity(6,6) - _robot.jacob.transpose()* _robot.pseudo_inv_jacob* _robot.jacob;
+    Eigen::VectorXd nullgains = Eigen::VectorXd::Zero(6);
+    nullgains << 5.,80,10.,5.,2.,2.;
     Eigen::VectorXd er_null = _robot.jnt_position -_robot.nulljnt_position;
     if(er_null.norm()<1.5){
         first = false;
@@ -359,8 +365,8 @@ void PassiveControl::computeTorqueCmd(){
     if(er_null.norm()>2e-1){
         er_null = 0.2*er_null.normalized();
     }
-    Eigen::VectorXd tmp_null_trq = Eigen::VectorXd::Zero(7);
-    for (int i =0; i<7; i++){ 
+    Eigen::VectorXd tmp_null_trq = Eigen::VectorXd::Zero(6);
+    for (int i =0; i<6; i++){ 
         tmp_null_trq[i] = -nullgains[i] * er_null[i];
         tmp_null_trq[i] +=-1. * _robot.jnt_velocity[i];
     }

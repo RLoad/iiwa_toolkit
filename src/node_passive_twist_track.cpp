@@ -34,7 +34,7 @@
 #include "iiwa_toolkit/passive_cfg_paramsConfig.h"
 #include "dynamic_reconfigure/server.h"
 
-#define No_JOINTS 7
+#define No_JOINTS 6
 #define No_Robots 1
 #define TOTAL_No_MARKERS 2
 
@@ -82,7 +82,7 @@ class IiwaRosMaster
         command_plt.setZero();
         
         //!
-        _subRobotStates[0]= _n.subscribe<sensor_msgs::JointState> (ns+"/joint_states", 1,
+        _subRobotStates[0]= _n.subscribe<sensor_msgs::JointState> ("/joint_states", 1,
                 boost::bind(&IiwaRosMaster::updateRobotStates,this,_1,0),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
         // _subRobotStates[0]= _n.subscribe<sensor_msgs::JointState> ("/coppeliasim/joint_states", 1,
         //         boost::bind(&IiwaRosMaster::updateRobotStates,this,_1,0),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
@@ -100,35 +100,48 @@ class IiwaRosMaster
             boost::bind(&IiwaRosMaster::updateDamping,this,_1),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
 
         _TrqCmdPublisher = _n.advertise<std_msgs::Float64MultiArray>(ns+"/TorqueController/command",1);
+        _WrchCmdPublisher = _n.advertise<std_msgs::Float64MultiArray>(ns+"/WrenchController/command",1);
         _EEPosePublisher = _n.advertise<geometry_msgs::Pose>(ns+"/ee_info/Pose",1);
         _EEVelPublisher = _n.advertise<geometry_msgs::Twist>(ns+"/ee_info/Vel",1);
         _MeasurePublisher = _n.advertise<geometry_msgs::Twist>(ns+"/measure",1);
 
-        // Get the URDF XML from the parameter server
-        std::string urdf_string, full_param;
-        std::string robot_description = ns+"/robot_description";
+        // Load URDF from file instead of parameter server
+        std::string urdf_string;
+        std::string urdf_file_path;
         std::string end_effector;
-        // gets the location of the robot description on the parameter server
-        if (!_n.searchParam(robot_description, full_param)) {
-            ROS_ERROR("Could not find parameter %s on parameter server", robot_description.c_str());
+        
+        // Get URDF file path from parameter (or hardcode it)
+        if (!_n.getParam("params/urdf_file_path", urdf_file_path)) {
+            // Default path if parameter not set
+            urdf_file_path = "/home/ros/ros_ws/src/iiwa_toolkit/urdf/dynaarm_standalone.urdf";
+            ROS_WARN("URDF file path not found in parameters, using default: %s", urdf_file_path.c_str());
+        }
+        
+        // Read URDF file
+        std::ifstream urdf_file(urdf_file_path);
+        if (!urdf_file.is_open()) {
+            ROS_ERROR("Could not open URDF file: %s", urdf_file_path.c_str());
             return false;
         }
-        // search and wait for robot_description on param server
-        while (urdf_string.empty()) {
-            ROS_INFO_ONCE_NAMED("Controller", "Controller is waiting for model"
-                                                            " URDF in parameter [%s] on the ROS param server.",
-                robot_description.c_str());
-            _n.getParam(full_param, urdf_string);
-            usleep(100000);
-        }
-        ROS_INFO_STREAM_NAMED("Controller", "Received urdf from param server, parsing...");
+        
+        std::stringstream buffer;
+        buffer << urdf_file.rdbuf();
+        urdf_string = buffer.str();
+        urdf_file.close();
+        
+        ROS_INFO_STREAM("Loaded URDF from file: " << urdf_file_path);
 
         // Get the end-effector
-        _n.param<std::string>("params/end_effector", end_effector, robot_name+"_link_ee");
-        // Initialize iiwa tools
+        _n.param<std::string>("params/end_effector", end_effector, "flange");
+        ROS_INFO("Using end-effector: %s", end_effector.c_str());
         
-        
+        // Initialize controller with URDF
         _controller = std::make_unique<PassiveControl>(urdf_string, end_effector);
+        if (!_controller) {
+            ROS_ERROR("Failed to create PassiveControl controller");
+            return false;
+        }
+        ROS_INFO("Controller created successfully");
         
 
         std::vector<double> dpos;
@@ -173,7 +186,8 @@ class IiwaRosMaster
         while(!_stop && ros::ok()){ 
             _mutex.lock();
                 _controller->updateRobot(_feedback.jnt_position,_feedback.jnt_velocity,_feedback.jnt_torque);
-                publishCommandTorque(_controller->getCmd());
+                // publishCommandTorque(_controller->getCmd());
+                publishCommandWrench(_controller->getWrenchCmd());
                 publishPlotVariable(command_plt);
                 publishEEInfo();
 
@@ -187,7 +201,8 @@ class IiwaRosMaster
         ros::spinOnce();
         _loopRate.sleep();
         }
-        publishCommandTorque(Eigen::VectorXd::Zero(No_JOINTS));
+        // publishCommandTorque(Eigen::VectorXd::Zero(No_JOINTS));
+        publishCommandWrench(Eigen::VectorXd::Zero(6));
         ros::spinOnce();
         _loopRate.sleep();
         ros::shutdown();
@@ -211,6 +226,7 @@ class IiwaRosMaster
     ros::Subscriber _subOptitrack[TOTAL_No_MARKERS];  // optitrack markers pose
 
     ros::Publisher _TrqCmdPublisher;
+    ros::Publisher _WrchCmdPublisher;
     ros::Publisher _EEPosePublisher;
     ros::Publisher _EEVelPublisher;
     ros::Publisher _MeasurePublisher;
@@ -239,7 +255,7 @@ class IiwaRosMaster
     double lambda1_pos;
     double lambda0_ori;
     double lambda1_ori;
-    Eigen::Vector3d des_pos = {0.8 , 0., 0.3}; 
+    Eigen::Vector3d des_pos = {0.0 , 0.0, 2.0}; 
     Eigen::Vector4d des_quat = Eigen::Vector4d::Zero();
 
   private:
@@ -276,6 +292,18 @@ class IiwaRosMaster
             _TrqCmdPublisher.publish(_cmd_jnt_torque);
         }
     }
+
+    void publishCommandWrench(const Eigen::VectorXd& cmdWrench){
+        std_msgs::Float64MultiArray _cmd_wrench;
+        _cmd_wrench.data.resize(6);
+
+        if (cmdWrench.size() == 6){
+            for(int i = 0; i < 6; i++)
+                _cmd_wrench.data[i] = cmdWrench[i];
+            _WrchCmdPublisher.publish(_cmd_wrench);
+        }
+    }
+
     void publishPlotVariable(const Eigen::VectorXd& pltVar){
         std_msgs::Float64MultiArray _plotVar;
         _plotVar.data.resize(pltVar.size());

@@ -34,7 +34,7 @@
 
 struct Robot
 {
-    unsigned int no_joints = 7;
+    unsigned int no_joints = 6;
     Eigen::VectorXd jnt_position = Eigen::VectorXd(no_joints);
     Eigen::VectorXd jnt_velocity = Eigen::VectorXd(no_joints);
     Eigen::VectorXd jnt_torque = Eigen::VectorXd(no_joints);
@@ -51,16 +51,16 @@ struct Robot
     Eigen::Vector4d ee_des_quat;
 
 
-    Eigen::MatrixXd jacob       = Eigen::MatrixXd(6, 7);
-    Eigen::MatrixXd jacob_drv   = Eigen::MatrixXd(6, 7);
-    Eigen::MatrixXd jacob_t_pinv= Eigen::MatrixXd(7, 6);
-    Eigen::MatrixXd jacobPos    = Eigen::MatrixXd(3, 7);
-    Eigen::MatrixXd jacobAng    = Eigen::MatrixXd(3, 7);
+    Eigen::MatrixXd jacob       = Eigen::MatrixXd(6, 6);
+    Eigen::MatrixXd jacob_drv   = Eigen::MatrixXd(6, 6);
+    Eigen::MatrixXd jacob_t_pinv= Eigen::MatrixXd(6, 6);
+    Eigen::MatrixXd jacobPos    = Eigen::MatrixXd(3, 6);
+    Eigen::MatrixXd jacobAng    = Eigen::MatrixXd(3, 6);
 
     Eigen::MatrixXd pseudo_inv_jacob       = Eigen::MatrixXd(6,6);
-    Eigen::MatrixXd pseudo_inv_jacobJnt       = Eigen::MatrixXd(7,7);
+    Eigen::MatrixXd pseudo_inv_jacobJnt       = Eigen::MatrixXd(6,6);
     Eigen::MatrixXd pseudo_inv_jacobPos    = Eigen::MatrixXd(3,3);
-    Eigen::MatrixXd pseudo_inv_jacobPJnt    = Eigen::MatrixXd(7,7);
+    Eigen::MatrixXd pseudo_inv_jacobPJnt    = Eigen::MatrixXd(6,6);
     // public:
         // EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
@@ -117,8 +117,9 @@ private:
     double dsGain_ori;
     double load_added = 0.;
 
-    Eigen::VectorXd _trq_cmd = Eigen::VectorXd::Zero(7);
-    void computeTorqueCmd();
+    Eigen::VectorXd _trq_cmd = Eigen::VectorXd::Zero(6);
+    Eigen::VectorXd _wrench_cmd = Eigen::VectorXd::Zero(6);
+    void computeTorqueCmd(bool wrench_only);
     std::unique_ptr<PassiveDS> dsContPos;
     std::unique_ptr<PassiveDS> dsContOri;
     
@@ -142,8 +143,12 @@ public:
 
 
     Eigen::VectorXd getCmd(){
-        computeTorqueCmd();
+        computeTorqueCmd(false);
         return _trq_cmd;}
+
+    Eigen::VectorXd getWrenchCmd(){
+        computeTorqueCmd(true);
+        return _wrench_cmd;}
     Eigen::Vector3d getEEpos();
     Eigen::Vector3d getEEVel();
     Eigen::Vector3d getEEAngVel();
