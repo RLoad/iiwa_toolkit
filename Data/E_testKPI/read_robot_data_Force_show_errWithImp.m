@@ -4,7 +4,15 @@ clear; clc;close all;
 % log_file = 'test error des with imp change/Force.txt';
 % log_file = '1 change coverage rate/Force.txt';
 % log_file = '2 change coverage rate to 60/Force.txt';
-log_file = '3 use right err and controller/Force.txt';
+% log_file = '3 use right err and controller/1/Force.txt';
+% log_file = '3 use right err and controller/2/Force.txt';
+% log_file = '3 use right err and controller/3/Force.txt';
+% log_file = '3 use right err and controller/4/Force.txt';
+% log_file = '3 use right err and controller/5/Force.txt';
+log_file = '3 use right err and controller/6/Force.txt';
+% log_file = '3 use right err and controller/7/Force.txt';
+% log_file = '3 use right err and controller/1/Force.txt';
+
 gif_name = 'tracking_animation_second_target_zeroed.gif';
 
 fid = fopen(log_file, 'r');
@@ -111,6 +119,32 @@ title('Eigenvalue Evolution');
 grid on;
 
 sgtitle('Final Results (Second Target Only)');
+
+
+
+%% === Compute average speed (second target) ===
+% Use shifted or unshifted poses; translation does not change distances
+% Choose 2D (x,y) or 3D (x,y,z) automatically
+dim = min(3, size(rp2_shift,1));   % if only x,y exist -> dim=2; if x,y,z exist -> dim=3
+pos = rp2_shift(1:dim, :);
+
+dpos = diff(pos, 1, 2);           % position increments
+ds   = vecnorm(dpos, 2, 1);       % distance per step
+dt   = diff(times2);              % time per step
+
+% Guard against invalid time steps (e.g., duplicated timestamps)
+valid = isfinite(ds) & isfinite(dt) & (dt > 0);
+
+total_dist = sum(ds(valid));
+total_time = sum(dt(valid));
+
+avg_speed = total_dist / total_time;            % time-weighted mean speed (recommended)
+mean_step_speed = mean(ds(valid) ./ dt(valid)); % simple mean of instantaneous speeds (for reference)
+
+disp(['Total distance (2nd target): ', num2str(total_dist), ' m']);
+disp(['Total time     (2nd target): ', num2str(total_time), ' s']);
+disp(['Average speed  (distance/time): ', num2str(avg_speed), ' m/s']);
+disp(['Mean step speed (mean(ds/dt)): ', num2str(mean_step_speed), ' m/s']);
 
 %% === Ask user if we should animate ===
 answer = input('Generate GIF animation? (y/n): ','s');
