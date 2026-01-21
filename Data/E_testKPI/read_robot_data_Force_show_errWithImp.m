@@ -4,8 +4,8 @@ clear; clc;close all;
 % log_file = 'test error des with imp change/Force.txt';
 % log_file = '1 change coverage rate/Force.txt';
 % log_file = '2 change coverage rate to 60/Force.txt';
-log_file = '3 use right err and controller/3/Force.txt';
-% log_file = '4 use vel give a -z dir force disturb/8/Force.txt';
+% log_file = '3 use right err and controller/3/Force.txt';
+log_file = '4 use vel give a -z dir force disturb/8/Force.txt';
 
 gif_name = 'tracking_animation_second_target_zeroed.gif';
 
@@ -259,7 +259,7 @@ plot(rp2_shift(1,end), rp2_shift(2,end), 'ro', 'MarkerSize',8, 'LineWidth',2);
 hold off;
 xlabel('X (shifted)'); ylabel('Y (shifted)');
 title('Shifted Trajectory (Second Target)');
-legend('Desired circle','Target(0)','Real traj','Last pose','Location','best');
+legend('Desired traj','Attractor','Real traj','Last pose','Location','best');
 axis equal; grid on;
 
 
@@ -323,7 +323,11 @@ end
 
 
 
-sgtitle('Final Results (Second Target Only)');
+% Add title for all subplots (compatible with MATLAB 2017)
+% ha = axes('Position', [0 0 1 1], 'Visible', 'off');
+% text(0.5, 0.98, 'Final Results (Second Target Only)', ...
+%      'HorizontalAlignment', 'center', 'VerticalAlignment', 'top', ...
+%      'FontSize', 14, 'FontWeight', 'bold', 'Parent', ha);
 
 
 
@@ -334,7 +338,7 @@ dim = min(3, size(rp2_shift,1));   % if only x,y exist -> dim=2; if x,y,z exist 
 pos = rp2_shift(1:dim, :);
 
 dpos = diff(pos, 1, 2);           % position increments
-ds   = vecnorm(dpos, 2, 1);       % distance per step
+ds   = sqrt(sum(dpos.^2, 1));       % distance per step
 dt   = diff(times2);              % time per step
 
 % Guard against invalid time steps (e.g., duplicated timestamps)

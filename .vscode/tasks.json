@@ -1,0 +1,79 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run MATLAB Script",
+            "type": "shell",
+            "command": "matlab",
+            "args": [
+                "-batch",
+                "run('${file}'); exit;"
+            ],
+            "windows": {
+                "command": "matlab",
+                "args": [
+                    "-batch",
+                    "run('${file}'); exit;"
+                ]
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+                "focus": false,
+                "clear": true
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "Run Current MATLAB File",
+            "type": "shell",
+            "command": "matlab",
+            "args": [
+                "-batch",
+                "cd('${fileDirname}'); run('${fileBasename}'); exit;"
+            ],
+            "windows": {
+                "command": "matlab",
+                "args": [
+                    "-batch",
+                    "cd('${fileDirname}'); run('${fileBasename}'); exit;"
+                ]
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+                "focus": false,
+                "clear": true
+            },
+            "group": "build"
+        },
+        {
+            "label": "Run MATLAB Script (No Exit)",
+            "type": "shell",
+            "command": "matlab",
+            "args": [
+                "-r",
+                "run('${file}');"
+            ],
+            "windows": {
+                "command": "matlab",
+                "args": [
+                    "-r",
+                    "run('${file}');"
+                ]
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+                "focus": false,
+                "clear": true
+            }
+        }
+    ]
+}

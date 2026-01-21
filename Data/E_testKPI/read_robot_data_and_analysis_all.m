@@ -1,9 +1,9 @@
 clear; clc; close all;
 
 %% ===== User config =====
-base_dir = '3 use right err and controller';   % 你的主目录
-folder_ids = 1:12;                               % 子文件夹编号 1~9
-radius = 0.07;                                  % 你的半径（用于误差定义）
+base_dir = '3 use right err and controller';   % ???????????????
+folder_ids = 1:12;                               % ?????????????????? 1~9
+radius = 0.07;                                  % ????????????????????????????????????
 use_second_target_only = true;
 
 % If true: also plot instantaneous speed vs instantaneous error (all runs pooled)
@@ -18,7 +18,7 @@ click_times = cell(size(folder_ids));  % Store 4 time points for each experiment
 saved_click_file = fullfile(base_dir, 'saved_click_times.mat');
 use_saved_data = false;
 
-if isfile(saved_click_file)
+if exist(saved_click_file, 'file') == 2
     fprintf('\n===== Found saved click times file =====\n');
     load(saved_click_file, 'saved_click_times', 'saved_folder_ids');
     
@@ -43,7 +43,7 @@ if ~use_saved_data
     k = folder_ids(ii);
     
     log_file = fullfile(base_dir, num2str(k), 'Force.txt');
-    if ~isfile(log_file)
+    if exist(log_file, 'file') ~= 2
         warning('File not found: %s (skipped)', log_file);
         click_times{ii} = [];  % Empty for skipped experiments
         continue;
@@ -105,12 +105,14 @@ end
 %% ===== Batch processing =====
 avg_speed_all = nan(size(folder_ids));
 mean_err_all  = nan(size(folder_ids));
+std_err_all   = nan(size(folder_ids));  % Standard deviation of tracking error
 total_time_all = nan(size(folder_ids));
 total_dist_all = nan(size(folder_ids));
 
 % New arrays for segmented data analysis
 avg_speed_segments_1_3 = nan(size(folder_ids));
 mean_err_segments_1_3 = nan(size(folder_ids));
+std_err_segments_1_3 = nan(size(folder_ids));  % Standard deviation for segments 1+3
 setting_time_segment_2 = nan(size(folder_ids));
 
 v_inst_all = [];   % pooled instantaneous speeds
@@ -125,7 +127,7 @@ for ii = 1:numel(folder_ids)
     k = folder_ids(ii);
 
     log_file = fullfile(base_dir, num2str(k), 'Force.txt');
-    if ~isfile(log_file)
+    if exist(log_file, 'file') ~= 2
         warning('File not found: %s (skipped)', log_file);
         continue;
     end
@@ -142,6 +144,7 @@ for ii = 1:numel(folder_ids)
     % Store original metrics (for backward compatibility)
     avg_speed_all(ii)  = out.avg_speed;
     mean_err_all(ii)   = out.mean_err;
+    std_err_all(ii)    = out.std_err;
     total_time_all(ii) = out.total_time;
     total_dist_all(ii) = out.total_dist;
 
@@ -150,11 +153,13 @@ for ii = 1:numel(folder_ids)
         % Use segments 1+3 for speed calculation
         avg_speed_segments_1_3(ii) = out.avg_speed;  % Already calculated from segments 1+3
         mean_err_segments_1_3(ii) = out.mean_err_segments_1_3;
+        std_err_segments_1_3(ii) = out.std_err_segments_1_3;
         setting_time_segment_2(ii) = out.setting_time;
     else
         % If no segmentation, use original values
         avg_speed_segments_1_3(ii) = out.avg_speed;
         mean_err_segments_1_3(ii) = out.mean_err;
+        std_err_segments_1_3(ii) = out.std_err;
         setting_time_segment_2(ii) = nan;
     end
 
@@ -168,33 +173,38 @@ for ii = 1:numel(folder_ids)
         run_id_all = [run_id_all, k * ones(1, numel(out.v_inst))];
     end
 
-    fprintf('[%d] mean_err=%.6f m, avg_speed=%.6f m/s, time=%.3f s, dist=%.3f m', ...
-        k, out.mean_err, out.avg_speed, out.total_time, out.total_dist);
+    fprintf('[%d] mean_err=%.6f m, std_err=%.6f m, avg_speed=%.6f m/s, time=%.3f s, dist=%.3f m', ...
+        k, out.mean_err, out.std_err, out.avg_speed, out.total_time, out.total_dist);
     if ~isempty(time_seg)
-        fprintf(', seg1+3_err=%.6f m, setting_time=%.3f s', ...
-            mean_err_segments_1_3(ii), setting_time_segment_2(ii));
+        fprintf(', seg1+3_err=%.6f m (std=%.6f m), setting_time=%.3f s', ...
+            mean_err_segments_1_3(ii), std_err_segments_1_3(ii), setting_time_segment_2(ii));
     end
     fprintf('\n');
 end
 
 %% ===== Plot: average speed vs mean error (per run) - Using Segments 1+3 =====
 % Use segmented data: segments 1+3 combined for error calculation
-valid_run = isfinite(avg_speed_segments_1_3) & isfinite(mean_err_segments_1_3);
+valid_run = isfinite(avg_speed_segments_1_3) & isfinite(mean_err_segments_1_3) & isfinite(std_err_segments_1_3);
 
 figure('Position',[200 200 900 700]);
 
-scatter(avg_speed_segments_1_3(valid_run), mean_err_segments_1_3(valid_run)*100, 80, 'filled'); grid on; hold on;
+xs = avg_speed_segments_1_3(valid_run);
+ys_mean = mean_err_segments_1_3(valid_run)*100;
+ys_std = std_err_segments_1_3(valid_run)*100;
+
+% Plot with error bars showing mean ?? std
+errorbar(xs, ys_mean, ys_std, 'o', 'MarkerSize', 8, 'MarkerFaceColor', 'b', ...
+         'LineWidth', 1.5, 'CapSize', 8); 
+grid on; hold on;
 xlabel('Average speed (m/s)');
 ylabel('Mean tracking error (cm)');
-title('Relationship: Average Speed vs Mean Tracking Error (Segments 1+3 Combined)');
+title('Position tracking error in 12 trails without consider disturbance phase (Mean + Std)');
 
 % Add labels on points
-xs = avg_speed_segments_1_3(valid_run);
-ys = mean_err_segments_1_3(valid_run);
-ks = folder_ids(valid_run);
-for i = 1:numel(xs)
-    text(xs(i), ys(i), sprintf('  %d', ks(i)), 'FontSize', 10, 'VerticalAlignment', 'middle');
-end
+% ks = folder_ids(valid_run);
+% for i = 1:numel(xs)
+%     text(xs(i), ys_mean(i), sprintf('  %d', ks(i)), 'FontSize', 10, 'VerticalAlignment', 'middle');
+% end
 
 hold off;
 
@@ -215,6 +225,27 @@ ys_st = setting_time_segment_2(valid_run_st);
 ks_st = folder_ids(valid_run_st);
 for i = 1:numel(xs_st)
     text(xs_st(i), ys_st(i), sprintf('  %d', ks_st(i)), 'FontSize', 10, 'VerticalAlignment', 'middle');
+end
+hold off;
+
+%% ===== Plot: mean error vs std error (per run) - Using Segments 1+3 =====
+% Show relationship between mean and standard deviation of tracking error
+valid_run_std = isfinite(mean_err_segments_1_3) & isfinite(std_err_segments_1_3);
+
+figure('Position',[200 200 900 700]);
+
+scatter(mean_err_segments_1_3(valid_run_std)*100, std_err_segments_1_3(valid_run_std)*100, 80, 'filled'); 
+grid on; hold on;
+xlabel('Mean tracking error (cm)');
+ylabel('Standard deviation of tracking error (cm)');
+title('Relationship: Mean vs Standard Deviation of Tracking Error (Segments 1+3)');
+
+% Add labels on points
+xs_std = mean_err_segments_1_3(valid_run_std)*100;
+ys_std = std_err_segments_1_3(valid_run_std)*100;
+ks_std = folder_ids(valid_run_std);
+for i = 1:numel(xs_std)
+    text(xs_std(i), ys_std(i), sprintf('  %d', ks_std(i)), 'FontSize', 10, 'VerticalAlignment', 'middle');
 end
 hold off;
 
@@ -269,7 +300,12 @@ for plot_idx = (num_to_plot + 1):num_subplots
     axis off;
 end
 
-sgtitle('Position Error Over Time - All Experiments', 'FontSize', 14, 'FontWeight', 'bold');
+% Add title for all subplots (compatible with MATLAB 2017)
+% Create an invisible axes covering the whole figure
+ha = axes('Position', [0 0 1 1], 'Visible', 'off');
+text(0.5, 0.98, 'Position Error Over Time - All Experiments', ...
+     'HorizontalAlignment', 'center', 'VerticalAlignment', 'top', ...
+     'FontSize', 14, 'FontWeight', 'bold', 'Parent', ha);
 
 
 
@@ -421,7 +457,7 @@ function out = parse_force_file_compute_metrics(log_file, radius, second_target_
             dim = min(3, size(rp_seg1_shift,1));
             pos_seg1 = rp_seg1_shift(1:dim, :);
             dpos_seg1 = diff(pos_seg1, 1, 2);
-            ds_seg1 = vecnorm(dpos_seg1, 2, 1);
+            ds_seg1 = sqrt(sum(dpos_seg1.^2, 1));
             dt_seg1 = diff(seg1_times);
             valid_seg1 = isfinite(ds_seg1) & isfinite(dt_seg1) & (dt_seg1 > 0);
             dist_seg1 = sum(ds_seg1(valid_seg1));
@@ -432,7 +468,7 @@ function out = parse_force_file_compute_metrics(log_file, radius, second_target_
             rp_seg3_shift = seg3_rp - t0_seg3;
             pos_seg3 = rp_seg3_shift(1:dim, :);
             dpos_seg3 = diff(pos_seg3, 1, 2);
-            ds_seg3 = vecnorm(dpos_seg3, 2, 1);
+            ds_seg3 = sqrt(sum(dpos_seg3.^2, 1));
             dt_seg3 = diff(seg3_times);
             valid_seg3 = isfinite(ds_seg3) & isfinite(dt_seg3) & (dt_seg3 > 0);
             dist_seg3 = sum(ds_seg3(valid_seg3));
@@ -452,15 +488,16 @@ function out = parse_force_file_compute_metrics(log_file, radius, second_target_
         t0 = tp2(:,1);
         rp2_shift = rp2 - t0;
 
-        % Compute mean error
+        % Compute mean error and standard deviation
         out.mean_err = mean(err2);
+        out.std_err = std(err2);
 
         % Compute avg speed (distance/time)
         dim = min(3, size(rp2_shift,1));
         pos = rp2_shift(1:dim, :);
 
         dpos = diff(pos, 1, 2);
-        ds   = vecnorm(dpos, 2, 1);
+        ds   = sqrt(sum(dpos.^2, 1));
         dt   = diff(times2);
 
         valid = isfinite(ds) & isfinite(dt) & (dt > 0);
@@ -481,8 +518,9 @@ function out = parse_force_file_compute_metrics(log_file, radius, second_target_
             out.e_inst = [];
         end
     else
-        % Mean error for segments 1+3
+        % Mean error and standard deviation for segments 1+3
         out.mean_err = mean(err2);
+        out.std_err = std(err2);
         
         % For instantaneous speed with segmentation, combine segments 1 and 3
         % Calculate separately and concatenate
@@ -493,7 +531,7 @@ function out = parse_force_file_compute_metrics(log_file, radius, second_target_
             dim = min(3, size(rp_seg1_shift,1));
             pos_seg1 = rp_seg1_shift(1:dim, :);
             dpos_seg1 = diff(pos_seg1, 1, 2);
-            ds_seg1 = vecnorm(dpos_seg1, 2, 1);
+            ds_seg1 = sqrt(sum(dpos_seg1.^2, 1));
             dt_seg1 = diff(out.seg1_times);
             valid_seg1 = isfinite(ds_seg1) & isfinite(dt_seg1) & (dt_seg1 > 0);
             
@@ -502,7 +540,7 @@ function out = parse_force_file_compute_metrics(log_file, radius, second_target_
             rp_seg3_shift = out.seg3_rp - t0_seg3;
             pos_seg3 = rp_seg3_shift(1:dim, :);
             dpos_seg3 = diff(pos_seg3, 1, 2);
-            ds_seg3 = vecnorm(dpos_seg3, 2, 1);
+            ds_seg3 = sqrt(sum(dpos_seg3.^2, 1));
             dt_seg3 = diff(out.seg3_times);
             valid_seg3 = isfinite(ds_seg3) & isfinite(dt_seg3) & (dt_seg3 > 0);
             
@@ -541,13 +579,15 @@ function out = parse_force_file_compute_metrics(log_file, radius, second_target_
         seg2_end_time = out.seg2_times(end);
         out.setting_time = seg2_end_time - peak_time;
         
-        % Also store mean error for segments 1+3 combined
+        % Also store mean error and std for segments 1+3 combined
         if isfield(out, 'seg1_err') && isfield(out, 'seg3_err')
             out.mean_err_segments_1_3 = mean([out.seg1_err, out.seg3_err]);
+            out.std_err_segments_1_3 = std([out.seg1_err, out.seg3_err]);
         end
     else
         out.setting_time = nan;
         out.mean_err_segments_1_3 = nan;
+        out.std_err_segments_1_3 = nan;
     end
 end
 

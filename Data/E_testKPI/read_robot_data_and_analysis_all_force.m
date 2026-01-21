@@ -1,9 +1,9 @@
 clear; clc; close all;
 
 %% ===== User config =====
-base_dir = '4 use vel give a -z dir force disturb';   % 你的主目录
-folder_ids = [1:5 7:15];                               % 子文件夹编号 1~12
-radius = 0.07;                                  % 你的半径（用于速度计算，不再用于误差）
+base_dir = '4 use vel give a -z dir force disturb';   % ???????????????
+folder_ids = [1:14];                               % ?????????????????? 1~12
+radius = 0.07;                                  % ?????????????????????????????????????????????????????????
 use_second_target_only = true;
 
 % If true: also plot instantaneous speed vs instantaneous error (all runs pooled)
@@ -18,7 +18,7 @@ click_times = cell(size(folder_ids));  % Store 4 time points for each experiment
 saved_click_file = fullfile(base_dir, 'saved_click_times_force.mat');
 use_saved_data = false;
 
-if isfile(saved_click_file)
+if exist(saved_click_file, 'file') == 2
     fprintf('\n===== Found saved click times file =====\n');
     load(saved_click_file, 'saved_click_times', 'saved_folder_ids');
     
@@ -43,7 +43,7 @@ if ~use_saved_data
     k = folder_ids(ii);
     
     log_file = fullfile(base_dir, num2str(k), 'Force.txt');
-    if ~isfile(log_file)
+    if exist(log_file, 'file') ~= 2
         warning('File not found: %s (skipped)', log_file);
         click_times{ii} = [];  % Empty for skipped experiments
         continue;
@@ -108,6 +108,7 @@ end
 %% ===== Batch processing =====
 avg_speed_all = nan(size(folder_ids));
 mean_err_all  = nan(size(folder_ids));
+std_err_all   = nan(size(folder_ids));  % Standard deviation of force error
 mean_desired_force_mag_all = nan(size(folder_ids));  % mean desired force magnitude per run
 total_time_all = nan(size(folder_ids));
 total_dist_all = nan(size(folder_ids));
@@ -115,6 +116,7 @@ total_dist_all = nan(size(folder_ids));
 % New arrays for segmented data analysis
 avg_speed_segments_1_3 = nan(size(folder_ids));
 mean_force_err_segments_1_3 = nan(size(folder_ids));
+std_force_err_segments_1_3 = nan(size(folder_ids));  % Standard deviation for segments 1+3
 setting_time_segment_2 = nan(size(folder_ids));
 
 v_inst_all = [];   % pooled instantaneous speeds
@@ -130,7 +132,7 @@ for ii = 1:numel(folder_ids)
     k = folder_ids(ii);
 
     log_file = fullfile(base_dir, num2str(k), 'Force.txt');
-    if ~isfile(log_file)
+    if exist(log_file, 'file') ~= 2
         warning('File not found: %s (skipped)', log_file);
         continue;
     end
@@ -147,6 +149,7 @@ for ii = 1:numel(folder_ids)
     % Store original metrics (for backward compatibility)
     avg_speed_all(ii)  = out.avg_speed;
     mean_err_all(ii)   = out.mean_err;
+    std_err_all(ii)    = out.std_err;
     mean_desired_force_mag_all(ii) = out.mean_desired_force_mag;
     total_time_all(ii) = out.total_time;
     total_dist_all(ii) = out.total_dist;
@@ -156,6 +159,7 @@ for ii = 1:numel(folder_ids)
         % Use segments 1+3 for speed calculation
         avg_speed_segments_1_3(ii) = out.avg_speed;  % Already calculated from segments 1+3
         mean_force_err_segments_1_3(ii) = out.mean_err_segments_1_3;
+        std_force_err_segments_1_3(ii) = out.std_err_segments_1_3;
         setting_time_segment_2(ii) = out.setting_time;
         
         % Debug output
@@ -170,6 +174,7 @@ for ii = 1:numel(folder_ids)
         % If no segmentation, use original values
         avg_speed_segments_1_3(ii) = out.avg_speed;
         mean_force_err_segments_1_3(ii) = out.mean_err;
+        std_force_err_segments_1_3(ii) = out.std_err;
         setting_time_segment_2(ii) = nan;
     end
 
@@ -184,64 +189,73 @@ for ii = 1:numel(folder_ids)
         run_id_all = [run_id_all, k * ones(1, numel(out.v_inst))];
     end
 
-    fprintf('[%d] mean_force_err=%.6f N, avg_speed=%.6f m/s, time=%.3f s, dist=%.3f m', ...
-        k, out.mean_err, out.avg_speed, out.total_time, out.total_dist);
+    fprintf('[%d] mean_force_err=%.6f N, std_force_err=%.6f N, avg_speed=%.6f m/s, time=%.3f s, dist=%.3f m', ...
+        k, out.mean_err, out.std_err, out.avg_speed, out.total_time, out.total_dist);
     if ~isempty(time_seg)
-        fprintf(', seg1+3_err=%.6f N, setting_time=%.3f s', ...
-            mean_force_err_segments_1_3(ii), setting_time_segment_2(ii));
+        fprintf(', seg1+3_err=%.6f N (std=%.6f N), setting_time=%.3f s', ...
+            mean_force_err_segments_1_3(ii), std_force_err_segments_1_3(ii), setting_time_segment_2(ii));
     end
     fprintf('\n');
 end
 
 %% ===== Plot: average speed vs mean force error (per run) =====
-% valid_run 的作用：过滤掉 NaN 和 Inf 值，只绘制有效数据点
-% 如果数据都是有效的，可以不用 valid_run，直接绘图
-% 但使用 valid_run 可以避免 NaN/Inf 影响图表显示
+% valid_run ????????????????????? NaN ??? Inf ??????????????????????????????
+% ?????????????????????????????????????????? valid_run???????????????
+% ????????? valid_run ???????????? NaN/Inf ??????????????????
 
 fprintf('\n===== Plotting: Average Speed vs Mean Force Error =====\n');
 
-% 优先使用分段数据，如果没有则使用原始数据
-% 检查分段数据是否有有效值
+% ????????????????????????????????????????????????????????????
+% ????????????????????????????????????
 has_seg_data = any(isfinite(avg_speed_segments_1_3)) && any(isfinite(mean_force_err_segments_1_3));
 has_orig_data = any(isfinite(avg_speed_all)) && any(isfinite(mean_err_all));
 
 if has_seg_data
-    % 使用分段数据
+    % ??????????????????
     plot_speed = avg_speed_segments_1_3;
     plot_err = mean_force_err_segments_1_3;
-    plot_title = 'Relationship: Average Speed vs Mean Force Error (Segments 1+3 Combined)';
+    plot_err_std = std_force_err_segments_1_3;
+    plot_title = 'Force tracking error in 12 trails without consider disturbance phase (Mean + Std)';
     fprintf('Using segmented data\n');
 elseif has_orig_data
-    % 使用原始数据
+    % ??????????????????
     plot_speed = avg_speed_all;
     plot_err = mean_err_all;
-    plot_title = 'Relationship: Average Speed vs Mean Force Error (All Data)';
+    plot_err_std = std_err_all;
+    plot_title = 'Relationship: Average Speed vs Mean Force Error (All Data, Mean + Std)';
     fprintf('Using original data (no segmented data available)\n');
 else
     plot_speed = [];
     plot_err = [];
+    plot_err_std = [];
     plot_title = 'Relationship: Average Speed vs Mean Force Error';
     fprintf('WARNING: No valid data available!\n');
 end
 
 figure('Position',[200 200 900 700]);
 
-if ~isempty(plot_speed) && ~isempty(plot_err)
-    % 直接绘图，scatter 会自动跳过 NaN 值
-    scatter(plot_speed, plot_err, 80, 'filled'); grid on; hold on;
+if ~isempty(plot_speed) && ~isempty(plot_err) && ~isempty(plot_err_std)
+    % ?????? errorbar ?????? mean ?? std
+    valid_idx = isfinite(plot_speed) & isfinite(plot_err) & isfinite(plot_err_std);
+    xs = plot_speed(valid_idx);
+    ys_mean = plot_err(valid_idx);
+    ys_std = plot_err_std(valid_idx);
+    
+    errorbar(xs, ys_mean, ys_std, 'o', 'MarkerSize', 8, 'MarkerFaceColor', 'b', ...
+             'LineWidth', 1.5, 'CapSize', 8); 
+    grid on; hold on;
     xlabel('Average speed (m/s)');
     ylabel('Mean force error (N)');
     title(plot_title);
 
-    % 添加标签（只给有效数据点添加）
-    for i = 1:numel(plot_speed)
-        if isfinite(plot_speed(i)) && isfinite(plot_err(i))
-            text(plot_speed(i), plot_err(i), sprintf('  %d', folder_ids(i)), ...
-                 'FontSize', 10, 'VerticalAlignment', 'middle');
-        end
-    end
+    % ?????????????????????????????????????????????
+%     valid_ids = folder_ids(valid_idx);
+%     for i = 1:numel(xs)
+%         text(xs(i), ys_mean(i), sprintf('  %d', valid_ids(i)), ...
+%              'FontSize', 10, 'VerticalAlignment', 'middle');
+%     end
     hold off;
-    fprintf('Plotted data for %d experiments\n', numel(plot_speed));
+    fprintf('Plotted data for %d experiments\n', numel(xs));
 else
     text(0.5, 0.5, 'No data to plot', ...
          'HorizontalAlignment', 'center', 'Units', 'normalized', ...
@@ -253,30 +267,30 @@ else
 end
 
 %% ===== Plot: average speed vs setting time (per run) - Using Segment 2 =====
-% 这个图需要分段数据（设置时间只在段2中计算）
-% 不使用 valid_run，直接绘图，scatter 会自动跳过 NaN 值
+% ???????????????????????????????????????????????????2????????????
+% ????????? valid_run??????????????????scatter ??????????????? NaN ???
 
 fprintf('\n===== Plotting: Average Speed vs Setting Time =====\n');
 fprintf('This plot requires segmentation data\n');
 
 figure('Position',[200 200 900 700]);
 
-% 直接使用分段数据，scatter 会自动跳过 NaN
+% ???????????????????????????scatter ??????????????? NaN
 scatter(avg_speed_segments_1_3, setting_time_segment_2, 80, 'filled'); grid on; hold on;
 xlabel('Average speed (m/s)');
 ylabel('Setting Time (s)');
-title('Relationship: Average Speed vs Setting Time (Segment 2)');
+title('');
 
-% 添加标签（只给有效数据点添加）
-for i = 1:numel(avg_speed_segments_1_3)
-    if isfinite(avg_speed_segments_1_3(i)) && isfinite(setting_time_segment_2(i))
-        text(avg_speed_segments_1_3(i), setting_time_segment_2(i), sprintf('  %d', folder_ids(i)), ...
-             'FontSize', 10, 'VerticalAlignment', 'middle');
-    end
-end
+% ?????????????????????????????????????????????
+% for i = 1:numel(avg_speed_segments_1_3)
+%     if isfinite(avg_speed_segments_1_3(i)) && isfinite(setting_time_segment_2(i))
+%         text(avg_speed_segments_1_3(i), setting_time_segment_2(i), sprintf('  %d', folder_ids(i)), ...
+%              'FontSize', 10, 'VerticalAlignment', 'middle');
+%     end
+% end
 hold off;
 
-% 统计有效数据点
+% ?????????????????????
 valid_count = nnz(isfinite(avg_speed_segments_1_3) & isfinite(setting_time_segment_2));
 fprintf('Plotted %d valid data points out of %d experiments\n', valid_count, numel(folder_ids));
 
@@ -318,7 +332,8 @@ for plot_idx = 1:num_to_plot
     xlabel('Time (s)');
     ylabel('Force Z (N)');
     title(sprintf('Exp %d', k));
-    legend('Location', 'best', 'FontSize', 7);
+    h_legend = legend('show');
+    set(h_legend, 'Location', 'best', 'FontSize', 7);
     hold off;
 end
 
@@ -328,7 +343,11 @@ for plot_idx = (num_to_plot + 1):num_subplots
     axis off;
 end
 
-sgtitle('Desired Force (Z) vs Real Force (Z) Over Time - All Experiments', 'FontSize', 14, 'FontWeight', 'bold');
+% Add title for all subplots (compatible with MATLAB 2017)
+ha = axes('Position', [0 0 1 1], 'Visible', 'off');
+text(0.5, 0.98, 'Desired Force (Z) vs Real Force (Z) Over Time - All Experiments', ...
+     'HorizontalAlignment', 'center', 'VerticalAlignment', 'top', ...
+     'FontSize', 14, 'FontWeight', 'bold', 'Parent', ha);
 
 %% ===== Interactive: Plot detailed analysis for selected experiment =====
 fprintf('\n===== Detailed Analysis: Select an experiment to plot =====\n');
@@ -337,7 +356,7 @@ valid_exp_list = [];
 for ii = 1:numel(folder_ids)
     k = folder_ids(ii);
     log_file = fullfile(base_dir, num2str(k), 'Force.txt');
-    if isfile(log_file)
+    if exist(log_file, 'file') == 2
         valid_exp_list(end+1) = k;
         fprintf('%d ', k);
     end
@@ -405,8 +424,14 @@ if ~isempty(valid_exp_list)
             ylabel('Impedance Parameter (Eigenvalue)');
             title(sprintf('Impedance Parameters Over Time - Experiment %d', selected_exp));
             
-            sgtitle(sprintf('Detailed Analysis - Experiment %d', selected_exp), ...
-                    'FontSize', 14, 'FontWeight', 'bold');
+            % Add title for all subplots (compatible with MATLAB 2017)
+            ha_detailed = axes('Position', [0 0 1 1], 'Visible', 'off');
+            text(0.5, 0.98, sprintf('Detailed Analysis - Experiment %d', selected_exp), ...
+                 'HorizontalAlignment', 'center', 'VerticalAlignment', 'top', ...
+                 'FontSize', 14, 'FontWeight', 'bold', 'Parent', ha_detailed);
+            % Original sgtitle call (commented out for compatibility):
+            % sgtitle(sprintf('Detailed Analysis - Experiment %d', selected_exp), ...
+            %         'FontSize', 14, 'FontWeight', 'bold');
         else
             warning('No valid data found for experiment %d', selected_exp);
         end
@@ -731,7 +756,7 @@ function out = parse_force_file_compute_metrics(log_file, radius, second_target_
                     time_seg1 = 0;
                 else
                     dpos_seg1 = diff(pos_seg1, 1, 2);
-                    ds_seg1 = vecnorm(dpos_seg1, 2, 1);
+                    ds_seg1 = sqrt(sum(dpos_seg1.^2, 1));
                     dt_seg1 = diff(seg1_times);
                     valid_seg1 = isfinite(ds_seg1) & isfinite(dt_seg1) & (dt_seg1 > 0);
                     dist_seg1 = sum(ds_seg1(valid_seg1));
@@ -748,7 +773,7 @@ function out = parse_force_file_compute_metrics(log_file, radius, second_target_
                     time_seg3 = 0;
                 else
                     dpos_seg3 = diff(pos_seg3, 1, 2);
-                    ds_seg3 = vecnorm(dpos_seg3, 2, 1);
+                    ds_seg3 = sqrt(sum(dpos_seg3.^2, 1));
                     dt_seg3 = diff(seg3_times);
                     valid_seg3 = isfinite(ds_seg3) & isfinite(dt_seg3) & (dt_seg3 > 0);
                     dist_seg3 = sum(ds_seg3(valid_seg3));
@@ -799,15 +824,17 @@ function out = parse_force_file_compute_metrics(log_file, radius, second_target_
         t0 = tp2(:,1);
         rp2_shift = rp2 - t0;
 
-        % Compute mean error (force error)
-        out.mean_err = mean(err2(~isnan(err2)));
+        % Compute mean error and standard deviation (force error)
+        valid_err2 = err2(~isnan(err2));
+        out.mean_err = mean(valid_err2);
+        out.std_err = std(valid_err2);
 
         % Compute avg speed (distance/time)
         dim = min(3, size(rp2_shift,1));
         pos = rp2_shift(1:dim, :);
 
         dpos = diff(pos, 1, 2);
-        ds   = vecnorm(dpos, 2, 1);
+        ds   = sqrt(sum(dpos.^2, 1));
         dt   = diff(times2);
 
         valid = isfinite(ds) & isfinite(dt) & (dt > 0);
@@ -816,8 +843,10 @@ function out = parse_force_file_compute_metrics(log_file, radius, second_target_
         out.total_time = sum(dt(valid));
         out.avg_speed  = out.total_dist / out.total_time;
     else
-        % Mean error for segments 1+3
-        out.mean_err = mean(err2(~isnan(err2)));
+        % Mean error and standard deviation for segments 1+3
+        valid_err2 = err2(~isnan(err2));
+        out.mean_err = mean(valid_err2);
+        out.std_err = std(valid_err2);
     end
 
     % Instantaneous speed vs instantaneous error (aligned to step i: between i and i+1)
@@ -841,7 +870,7 @@ function out = parse_force_file_compute_metrics(log_file, radius, second_target_
             dim = min(3, size(rp_seg1_shift,1));
             pos_seg1 = rp_seg1_shift(1:dim, :);
             dpos_seg1 = diff(pos_seg1, 1, 2);
-            ds_seg1 = vecnorm(dpos_seg1, 2, 1);
+            ds_seg1 = sqrt(sum(dpos_seg1.^2, 1));
             dt_seg1 = diff(out.seg1_times);
             valid_seg1 = isfinite(ds_seg1) & isfinite(dt_seg1) & (dt_seg1 > 0);
             
@@ -850,7 +879,7 @@ function out = parse_force_file_compute_metrics(log_file, radius, second_target_
             rp_seg3_shift = out.seg3_rp - t0_seg3;
             pos_seg3 = rp_seg3_shift(1:dim, :);
             dpos_seg3 = diff(pos_seg3, 1, 2);
-            ds_seg3 = vecnorm(dpos_seg3, 2, 1);
+            ds_seg3 = sqrt(sum(dpos_seg3.^2, 1));
             dt_seg3 = diff(out.seg3_times);
             valid_seg3 = isfinite(ds_seg3) & isfinite(dt_seg3) & (dt_seg3 > 0);
             
@@ -882,17 +911,20 @@ function out = parse_force_file_compute_metrics(log_file, radius, second_target_
     
     % Calculate setting time for segment 2 and mean error for segments 1+3 if segmentation was applied
     if segmentation_applied
-        % Mean error for segments 1+3 (err2 already contains seg1+seg3 combined)
+        % Mean error and standard deviation for segments 1+3 (err2 already contains seg1+seg3 combined)
         if ~isempty(err2)
             valid_err = err2(~isnan(err2));
             if ~isempty(valid_err)
                 out.mean_err_segments_1_3 = mean(valid_err);
+                out.std_err_segments_1_3 = std(valid_err);
             else
                 out.mean_err_segments_1_3 = nan;
+                out.std_err_segments_1_3 = nan;
                 warning('No valid error data in segments 1+3 after segmentation');
             end
         else
             out.mean_err_segments_1_3 = nan;
+            out.std_err_segments_1_3 = nan;
             warning('err2 is empty after segmentation');
         end
         
@@ -925,6 +957,7 @@ function out = parse_force_file_compute_metrics(log_file, radius, second_target_
     else
         out.setting_time = nan;
         out.mean_err_segments_1_3 = nan;
+        out.std_err_segments_1_3 = nan;
     end
 end
 
@@ -1085,7 +1118,7 @@ function data = parse_detailed_force_data(log_file, radius, second_target_only)
             pos = rp_shift(1:dim, :);
             
             dpos = diff(pos, 1, 2);
-            ds = vecnorm(dpos, 2, 1);
+            ds = sqrt(sum(dpos.^2, 1));
             dt = diff(data.times);
             
             valid = isfinite(ds) & isfinite(dt) & (dt > 0);
