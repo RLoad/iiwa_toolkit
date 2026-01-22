@@ -4,8 +4,8 @@ clear; clc;close all;
 % log_file = 'test error des with imp change/Force.txt';
 % log_file = '1 change coverage rate/Force.txt';
 % log_file = '2 change coverage rate to 60/Force.txt';
-% log_file = '3 use right err and controller/3/Force.txt';
-log_file = '4 use vel give a -z dir force disturb/9/Force.txt';
+log_file = '3 use right err and controller/3/Force.txt';
+% log_file = '4 use vel give a -z dir force disturb/8/Force.txt';
 
 gif_name = 'tracking_animation_second_target_zeroed.gif';
 
@@ -145,9 +145,8 @@ end
 times2   = times(idx_start:end);
 tp2      = tp_all(:,idx_start:end);
 rp2      = rp_all(:,idx_start:end);
-err2     = errF_all(idx_start:end);
-tf2 = tf_all(:,idx_start:end);
-rf2      = rf_all(:,idx_start:end);
+err2     = err_all(idx_start:end);
+
 % Slice eigenvalues - ensure alignment with times2
 if ~isempty(eigvals) && size(eigvals, 2) >= idx_start
     eig2 = eigvals(:, idx_start:end);
@@ -266,40 +265,39 @@ axis equal; grid on;
 
 % --- Subplot 2: Position X and Y over time ---
 subplot(3,2,2);
-plot(times2, rf2(1,:),'LineWidth',2); hold on;
-% plot(times2, rf2(2,:),'LineWidth',2);
-plot(times2, rf2(3,:),'LineWidth',2);
-xlabel('Time (s)'); ylabel('Force (N)');
-title('force X Z Over Time');
-legend('X', 'Z','Location', 'best');
+plot(times2, rp2_shift(1,:),'LineWidth',2); hold on;
+plot(times2, rp2_shift(2,:),'LineWidth',2);
+xlabel('Time (s)'); ylabel('Position (m)');
+title('Position X and Y Over Time');
+legend('X', 'Y', 'Location', 'best');
 grid on;
 hold off;
 
 % --- Subplot 3: Force Error ---
 subplot(3,2,4);
-% plot(times2, err2,'r-','LineWidth',2);
-% xlabel('Time (s)'); ylabel('Force Error (N)');
-% title('Force Error Over Time');
+plot(times2, err2,'r-','LineWidth',2);
+xlabel('Time (s)'); ylabel('Position Error (N)');
+title('Normalized Position Error Over Time');
 grid on;
-% Use unified time (times2) for all plots
-if ~isempty(errF2) && numel(errF2) == numel(times2)
-    plot(times2, errF2,'r-','LineWidth',2);
-    xlabel('Time (s)'); ylabel('Force Error (N)');
-    title('Force Error (Z-direction) Over Time');
-    grid on;
-else
-    text(0.5, 0.5, sprintf('No valid force error data\n(Expected %d points, got %d)', ...
-         numel(times2), numel(errF2)), ...
-         'HorizontalAlignment', 'center', 'Units', 'normalized', ...
-         'FontSize', 12);
-    xlabel('Time (s)'); ylabel('Force Error (N)');
-    title('Force Error (Z-direction) Over Time');
-    grid on;
-    if ~isempty(errF2)
-        warning('Force error data size mismatch: times2 has %d points, errF2 has %d points', ...
-            numel(times2), numel(errF2));
-    end
-end
+% % Use unified time (times2) for all plots
+% if ~isempty(errF2) && numel(errF2) == numel(times2)
+%     plot(times2, errF2,'r-','LineWidth',2);
+%     xlabel('Time (s)'); ylabel('Force Error (N)');
+%     title('Force Error (Z-direction) Over Time');
+%     grid on;
+% else
+%     text(0.5, 0.5, sprintf('No valid force error data\n(Expected %d points, got %d)', ...
+%          numel(times2), numel(errF2)), ...
+%          'HorizontalAlignment', 'center', 'Units', 'normalized', ...
+%          'FontSize', 12);
+%     xlabel('Time (s)'); ylabel('Force Error (N)');
+%     title('Force Error (Z-direction) Over Time');
+%     grid on;
+%     if ~isempty(errF2)
+%         warning('Force error data size mismatch: times2 has %d points, errF2 has %d points', ...
+%             numel(times2), numel(errF2));
+%     end
+% end
 
 % --- Subplot 4: Eigenvalues ---
 subplot(3,2,6);

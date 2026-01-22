@@ -128,7 +128,7 @@ all_times_force = cell(numel(folder_ids), 1);
 all_desired_force_z = cell(numel(folder_ids), 1);
 all_real_force_z = cell(numel(folder_ids), 1);
 
-for ii = 1:numel(folder_ids)
+for ii = [1:10 12:14]
     k = folder_ids(ii);
 
     log_file = fullfile(base_dir, num2str(k), 'Force.txt');
@@ -339,7 +339,7 @@ end
 
 % Hide unused subplots
 for plot_idx = (num_to_plot + 1):num_subplots
-    subplot(4, 4, plot_idx);
+    % subplot(4, 4, plot_idx);
     axis off;
 end
 
