@@ -5,7 +5,7 @@ clear; clc;close all;
 % log_file = '1 change coverage rate/Force.txt';
 % log_file = '2 change coverage rate to 60/Force.txt';
 % log_file = '3 use right err and controller/3/Force.txt';
-log_file = '4 use vel give a -z dir force disturb/9/Force.txt';
+log_file = '4 use vel give a -z dir force disturb/15/Force.txt';
 
 gif_name = 'tracking_animation_second_target_zeroed.gif';
 

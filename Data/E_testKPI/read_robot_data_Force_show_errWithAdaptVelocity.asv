@@ -1,0 +1,774 @@
+clear; clc;close all;
+
+% === Path to your file ===
+% log_file = 'test error des with imp change/Force.txt';
+% log_file = '1 change coverage rate/Force.txt';
+% log_file = '2 change coverage rate to 60/Force.txt';
+% log_file = '3 use right err and controller/3/Force.txt';
+log_file = '5 also add adaptive velocity/1/Force.txt';
+
+
+outPrefix = 'Force_parsed';
+[data, T] = parseForceLog(log_file, outPrefix);
+
+realforce=data.real_force_filtered;
+targetforce= data.desired_force;
+adapitveVel= data.adaptive_velocity;
+time=data.time
+
+forceErr=realforce-targetforce;
+
+figure
+subplot(312)
+plot(time,forceErr(:,3));hold on;
+subplot(311)
+plot(time,realforce(:,1));hold on;
+plot(time,realforce(:,2));hold on;
+plot(time,realforce(:,3));hold on;
+subplot(313)
+plot(time,adapitveVel(:,1));hold on;
+plot(time,adapitveVel(:,2));hold on;
+plot(time,adapitveVel(:,3));hold on;
+
+
+
+
+%% parse_force_log.m
+% Usage:
+%   infile = 'Force.txt';
+%   outPrefix = 'Force_parsed';
+%   [data, T] = parseForceLog(infile, outPrefix);
+
+function [data, T] = parseForceLog(infile, outPrefix)
+
+    if nargin < 2 || isempty(outPrefix)
+        [p, n] = fileparts(infile);
+        outPrefix = fullfile(p, [n '_parsed']);
+    end
+
+    fid = fopen(infile, 'r');
+    assert(fid > 0, 'Failed to open file: %s', infile);
+    c = onCleanup(@() fclose(fid));
+
+    % Storage (grow-by-chunk)
+    time = [];
+    rff  = []; % real_force_filtered_ (Nx3)
+    df   = []; % desired_force_ (Nx3)
+    tp   = []; % target_pose_ (Nx3)
+    rp   = []; % real_pose_ (Nx3)
+    eigv = []; % eig_value (Nx2 or more; here we store first 2 if present)
+    av   = []; % adaptive_velocity (Nx3)
+
+    % Current record
+    cur = initRecord();
+
+    while true
+        line = fgetl(fid);
+        if ~ischar(line)
+            % EOF: flush last record if valid
+            if cur.hasAny
+                [time, rff, df, tp, rp, eigv, av] = appendRecord(time, rff, df, tp, rp, eigv, av, cur);
+            end
+            break;
+        end
+
+        line = strtrim(line);
+
+        % Block delimiter
+        if strcmp(line, '----------------------------------------')
+            if cur.hasAny
+                [time, rff, df, tp, rp, eigv, av] = appendRecord(time, rff, df, tp, rp, eigv, av, cur);
+            end
+            cur = initRecord();
+            continue;
+        end
+
+        % Parse each known key
+        if startsWith(line, 'time:')
+            cur.time = parseScalarAfterColon(line);
+            cur.hasAny = true;
+
+        elseif startsWith(line, 'real_force_filtered_:')
+            cur.real_force_filtered = parseVectorAfterColon(line, 3);
+            cur.hasAny = true;
+
+        elseif startsWith(line, 'desired_force_:')
+            cur.desired_force = parseVectorAfterColon(line, 3);
+            cur.hasAny = true;
+
+        elseif startsWith(line, 'target_pose_:')
+            cur.target_pose = parseVectorAfterColon(line, 3);
+            cur.hasAny = true;
+
+        elseif startsWith(line, 'real_pose_:')
+            cur.real_pose = parseVectorAfterColon(line, 3);
+            cur.hasAny = true;
+
+        elseif startsWith(line, 'eig_value:')
+            v = parseVectorAfterColon(line, NaN);
+            % Keep first 2 if more are present; pad if fewer.
+            cur.eig_value = padOrTrim(v(:).', 2);
+            cur.hasAny = true;
+
+        elseif startsWith(line, 'adaptive_velocity:')
+            cur.adaptive_velocity = parseVectorAfterColon(line, 3);
+            cur.hasAny = true;
+
+        else
+            % Unknown line: ignore (keeps robustness)
+        end
+    end
+
+    % Build outputs
+    data = struct();
+    data.time = time(:);
+
+    data.real_force_filtered = rff;
+    data.desired_force       = df;
+    data.target_pose         = tp;
+    data.real_pose           = rp;
+    data.eig_value           = eigv;
+    data.adaptive_velocity   = av;
+
+    % Table for CSV/export (split into component columns)
+    T = table();
+    T.time = data.time;
+
+    T.rff_x = rff(:,1); T.rff_y = rff(:,2); T.rff_z = rff(:,3);
+    T.df_x  = df(:,1);  T.df_y  = df(:,2);  T.df_z  = df(:,3);
+    T.tp_x  = tp(:,1);  T.tp_y  = tp(:,2);  T.tp_z  = tp(:,3);
+    T.rp_x  = rp(:,1);  T.rp_y  = rp(:,2);  T.rp_z  = rp(:,3);
+    T.eig_1 = eigv(:,1); T.eig_2 = eigv(:,2);
+    T.av_x  = av(:,1);  T.av_y  = av(:,2);  T.av_z  = av(:,3);
+
+    % Save
+    outMat = [outPrefix '.mat'];
+    outCsv = [outPrefix '.csv'];
+    save(outMat, 'data', 'T');
+    writetable(T, outCsv);
+
+    fprintf('Saved:\n  %s\n  %s\n', outMat, outCsv);
+end
+
+%% ---------- helpers ----------
+
+function cur = initRecord()
+    cur = struct();
+    cur.time = NaN;
+    cur.real_force_filtered = [NaN NaN NaN];
+    cur.desired_force       = [NaN NaN NaN];
+    cur.target_pose         = [NaN NaN NaN];
+    cur.real_pose           = [NaN NaN NaN];
+    cur.eig_value           = [NaN NaN];
+    cur.adaptive_velocity   = [NaN NaN NaN];
+    cur.hasAny = false;
+end
+
+function [time, rff, df, tp, rp, eigv, av] = appendRecord(time, rff, df, tp, rp, eigv, av, cur)
+    time(end+1,1) = cur.time;
+
+    rff(end+1,:)  = padOrTrim(cur.real_force_filtered, 3);
+    df(end+1,:)   = padOrTrim(cur.desired_force, 3);
+    tp(end+1,:)   = padOrTrim(cur.target_pose, 3);
+    rp(end+1,:)   = padOrTrim(cur.real_pose, 3);
+    eigv(end+1,:) = padOrTrim(cur.eig_value, 2);
+    av(end+1,:)   = padOrTrim(cur.adaptive_velocity, 3);
+end
+
+function x = parseScalarAfterColon(line)
+    parts = split(line, ':');
+    if numel(parts) < 2, x = NaN; return; end
+    x = str2double(strtrim(parts{2}));
+    if isnan(x)
+        % fallback for odd formatting
+        nums = sscanf(line, '%*[^:]: %f');
+        if ~isempty(nums), x = nums(1); end
+    end
+end
+
+function v = parseVectorAfterColon(line, expectedLen)
+    % Extract substring after first ':'
+    k = strfind(line, ':');
+    if isempty(k)
+        v = nan(1, max(1, expectedLen));
+        return;
+    end
+    s = strtrim(line(k(1)+1:end));
+    nums = sscanf(s, '%f').';
+    if isempty(nums)
+        v = nan(1, max(1, expectedLen));
+        return;
+    end
+    if isnan(expectedLen)
+        v = nums;
+    else
+        v = padOrTrim(nums, expectedLen);
+    end
+end
+
+function v = padOrTrim(v, n)
+    v = v(:).';
+    if numel(v) >= n
+        v = v(1:n);
+    else
+        v = [v nan(1, n-numel(v))];
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+gif_name = 'tracking_animation_second_target_zeroed.gif';
+
+fid = fopen(log_file, 'r');
+
+times   = [];
+tp_all  = [];
+rp_all  = [];
+tf_all  = [];
+rf_all  = [];
+errF_all = [];
+err_all = [];
+eigvals = [];
+target_history = [];
+
+% Store times for force data (to keep alignment)
+times_force = [];
+
+% Store adaptive velocity data to filter data points
+adaptive_velocity_present = [];  % Track which time points have adaptive velocity
+adaptive_velocity_data = [];     % Store adaptive velocity values
+
+% Temporary storage for current data point (before checking adaptive velocity)
+temp_time = [];
+temp_target_pose = [];
+temp_real_pose = [];
+temp_real_force_filtered = [];
+temp_desired_force = [];
+temp_eigvals = [];
+
+% Statistics for filtering
+skipped_count = 0;
+skipped_reasons = struct('non_finite', 0, 'too_large', 0, 'no_adaptive_velocity', 0);
+
+radius=0.07
+
+while ~feof(fid)
+    line = strtrim(fgetl(fid));
+    if startsWith(line,'time:')
+        raw = extractAfter(line,'time:');
+        temp_time = str2double(raw);
+    elseif startsWith(line,'target_pose_:')
+        vals = sscanf(line(length('target_pose_:')+1:end),'%f');
+        temp_target_pose = vals;
+    elseif startsWith(line,'real_pose_:')
+        vals = sscanf(line(length('real_pose_:')+1:end),'%f');
+        temp_real_pose = vals;
+    elseif startsWith(line,'real_force_filtered_:')
+        vals = sscanf(line(length('real_force_filtered_:')+1:end),'%f');
+        temp_real_force_filtered = vals;
+    elseif startsWith(line,'desired_force_:')
+        vals = sscanf(line(length('desired_force_:')+1:end),'%f');
+        temp_desired_force = vals;
+    elseif startsWith(line,'eig_value:')
+        vals = sscanf(line(length('eig_value:')+1:end),'%f');
+        temp_eigvals = vals;
+    elseif contains(lower(line),'adaptive') && contains(lower(line),'velocity')
+        % Found adaptive velocity - this means we have a complete data point
+        % Extract adaptive velocity value if present
+        adaptive_vel = [];
+        if contains(line,':')
+            raw = extractAfter(line,':');
+            adaptive_vel = str2double(strtrim(raw));
+            if ~isfinite(adaptive_vel)
+                adaptive_vel = [];  % Empty if not a valid number
+            end
+        end
+        % Mark as present even if value is not extracted
+        
+        % Only add data if we have all necessary components
+        if ~isempty(temp_time) && ~isempty(temp_target_pose) && ~isempty(temp_real_pose)
+            % Add time and pose data
+            times(end+1) = temp_time;
+            target_history(:,end+1) = temp_target_pose;
+            tp_all(:,end+1) = temp_target_pose;
+            rp_all(:,end+1) = temp_real_pose;
+            err_all(end+1)  = norm(temp_target_pose - temp_real_pose)-radius;
+            
+            % Add adaptive velocity marker
+            adaptive_velocity_present(end+1) = true;
+            if ~isempty(adaptive_vel)
+                adaptive_velocity_data(end+1) = adaptive_vel;
+            else
+                adaptive_velocity_data(end+1) = NaN;  % Mark as present but value unknown
+            end
+            
+            % Add force data if available
+            if ~isempty(temp_desired_force) && ~isempty(temp_real_force_filtered)
+                % Validate force data - filter out unrealistic values
+                % Check for NaN or Inf values first
+                if any(~isfinite(temp_desired_force)) || any(~isfinite(temp_real_force_filtered))
+                    skipped_count = skipped_count + 1;
+                    skipped_reasons.non_finite = skipped_reasons.non_finite + 1;
+                    % Still add placeholder to maintain alignment
+                    rf_all(:,end+1) = NaN(size(temp_real_force_filtered));
+                    tf_all(:,end+1) = NaN(size(temp_desired_force));
+                    errF_all(end+1) = NaN;
+                    times_force(end+1) = temp_time;
+                else
+                    % Option 1: Calculate error only for Z-direction (most relevant for force tracking)
+                    use_z_only = true;  % Set to false to use full 3D norm
+                    
+                    if use_z_only
+                        % Only use Z-direction (3rd component) for force error
+                        if length(temp_desired_force) >= 3 && length(temp_real_force_filtered) >= 3
+                            force_err_z = temp_desired_force(3) - temp_real_force_filtered(3);
+                            % Only add if Z-component is reasonable
+                            if abs(force_err_z) < 1e10 && isfinite(force_err_z)
+                                rf_all(:,end+1) = temp_real_force_filtered;
+                                tf_all(:,end+1) = temp_desired_force;
+                                errF_all(end+1)  = abs(force_err_z);  % Use absolute value of Z-error
+                                times_force(end+1) = temp_time;
+                            else
+                                skipped_count = skipped_count + 1;
+                                skipped_reasons.too_large = skipped_reasons.too_large + 1;
+                                % Add placeholder to maintain alignment
+                                rf_all(:,end+1) = NaN(size(temp_real_force_filtered));
+                                tf_all(:,end+1) = NaN(size(temp_desired_force));
+                                errF_all(end+1) = NaN;
+                                times_force(end+1) = temp_time;
+                            end
+                        else
+                            % Add placeholder to maintain alignment
+                            rf_all(:,end+1) = NaN(size(temp_real_force_filtered));
+                            tf_all(:,end+1) = NaN(size(temp_desired_force));
+                            errF_all(end+1) = NaN;
+                            times_force(end+1) = temp_time;
+                        end
+                    else
+                        % Option 2: Use full 3D norm but with validation
+                        max_reasonable_force = 1e10;  % Maximum reasonable force magnitude in N
+                        
+                        if any(abs(temp_desired_force) > max_reasonable_force) || any(abs(temp_real_force_filtered) > max_reasonable_force)
+                            skipped_count = skipped_count + 1;
+                            skipped_reasons.too_large = skipped_reasons.too_large + 1;
+                            % Add placeholder to maintain alignment
+                            rf_all(:,end+1) = NaN(size(temp_real_force_filtered));
+                            tf_all(:,end+1) = NaN(size(temp_desired_force));
+                            errF_all(end+1) = NaN;
+                            times_force(end+1) = temp_time;
+                        else
+                            rf_all(:,end+1) = temp_real_force_filtered;
+                            tf_all(:,end+1) = temp_desired_force;
+                            errF_all(end+1)  = norm(temp_desired_force - temp_real_force_filtered);
+                            times_force(end+1) = temp_time;
+                        end
+                    end
+                end
+            else
+                % No force data for this point - add placeholder to maintain alignment
+                if isempty(times_force) || numel(times_force) < numel(times)
+                    rf_all(:,end+1) = NaN(3,1);
+                    tf_all(:,end+1) = NaN(3,1);
+                    errF_all(end+1) = NaN;
+                    times_force(end+1) = temp_time;
+                end
+            end
+            
+            % Add eigenvalue data if available
+            if ~isempty(temp_eigvals)
+                if isempty(eigvals)
+                    eigvals = temp_eigvals(:);
+                else
+                    eigvals(:,end+1) = temp_eigvals(:);
+                end
+            else
+                % Add placeholder to maintain alignment
+                if ~isempty(eigvals)
+                    eigvals(:,end+1) = NaN(size(eigvals,1),1);
+                end
+            end
+            
+            % Reset temporary variables for next data point
+            temp_time = [];
+            temp_target_pose = [];
+            temp_real_pose = [];
+            temp_real_force_filtered = [];
+            temp_desired_force = [];
+            temp_eigvals = [];
+        end
+    end
+end
+fclose(fid);
+
+% Ensure all data arrays are aligned
+num_time_points = numel(times);
+if num_time_points == 0
+    error('No data points with adaptive velocity found in the file!');
+end
+
+% Align force data arrays
+if numel(times_force) < num_time_points
+    % Pad with NaN if needed
+    while numel(times_force) < num_time_points
+        times_force(end+1) = NaN;
+        rf_all(:,end+1) = NaN(3,1);
+        tf_all(:,end+1) = NaN(3,1);
+        errF_all(end+1) = NaN;
+    end
+elseif numel(times_force) > num_time_points
+    % Trim if too long
+    times_force = times_force(1:num_time_points);
+    rf_all = rf_all(:,1:num_time_points);
+    tf_all = tf_all(:,1:num_time_points);
+    errF_all = errF_all(1:num_time_points);
+end
+
+% Align eigenvalue data
+if ~isempty(eigvals)
+    if size(eigvals, 2) < num_time_points
+        % Pad with NaN
+        while size(eigvals, 2) < num_time_points
+            eigvals(:,end+1) = NaN(size(eigvals,1),1);
+        end
+    elseif size(eigvals, 2) > num_time_points
+        % Trim if too long
+        eigvals = eigvals(:,1:num_time_points);
+    end
+end
+
+% Now all arrays are aligned with num_time_points elements
+
+% Normalize time: start from 0 at the first adaptive velocity data point
+% Then remove the first point (which is 0) as requested
+if ~isempty(times)
+    t_start = times(1);  % First time point with adaptive velocity (original time)
+    times = times - t_start;  % Normalize to start from 0
+    
+    % Remove the first point (which is 0) from all data arrays
+    % All arrays are already aligned at this point
+    if numel(times) > 1
+        times = times(2:end);  % Remove first element (0)
+        tp_all = tp_all(:, 2:end);
+        rp_all = rp_all(:, 2:end);
+        err_all = err_all(2:end);
+        if ~isempty(target_history)
+            target_history = target_history(:, 2:end);
+        end
+        
+        % Remove from adaptive velocity data
+        if numel(adaptive_velocity_data) == numel(times) + 1
+            adaptive_velocity_data = adaptive_velocity_data(2:end);
+        end
+        
+        % Remove from force data if available (should be same length)
+        if numel(times_force) == numel(times) + 1
+            times_force = times_force(2:end);
+            rf_all = rf_all(:, 2:end);
+            tf_all = tf_all(:, 2:end);
+            errF_all = errF_all(2:end);
+        end
+        
+        % Remove from eigenvalue data if available (should be same length)
+        if ~isempty(eigvals) && size(eigvals, 2) == numel(times) + 1
+            eigvals = eigvals(:, 2:end);
+        end
+    else
+        warning('Only one data point available, cannot remove first point.');
+    end
+end
+
+% Display filtering statistics (after normalization and removal)
+fprintf('\n===== Data Filtering Statistics =====\n');
+fprintf('Total data points with adaptive velocity (after removal): %d\n', numel(times));
+if ~isempty(times)
+    fprintf('Time range: %.3f to %.3f seconds\n', min(times), max(times));
+    fprintf('Starting from first adaptive velocity data point (original time: %.3f s, normalized and removed)\n', t_start);
+end
+fprintf('Valid force data points: %d\n', sum(~isnan(errF_all)));
+fprintf('Skipped data points: %d\n', skipped_count);
+fprintf('  - Non-finite values: %d\n', skipped_reasons.non_finite);
+fprintf('  - Too large values: %d\n', skipped_reasons.too_large);
+fprintf('  - No adaptive velocity: %d\n', skipped_reasons.no_adaptive_velocity);
+fprintf('==========================================\n\n');
+
+% Use all data that passed adaptive velocity filtering (no target point segmentation)
+% All data already starts from the first adaptive velocity point (first point removed)
+% Align force data time with position data time
+% Note: times, times_force, and all data arrays already have first point removed
+if ~isempty(times_force) && ~isempty(times)
+    % Ensure force data is aligned with position data
+    if numel(times_force) ~= numel(times)
+        % Interpolate force error to times if needed
+        if numel(times_force) > 1 && numel(times) > 1
+            % Remove duplicate time points before interpolation
+            [times_force_unique, unique_idx] = unique(times_force, 'stable');
+            errF_all_unique = errF_all(unique_idx);
+            rf_all_unique = rf_all(:, unique_idx);
+            tf_all_unique = tf_all(:, unique_idx);
+            
+            % Check if we still have enough points for interpolation
+            if numel(times_force_unique) > 1
+                errF_all = interp1(times_force_unique, errF_all_unique, times, 'linear', 'extrap');
+                % Interpolate force vectors
+                for i = 1:size(rf_all, 1)
+                    rf_all(i, :) = interp1(times_force_unique, rf_all_unique(i, :), times, 'linear', 'extrap');
+                    tf_all(i, :) = interp1(times_force_unique, tf_all_unique(i, :), times, 'linear', 'extrap');
+                end
+                fprintf('Interpolated force error data to match position time points (%d -> %d points, removed %d duplicates)\n', ...
+                    numel(times_force), numel(times), numel(times_force) - numel(times_force_unique));
+            else
+                warning('Not enough unique time points for interpolation. Using original data.');
+            end
+        end
+    end
+    % Use times as unified time for all plots
+    times_force = times;
+end
+
+% Use all filtered data directly (all data starts from first adaptive velocity point, first point removed)
+errF2 = errF_all;
+tf2 = tf_all;
+rf2 = rf_all;
+times2 = times;  % Already normalized to start from 0 (first point removed)
+tp2 = tp_all;
+rp2 = rp_all;
+eig2 = eigvals;
+adaptive_velocity2 = adaptive_velocity_data;  % Store adaptive velocity for plotting (first point already removed)
+
+% Display statistics about force error
+fprintf('\n===== Force Error Statistics =====\n');
+fprintf('Total force error data points: %d\n', numel(errF2));
+if ~isempty(errF2) && any(~isnan(errF2))
+    valid_errF2 = errF2(~isnan(errF2));
+    fprintf('Force error range: [%.6e, %.6e] N\n', min(valid_errF2), max(valid_errF2));
+    fprintf('Mean force error: %.6e N\n', mean(valid_errF2));
+    fprintf('Median force error: %.6e N\n', median(valid_errF2));
+    if any(valid_errF2 > 1e6)
+        fprintf('WARNING: Some force errors are very large (>1e6 N). This may indicate data issues.\n');
+        fprintf('  Number of large errors: %d\n', nnz(valid_errF2 > 1e6));
+        fprintf('  Max error: %.6e N\n', max(valid_errF2));
+    end
+else
+    fprintf('No valid force error data available.\n');
+end
+fprintf('=====================================\n\n');
+
+%% === Shift coordinates so target pose becomes zero ===
+
+t0 = tp2(:,1);  % reference target pose
+tp2_shift = tp2 - t0;   % target trajectories translated
+rp2_shift = rp2 - t0;   % real trajectories translated
+
+% Error stays the same since computed from original difference
+% (norm(target-real) invariant to translation)
+
+if ~isempty(errF2) && any(~isnan(errF2))
+    mean_err = mean(errF2(~isnan(errF2)));
+    disp(['Average tracking error (adaptive velocity filtered): ', num2str(mean_err), ' m']);
+else
+    disp('No valid tracking error data available.');
+end
+
+%% === Plot FINAL static figure first ===
+figure('Position',[200 200 900 700]);
+
+% Precompute reference circle
+theta = linspace(0,2*pi,200);
+circle_x = radius * cos(theta);
+circle_y = radius * sin(theta);
+
+% --- Subplot 1: 2D trajectory (final) ---
+subplot(3,2,[1 3 5]);
+plot(circle_x, circle_y, 'k--', 'LineWidth',1.5); hold on;
+plot(tp2_shift(1,:), tp2_shift(2,:), 'kx', 'MarkerSize',8, 'LineWidth',2);
+plot(rp2_shift(1,:), rp2_shift(2,:), 'b-', 'LineWidth',2);
+plot(rp2_shift(1,end), rp2_shift(2,end), 'ro', 'MarkerSize',8, 'LineWidth',2);
+hold off;
+xlabel('X'); ylabel('Y');
+title('Motion Trajectory');
+legend('Desired traj','Attractor','Real traj','Last pose','Location','best');
+axis equal; grid on;
+
+
+% --- Subplot 2: Position X and Y over time ---
+subplot(3,2,2);
+plot(times2, rf2(1,:),'LineWidth',2); hold on;
+% plot(times2, rf2(2,:),'LineWidth',2);
+plot(times2, rf2(3,:),'LineWidth',2);
+xlabel('Time (s)'); ylabel('Force (N)');
+title('force X Z Over Time');
+legend('X', 'Z','Location', 'best');
+grid on;
+hold off;
+
+% --- Subplot 3: Force Error ---
+subplot(3,2,4);
+% plot(times2, err2,'r-','LineWidth',2);
+% xlabel('Time (s)'); ylabel('Force Error (N)');
+% title('Force Error Over Time');
+grid on;
+% Use unified time (times2) for all plots
+if ~isempty(errF2) && numel(errF2) == numel(times2)
+    plot(times2, errF2,'r-','LineWidth',2);
+    xlabel('Time (s)'); ylabel('Force Error (N)');
+    title('Force Error (Z-direction) Over Time');
+    grid on;
+else
+    text(0.5, 0.5, sprintf('No valid force error data\n(Expected %d points, got %d)', ...
+         numel(times2), numel(errF2)), ...
+         'HorizontalAlignment', 'center', 'Units', 'normalized', ...
+         'FontSize', 12);
+    xlabel('Time (s)'); ylabel('Force Error (N)');
+    title('Force Error (Z-direction) Over Time');
+    grid on;
+    if ~isempty(errF2)
+        warning('Force error data size mismatch: times2 has %d points, errF2 has %d points', ...
+            numel(times2), numel(errF2));
+    end
+end
+
+% --- Subplot 4: Adaptive Velocity ---
+subplot(3,2,6);
+% Plot adaptive velocity over time
+if ~isempty(adaptive_velocity2) && numel(adaptive_velocity2) == numel(times2)
+    % Filter out NaN values for plotting
+    valid_idx = ~isnan(adaptive_velocity2);
+    if any(valid_idx)
+        plot(times2(valid_idx), adaptive_velocity2(valid_idx), 'LineWidth', 2, 'Color', [0.8500 0.3250 0.0980]);
+        xlabel('Time (s)'); ylabel('Adaptive Velocity');
+        title('Adaptive Velocity Over Time');
+        grid on;
+    else
+        text(0.5, 0.5, 'No valid adaptive velocity data', ...
+             'HorizontalAlignment', 'center', 'Units', 'normalized', ...
+             'FontSize', 12);
+        xlabel('Time (s)'); ylabel('Adaptive Velocity');
+        title('Adaptive Velocity Over Time');
+        grid on;
+    end
+else
+    text(0.5, 0.5, sprintf('Adaptive velocity data size mismatch\n(times2: %d, adaptive_velocity2: %d)', ...
+         numel(times2), numel(adaptive_velocity2)), ...
+         'HorizontalAlignment', 'center', 'Units', 'normalized', ...
+         'FontSize', 12);
+    xlabel('Time (s)'); ylabel('Adaptive Velocity');
+    title('Adaptive Velocity Over Time');
+    grid on;
+end
+
+
+
+% Add title for all subplots (compatible with MATLAB 2017)
+% ha = axes('Position', [0 0 1 1], 'Visible', 'off');
+% text(0.5, 0.98, 'Final Results (Adaptive Velocity Filtered)', ...
+%      'HorizontalAlignment', 'center', 'VerticalAlignment', 'top', ...
+%      'FontSize', 14, 'FontWeight', 'bold', 'Parent', ha);
+
+
+
+%% === Compute average speed (adaptive velocity filtered) ===
+% Use shifted or unshifted poses; translation does not change distances
+% Choose 2D (x,y) or 3D (x,y,z) automatically
+dim = min(3, size(rp2_shift,1));   % if only x,y exist -> dim=2; if x,y,z exist -> dim=3
+pos = rp2_shift(1:dim, :);
+
+dpos = diff(pos, 1, 2);           % position increments
+ds   = sqrt(sum(dpos.^2, 1));       % distance per step
+dt   = diff(times2);              % time per step
+
+% Guard against invalid time steps (e.g., duplicated timestamps)
+valid = isfinite(ds) & isfinite(dt) & (dt > 0);
+
+total_dist = sum(ds(valid));
+total_time = sum(dt(valid));
+
+avg_speed = total_dist / total_time;            % time-weighted mean speed (recommended)
+mean_step_speed = mean(ds(valid) ./ dt(valid)); % simple mean of instantaneous speeds (for reference)
+
+disp(['Total distance (adaptive velocity filtered): ', num2str(total_dist), ' m']);
+disp(['Total time     (adaptive velocity filtered): ', num2str(total_time), ' s']);
+disp(['Average speed  (distance/time): ', num2str(avg_speed), ' m/s']);
+disp(['Mean step speed (mean(ds/dt)): ', num2str(mean_step_speed), ' m/s']);
+
+%% === Ask user if we should animate ===
+% answer = input('Generate GIF animation? (y/n): ','s');
+% 
+% if ~(strcmpi(answer,'y') || strcmpi(answer,'yes'))
+%     disp('Animation skipped. Script finished.');
+%     return;
+% end
+% 
+% %% === Animation plotting ===
+% disp('Generating animation GIF...');
+% figure('Position',[200 200 900 700]);
+% num_frames = length(times2);
+% 
+% for k = 1:num_frames
+% 
+%     % ----- Subplot 1: 2D trajectory (XY) -----
+%     subplot(3,1,1);
+%     plot(circle_x, circle_y, 'k--', 'LineWidth', 1.5); hold on;
+%     plot(tp2_shift(1,:), tp2_shift(2,:), 'kx', 'MarkerSize',8, 'LineWidth',2);
+%     plot(rp2_shift(1,1:k), rp2_shift(2,1:k), 'b-', 'LineWidth',2);
+%     plot(rp2_shift(1,k), rp2_shift(2,k), 'ro', 'MarkerSize',8, 'LineWidth',2);
+%     hold off;
+%     xlabel('X (shifted)'); ylabel('Y (shifted)');
+%     title(sprintf('Shifted Trajectory (Adaptive Velocity Filtered) frame %d/%d',k,num_frames));
+%     legend('Desired circle','Target (0)','Real traj','Current real','Location','best');
+%     axis equal; grid on;
+% 
+%     % ----- Subplot 2: Error -----
+%     subplot(3,1,2);
+%     plot(times2(1:k), err2(1:k),'r-','LineWidth',2);
+%     xlabel('Time (s)'); ylabel('Error (m)');
+%     title('Error Norm Evolution');
+%     grid on; xlim([times2(1) times2(end)]);
+% 
+%     % ----- Subplot 3: Eigenvalues -----
+%     subplot(3,1,3);
+%     plot(times2(1:k), eig2(:,1:k)','LineWidth',2);
+%     xlabel('Time (s)'); ylabel('Eigenvalues');
+%     title('Eigenvalue Evolution');
+%     grid on; xlim([times2(1) times2(end)]);
+% 
+%     drawnow;
+% 
+%     % ---- Save frame to GIF ----
+%     frame = getframe(gcf);
+%     [imind, cm] = rgb2ind(frame2im(frame),256);
+%     if k == 1
+%         imwrite(imind,cm,gif_name,'gif','Loopcount',inf,'DelayTime',0.05);
+%     else
+%         imwrite(imind,cm,gif_name,'gif','WriteMode','append','DelayTime',0.05);
+%     end
+% end
+% 
+% disp(['GIF saved as: ', gif_name]);
