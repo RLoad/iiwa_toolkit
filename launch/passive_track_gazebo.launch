@@ -23,6 +23,15 @@
         <arg name="gui" value="false" />
     </include>
 
+    <!-- 发布点云 PLY 文件到 RViz (自动监测最新文件) -->
+    <node name="ply_pointcloud_publisher" pkg="ds_motion_generator" type="publish_pointcloud.py" output="screen">
+        <param name="pointcloud_dir" value="$(find ds_motion_generator)/ply"/>
+        <param name="topic"          value="/pointcloud_ply"/>
+        <param name="frame_id"       value="world"/>
+        <param name="rate"           value="2.0"/>
+        <param name="check_interval" value="2.0"/>
+    </node>
+
     <!-- <node name="plotter"
             pkg="rqt_plot"
             type="rqt_plot"
