@@ -53,6 +53,10 @@ add_executable(passive_track src/node_passive_track.cpp  src/passive_control.cpp
 target_link_libraries(passive_track ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
 add_dependencies(passive_track ${PROJECT_NAME}_gencfg)
 
+add_executable(impedance_track src/node_impedance_track.cpp  src/impedance_control.cpp include/thirdparty/Utils.cpp ${MODEL_SOURCES})
+target_link_libraries(impedance_track ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
+add_dependencies(impedance_track ${PROJECT_NAME}_gencfg)
+
 
 add_executable(marker_following src/node_marker_following.cpp  src/motion_capture.cpp src/passive_control.cpp include/thirdparty/Utils.cpp ${MODEL_SOURCES})
 target_link_libraries(marker_following ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})

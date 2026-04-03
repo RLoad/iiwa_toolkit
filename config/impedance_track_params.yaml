@@ -1,0 +1,12 @@
+options:
+  filter_gain: 0.2
+
+control:
+  dsGainPos: 5.0
+  dt_scale: 40.0
+  impedance_Kp: [800., 800., 800., 800., 300., 300., 300.]
+  impedance_Kd: [80., 80., 80., 80., 10., 10., 10.]
+
+target:
+  pos:  [0.7, 0.0, 0.5]
+  quat: [0.7071068, 0.0, 0.7071068, 0.0]
