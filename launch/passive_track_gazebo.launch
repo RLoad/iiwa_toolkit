@@ -3,6 +3,8 @@
     <arg name="robot_name_1" default="iiwa"/>
 
     <arg name="iiwa_model_1" default="14"/>
+    <arg name="launch_rviz" default="true"/>
+    <arg name="rviz_config" default="$(find ds_motion_generator)/config/rviz/iiwaWithPath.rviz"/>
 
     <include file="$(find iiwa_gazebo)/launch/iiwa_gazebo.launch">
         <arg name="robot_name_1" value="$(arg robot_name_1)"/>
@@ -21,6 +23,7 @@
     <!-- Launch RViz with robot visualization -->
     <include file="$(find iiwa_description)/launch/display_iiwa.launch">
         <arg name="gui" value="false" />
+        <arg name="launch_rviz" value="false" />
     </include>
 
     <!-- 发布点云 PLY 文件到 RViz (自动监测最新文件) -->
@@ -31,6 +34,18 @@
         <param name="rate"           value="2.0"/>
         <param name="check_interval" value="2.0"/>
     </node>
+
+    <!-- Publish final_trajectory.txt as /waypoint_path for RViz -->
+    <node name="final_trajectory_path_publisher" pkg="ds_motion_generator" type="publish_final_trajectory_path.py" output="screen">
+        <param name="trajectory_file" value="$(find ds_motion_generator)/trj/final_trajectory.txt"/>
+        <param name="topic"           value="/waypoint_path"/>
+        <param name="frame_id"        value="world"/>
+        <param name="rate"            value="2.0"/>
+        <param name="reload_interval" value="2.0"/>
+    </node>
+
+    <!-- Auto-open RViz with DS topics preconfigured -->
+    <node if="$(arg launch_rviz)" name="passive_ds_rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config)"/>
 
     <!-- <node name="plotter"
             pkg="rqt_plot"
