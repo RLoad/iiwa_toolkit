@@ -10,12 +10,12 @@ control:
     # dsGainOri: 3.0
     # lambda0Ori: 5
     # lambda1Ori: 2.5
-    dsGainOri: 4.0 ##--for egg cut
-    lambda0Ori: 6
-    lambda1Ori: 6
-    # dsGainOri: 6.0 ##--for surf loop
-    # lambda0Ori: 8
-    # lambda1Ori: 8
+    # dsGainOri: 4.0 ##--for egg cut
+    # lambda0Ori: 6
+    # lambda1Ori: 6
+    dsGainOri: 6.0 ##--for surf loop
+    lambda0Ori: 8
+    lambda1Ori: 8
 
 target:
     # pos: [0.7, 0.0, 0.5]
