@@ -1,0 +1,37 @@
+<launch>
+    <!-- Real robot bringup -->
+    <arg name="robot_name" default="iiwa"/>
+    <arg name="model" default="14" />
+    <!-- Kinematic controller outputs joint positions -->
+    <arg name="controller" default="PositionController"/>
+
+    <include file="$(find iiwa_driver)/launch/iiwa_bringup.launch">
+        <arg name="robot_name" value="$(arg robot_name)"/>
+        <arg name="model" value="$(arg model)"/>
+        <arg name="controller" value="$(arg controller)" />
+    </include>
+
+    <group ns="/$(arg robot_name)">
+        <node name="pure_velocity_track_kinematic" pkg="iiwa_toolkit" type="pure_velocity_track_kinematic" output="screen"/>
+        <rosparam file="$(find iiwa_toolkit)/config/pure_velocity_track_kinematic_params.yaml" command="load"/>
+    </group>
+
+    <!-- Optional FT sensor bringup (same style as passive_track_real.launch) -->
+    <arg name="use_ft_sensor" default="false"/>
+    <arg name="ip_address" default="128.178.145.248"/>
+    <arg name="bias" default="False"/>
+    <arg name="rate" default="100"/>
+    <arg name="frame_id" default="myframe"/>
+    <arg name="alpha" default="0"/>
+    <arg name="rot" default="0"/>
+    <arg name="scale_x" default="1"/>
+    <arg name="scale_y" default="1"/>
+    <arg name="scale_z" default="1"/>
+
+    <group if="$(arg use_ft_sensor)" ns="ft_sensor">
+        <param name="frame_id" type="str" value="$(arg frame_id)"/>
+        <node name="force_torque_sensor" pkg="netft_rdt_driver" type="netft_node"
+              args="--address $(arg ip_address) --rate $(arg rate) --bias $(arg bias) --rot $(arg rot) --alpha $(arg alpha) --scale_x $(arg scale_x) --scale_y $(arg scale_y) --scale_z $(arg scale_z)"
+              required="true" output="screen"/>
+    </group>
+</launch>

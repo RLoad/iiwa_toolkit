@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Pair with a compare DS launch; set method_name + desired_force to match the planner YAML. -->
+  <arg name="method_name" default="compare_run"/>
+  <arg name="output_dir" default="$(env HOME)/iiwa_compare_metrics"/>
+  <arg name="desired_fx" default="0.0"/>
+  <arg name="desired_fy" default="0.0"/>
+  <arg name="desired_fz" default="-12.0"/>
+
+  <node pkg="iiwa_toolkit" type="comparison_metrics_logger.py" name="comparison_metrics_logger" output="screen">
+    <param name="method_name" value="$(arg method_name)"/>
+    <param name="output_dir" value="$(arg output_dir)"/>
+    <param name="desired_twist_topic" value="/ds1/desired_velocity"/>
+    <param name="measured_twist_topic" value="/iiwa/ee_info/Vel"/>
+    <param name="measured_wrench_topic" value="/iiwa/iiwa_FTS_topic"/>
+    <rosparam param="desired_force">[$(arg desired_fx), $(arg desired_fy), $(arg desired_fz)]</rosparam>
+  </node>
+</launch>

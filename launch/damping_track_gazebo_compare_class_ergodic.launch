@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Velocity-focused stack: damping_track + stiffer params (vs passive DS). -->
+  <arg name="robot_name_1" default="iiwa"/>
+  <arg name="iiwa_model_1" default="14"/>
+
+  <include file="$(find iiwa_gazebo)/launch/iiwa_gazebo.launch">
+    <arg name="robot_name_1" value="$(arg robot_name_1)"/>
+    <arg name="iiwa_model_1" value="$(arg iiwa_model_1)"/>
+  </include>
+
+  <group ns="/$(arg robot_name_1)">
+    <node name="damping_tracking" pkg="iiwa_toolkit" type="damping_track" output="screen"/>
+    <rosparam file="$(find iiwa_toolkit)/config/compare_velocity_track_params.yaml" command="load"/>
+  </group>
+
+  <node name="spawn_box" pkg="gazebo_ros" type="spawn_model"
+        args="-file $(find box_spawner)/models/box1.urdf -x 0.4 -y 0.0 -z 0.0 -urdf -model box1"/>
+
+  <node name="optimal_control" pkg="iiwa_toolkit" type="optimal_manipulability_node.py" output="screen"/>
+</launch>

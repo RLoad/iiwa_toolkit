@@ -15,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   sensor_msgs
+  geometry_msgs
   message_generation
   iiwa_tools
   dynamic_reconfigure
@@ -35,7 +36,7 @@ find_package(Eigen3 REQUIRED eigen3)
 catkin_package(
  INCLUDE_DIRS include
  LIBRARIES ${PROJECT_NAME}
- CATKIN_DEPENDS roscpp rospy std_msgs sensor_msgs message_generation iiwa_tools dynamic_reconfigure
+ CATKIN_DEPENDS roscpp rospy std_msgs sensor_msgs geometry_msgs message_generation iiwa_tools dynamic_reconfigure
 #  DEPENDS system_lib
 )
 
@@ -70,6 +71,9 @@ add_executable(force_track src/node_force_track.cpp  src/force_control.cpp inclu
 target_link_libraries(force_track ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
 add_dependencies(force_track ${PROJECT_NAME}_gencfg)
 
+add_executable(pure_velocity_track_kinematic src/node_pure_velocity_track_kinematic.cpp ${MODEL_SOURCES})
+target_link_libraries(pure_velocity_track_kinematic ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
+
 
 add_executable(passive_shared_control src/node_passive_shared_control.cpp  src/motion_capture.cpp src/passive_shared_control.cpp include/thirdparty/Utils.cpp ${MODEL_SOURCES})
 target_link_libraries(passive_shared_control ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
@@ -80,6 +84,8 @@ target_link_libraries(passive_null_track ${catkin_LIBRARIES} ${Eigen3_LIBRARIES}
 add_dependencies(passive_null_track ${PROJECT_NAME}_gencfg)
 
 
-catkin_install_python(PROGRAMS src/optimal_manipulability_node.py
+catkin_install_python(PROGRAMS
+  src/optimal_manipulability_node.py
+  src/comparison_metrics_logger.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

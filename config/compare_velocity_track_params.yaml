@@ -1,0 +1,17 @@
+# Stiffer damping / DS gains for compare_class_ergodic (tighter Cartesian velocity tracking
+# than default passive_track_params). Tune lambda* with dynamic_reconfigure while logging.
+# Damping track still uses the DS stiffness channel on /lwr/joint_controllers/passive_ds_eig.
+options:
+  filter_gain: 0.2
+
+control:
+  dsGainPos: 8.0
+  lambda0Pos: 120.0
+  lambda1Pos: 120.0
+  dsGainOri: 8.0
+  lambda0Ori: 12.0
+  lambda1Ori: 12.0
+
+target:
+  pos: [0.7, 0.0, 0.5]
+  quat: [0.0000, 0.9999, 0.0000, 0.0]

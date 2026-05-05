@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Force-style stack for compare_raster_force: force_track + compare_force_track_params. -->
+  <arg name="robot_name_1" default="iiwa"/>
+  <arg name="iiwa_model_1" default="14"/>
+
+  <include file="$(find iiwa_gazebo)/launch/iiwa_gazebo.launch">
+    <arg name="robot_name_1" value="$(arg robot_name_1)"/>
+    <arg name="iiwa_model_1" value="$(arg iiwa_model_1)"/>
+  </include>
+
+  <group ns="/$(arg robot_name_1)">
+    <node name="force_tracking" pkg="iiwa_toolkit" type="force_track" output="screen"/>
+    <rosparam file="$(find iiwa_toolkit)/config/compare_force_track_params.yaml" command="load"/>
+  </group>
+
+  <node name="spawn_box" pkg="gazebo_ros" type="spawn_model"
+        args="-file $(find box_spawner)/models/box1.urdf -x 0.45 -y 0.05 -z 0.0 -urdf -model box1"/>
+</launch>

@@ -1,0 +1,18 @@
+# Baseline gains for compare_raster_force with force_track.
+# ForceDS "direct" path is used when lambda0Pos is not 80 or 5 (see force_control.cpp).
+# Runtime eigen values from /lwr/joint_controllers/passive_ds_eig still override these;
+# keep planner eigen_values away from {80,5} when you want direct force-style gains.
+options:
+  filter_gain: 0.2
+
+control:
+  dsGainPos: 5.0
+  lambda0Pos: 100.0
+  lambda1Pos: 100.0
+  dsGainOri: 5.0
+  lambda0Ori: 8.0
+  lambda1Ori: 5.0
+
+target:
+  pos: [0.7, 0.0, 0.5]
+  quat: [0.7071068, 0.0, 0.7071068, 0.0]

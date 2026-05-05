@@ -5,6 +5,11 @@ Visualize FlowMatch / phase-2 recordings and compute paper-style metrics.
 Expects phase2_<method>.txt next to optional phase2_*_target_area.ply (ASCII x,y,z,r,g,b)
 and optional phase2_<method>_waypoints.txt (copy of the trajectory file at phase-2 entry).
 
+Phase2 data rows: 20 floats (legacy: fewer columns are padded; see ``parse_phase2_txt``):
+  time_sec px py pz qx qy qz qw real_fx real_fy real_fz desired_fx desired_fy desired_fz
+  e_f e_v u_nx u_e1 adapter_nx adapter_e1
+Header # lines record PI tuning: adapt_gain_*, adapt_kp_*, adapt_integral_*_max, eigen_lambda_*.
+
 Metrics (aligned with paper definitions where data allows):
 
 - **CR (coverage rate)** — Full definition needs a removal mask Omega_removed from imagery.
@@ -28,10 +33,15 @@ Metrics (aligned with paper definitions where data allows):
   target-plane normal from PCA (sign aligned with mean measured force). If no PLY, falls back
   to Fz vs desired Fz as a rough proxy.
 
-Outputs: two figures when using `--output base.png` → base_forces.png, base_cloud.png.
+Outputs (default): only the **newest** timestamp run folder is plotted; PNGs are written **into
+that folder** as ``plot_comparison_forces.png`` and ``plot_comparison_cloud.png``.
 
 Usage:
-  python3 plot_method_comparation.py [--runs ...] [--output fig.png] [--recovery-json ev.json]
+  python3 plot_method_comparation.py
+  python3 plot_method_comparation.py --all
+  python3 plot_method_comparation.py --runs 2026-04-19-12-39-21
+  python3 plot_method_comparation.py --output /tmp/fig.png [--recovery-json ev.json]
+  python3 plot_method_comparation.py --show
 """
 
 from __future__ import annotations
@@ -52,6 +62,33 @@ try:
 except ImportError as e:
     print("This script needs matplotlib. Install with: pip install matplotlib", file=sys.stderr)
     raise SystemExit(1) from e
+
+
+# 3D overlay: EE trajectory vs waypoint file — distinct palettes (same index = same run)
+_TRAJ_LINE_COLORS = (
+    "#1f77b4",
+    "#ff7f0e",
+    "#2ca02c",
+    "#d62728",
+    "#9467bd",
+    "#8c564b",
+    "#e377c2",
+    "#7f7f7f",
+    "#bcbd22",
+    "#17becf",
+)
+_WP_LINE_COLORS = (
+    "#e41a1c",
+    "#377eb8",
+    "#4daf4a",
+    "#984ea3",
+    "#ff7f00",
+    "#a65628",
+    "#f781bf",
+    "#999999",
+    "#66c2a5",
+    "#fc8d62",
+)
 
 
 # ---------------------------------------------------------------------------
@@ -226,9 +263,17 @@ def densify_polyline_2d(path_uv: np.ndarray, max_step_m: float) -> np.ndarray:
 def min_dist_to_path_grid(
     centers: np.ndarray,
     path_uv: np.ndarray,
+    densify_step_m: float | None = None,
 ) -> np.ndarray:
-    """Min distance from each center (N,2) to polyline; uses scipy cKDTree on densified path."""
-    dense = densify_polyline_2d(path_uv, max_step_m=max(0.0002, 1e-6))
+    """Min distance from each center (N,2) to polyline; uses scipy cKDTree on densified path.
+
+    densify_step_m: spacing along the polyline before KD-tree. Smaller = more accurate but
+    *much* slower (default scales with tool radius; avoid 0.2 mm unless you need it).
+    """
+    if densify_step_m is None:
+        # ~1/10 of a typical 4 mm tool radius → enough for tube coverage; was 0.2 mm → huge point clouds
+        densify_step_m = max(0.0008, 1e-6)
+    dense = densify_polyline_2d(path_uv, max_step_m=densify_step_m)
     try:
         from scipy.spatial import cKDTree
 
@@ -275,7 +320,9 @@ def raster_coverage_metrics(
     vc = vmin + (np.arange(nv) + 0.5) * dv
     uu, vv = np.meshgrid(uc, vc, indexing="ij")
     centers = np.stack([uu.ravel(), vv.ravel()], axis=1)
-    dists = min_dist_to_path_grid(centers, path_uv)
+    # Coarser polyline densification for distance: ~min(tool/5, 1.5 mm) keeps KD-tree small
+    d_step = max(tool_radius_m * 0.2, 0.0015)
+    dists = min_dist_to_path_grid(centers, path_uv, densify_step_m=d_step)
     poly = MplPath(np.vstack([hull, hull[0]]))
     in_hull = poly.contains_points(centers)
     cover = dists <= tool_radius_m
@@ -337,8 +384,39 @@ def normal_force_series(
     return fn
 
 
-def parse_phase2_txt(path: Path) -> tuple[str, np.ndarray]:
+def _normalize_phase2_data_row(parts: list[str]) -> list[float] | None:
+    """Map a data line to 20 floats: … desired_fz, e_f, e_v, u_nx, u_e1, adapter_nx, adapter_e1."""
+    n = len(parts)
+    if n < 14:
+        return None
+    try:
+        if n >= 20:
+            return [float(x) for x in parts[:20]]
+        # Legacy 18 columns: u_nx…adapter_e1 (no e_f/e_v) → insert NaN at 14–15
+        if n == 18:
+            r = [float(x) for x in parts[:18]]
+            return r[:14] + [float("nan"), float("nan")] + r[14:18]
+        # Legacy 16 columns: adapters at 14–15 only
+        if n == 16:
+            r = [float(x) for x in parts[:16]]
+            return r[:14] + [float("nan")] * 4 + r[14:16]
+        # Legacy 14 columns: no adapt block
+        if n == 14:
+            r = [float(x) for x in parts[:14]]
+            return r + [float("nan")] * 6
+        # 15, 17, 19: pad
+        r = [float(x) for x in parts[:n]]
+        while len(r) < 20:
+            r.append(float("nan"))
+        return r[:20]
+    except ValueError:
+        return None
+
+
+def parse_phase2_txt(path: Path) -> tuple[str, np.ndarray, dict[str, float]]:
+    """Parse phase2 log: comment lines ``# key: value`` into meta (floats); data rows normalized to 20 columns."""
     method = path.stem.replace("phase2_", "", 1)
+    meta: dict[str, float] = {}
     rows: list[list[float]] = []
     with path.open("r", encoding="utf-8", errors="replace") as f:
         for line in f:
@@ -349,17 +427,76 @@ def parse_phase2_txt(path: Path) -> tuple[str, np.ndarray]:
                 m = re.match(r"#\s*method\s+(.+)", line)
                 if m:
                     method = m.group(1).strip()
+                    continue
+                m = re.match(r"#\s*([A-Za-z0-9_]+)\s*:\s*(.+)", line)
+                if m:
+                    k, v = m.group(1).strip(), m.group(2).strip()
+                    if k == "columns":
+                        continue
+                    try:
+                        meta[k] = float(v)
+                    except ValueError:
+                        pass
                 continue
             parts = line.split()
-            if len(parts) < 14:
-                continue
-            try:
-                rows.append([float(x) for x in parts[:14]])
-            except ValueError:
-                continue
+            row = _normalize_phase2_data_row(parts)
+            if row is not None:
+                rows.append(row)
     if not rows:
-        return method, np.zeros((0, 14))
-    return method, np.asarray(rows, dtype=np.float64)
+        return method, np.zeros((0, 20)), meta
+    return method, np.asarray(rows, dtype=np.float64), meta
+
+
+def format_meta_pretty(meta: dict[str, float]) -> str:
+    """Human-readable block for console / figure caption."""
+    if not meta:
+        return "(no # header params in file)"
+    order = [
+        "adapt_gain_nx",
+        "adapt_gain_e1",
+        "adapt_kp_nx",
+        "adapt_kp_e1",
+        "adapt_integral_nx_max",
+        "adapt_integral_e1_max",
+        "eigen_lambda_0",
+        "eigen_lambda_1",
+    ]
+    lines: list[str] = []
+    for k in order:
+        if k in meta:
+            lines.append(f"{k}={meta[k]:.6g}")
+    for k in sorted(meta.keys()):
+        if k not in order:
+            lines.append(f"{k}={meta[k]:.6g}")
+    return "  " + "\n  ".join(lines)
+
+
+def is_phase2_log_txt(p: Path) -> bool:
+    """True for phase2_<method>.txt logs, excluding copied waypoint files."""
+    return (
+        p.suffix == ".txt"
+        and p.name.startswith("phase2_")
+        and not p.name.endswith("_waypoints.txt")
+    )
+
+
+def run_dirs_with_phase2(base: Path) -> list[Path]:
+    """Subdirectories of base that contain at least one phase2 data log (not *_waypoints.txt)."""
+    out: list[Path] = []
+    for sub in base.iterdir():
+        if not sub.is_dir() or sub.name.startswith("."):
+            continue
+        if any(is_phase2_log_txt(p) for p in sub.glob("phase2_*.txt")):
+            out.append(sub)
+    return out
+
+
+def newest_run_dir(base: Path) -> Path | None:
+    """Run folder with phase2 data, chosen by latest filesystem mtime."""
+    dirs = run_dirs_with_phase2(base)
+    if not dirs:
+        return None
+    return max(dirs, key=lambda p: p.stat().st_mtime)
 
 
 def discover_phase2_files(base: Path, run_filter: list[str] | None) -> list[Path]:
@@ -370,7 +507,9 @@ def discover_phase2_files(base: Path, run_filter: list[str] | None) -> list[Path
             if not d.is_dir():
                 print(f"Warning: run folder not found: {d}", file=sys.stderr)
                 continue
-            out.extend(sorted(d.glob("phase2_*.txt")))
+            for p in sorted(d.glob("phase2_*.txt")):
+                if is_phase2_log_txt(p):
+                    out.append(p)
         return sorted(out)
 
     for sub in sorted(base.iterdir()):
@@ -378,7 +517,9 @@ def discover_phase2_files(base: Path, run_filter: list[str] | None) -> list[Path
             continue
         if sub.name.startswith("."):
             continue
-        out.extend(sorted(sub.glob("phase2_*.txt")))
+        for p in sorted(sub.glob("phase2_*.txt")):
+            if is_phase2_log_txt(p):
+                out.append(p)
     return sorted(out)
 
 
@@ -414,16 +555,17 @@ def plot_comparison(
     raster_grid: int,
     cu_grid: int,
     recovery_json: Path | None,
+    show: bool,
 ) -> None:
-    series: list[tuple[str, np.ndarray, Path]] = []
+    series: list[tuple[str, np.ndarray, Path, dict[str, float]]] = []
     clouds: list[tuple[np.ndarray, np.ndarray, Path | None]] = []
     waypoints_list: list[np.ndarray | None] = []
     for p in files:
-        method, data = parse_phase2_txt(p)
+        method, data, meta = parse_phase2_txt(p)
         if data.size == 0:
             print(f"Warning: no data rows in {p}", file=sys.stderr)
             continue
-        series.append((label_for(p, base, method), data, p))
+        series.append((label_for(p, base, method), data, p, meta))
         ply = find_target_ply(p)
         if ply and ply.is_file():
             try:
@@ -452,8 +594,10 @@ def plot_comparison(
 
     # -------- metrics per run --------
     print("\n=== Metrics ===\n")
-    for idx, ((label, data, pth), (c_xyz, c_rgb, ply_path)) in enumerate(zip(series, clouds)):
+    for idx, ((label, data, pth, meta), (c_xyz, c_rgb, ply_path)) in enumerate(zip(series, clouds)):
         print(f"--- {pth.name} ---")
+        print("  PI / adapt header (# lines):")
+        print(format_meta_pretty(meta))
         fr = data[:, 8:11]
         fd = data[:, 11:14]
         pos = data[:, 1:4]
@@ -516,12 +660,12 @@ def plot_comparison(
     else:
         print("RSR, T_rec: n/a (pass --recovery-json; see script docstring)\n")
 
-    # -------- figure 1: forces --------
-    fig = plt.figure(figsize=(12, 10))
+    # -------- figure 1: forces + errors (e_f, e_v) + PI scalars + adapter integrators --------
+    fig = plt.figure(figsize=(12, 22))
     fig.suptitle("Method comparison (phase 2 recordings)", fontsize=14)
 
-    ax1 = fig.add_subplot(2, 2, 1)
-    for label, data, _ in series:
+    ax1 = fig.add_subplot(5, 2, 1)
+    for label, data, _, _ in series:
         t = data[:, 0] - data[0, 0]
         fr = data[:, 8:11]
         ax1.plot(t, np.linalg.norm(fr, axis=1), label=label, alpha=0.85)
@@ -531,8 +675,8 @@ def plot_comparison(
     ax1.grid(True, alpha=0.3)
     ax1.legend(fontsize=7, loc="best")
 
-    ax2 = fig.add_subplot(2, 2, 2)
-    for label, data, _ in series:
+    ax2 = fig.add_subplot(5, 2, 2)
+    for label, data, _, _ in series:
         t = data[:, 0] - data[0, 0]
         fd = data[:, 11:14]
         ax2.plot(t, np.linalg.norm(fd, axis=1), label=label, alpha=0.85)
@@ -542,8 +686,8 @@ def plot_comparison(
     ax2.grid(True, alpha=0.3)
     ax2.legend(fontsize=7, loc="best")
 
-    ax3 = fig.add_subplot(2, 2, 3)
-    for label, data, _ in series:
+    ax3 = fig.add_subplot(5, 2, 3)
+    for label, data, _, _ in series:
         t = data[:, 0] - data[0, 0]
         ax3.plot(t, data[:, 10], label=label, alpha=0.85)
     ax3.set_xlabel("t - t0 [s]")
@@ -552,8 +696,8 @@ def plot_comparison(
     ax3.grid(True, alpha=0.3)
     ax3.legend(fontsize=7, loc="best")
 
-    ax4 = fig.add_subplot(2, 2, 4, projection="3d")
-    for label, data, _ in series:
+    ax4 = fig.add_subplot(5, 2, 4, projection="3d")
+    for label, data, _, _ in series:
         ax4.plot(data[:, 1], data[:, 2], data[:, 3], label=label, alpha=0.85, linewidth=1.2)
     ax4.set_xlabel("px [m]")
     ax4.set_ylabel("py [m]")
@@ -561,21 +705,151 @@ def plot_comparison(
     ax4.set_title("Trajectories only")
     ax4.legend(fontsize=6, loc="upper left")
 
-    plt.tight_layout(rect=[0, 0, 1, 0.96])
+    ax_ef = fig.add_subplot(5, 2, 5)
+    ax_ev = fig.add_subplot(5, 2, 6)
+    ax_u_nx = fig.add_subplot(5, 2, 7)
+    ax_u_e1 = fig.add_subplot(5, 2, 8)
+    ax_ad_nx = fig.add_subplot(5, 2, 9)
+    ax_ad_e1 = fig.add_subplot(5, 2, 10)
+    any_ef = False
+    any_u = False
+    any_adapter = False
+    for label, data, _, _ in series:
+        t = data[:, 0] - data[0, 0]
+        e_f = data[:, 14]
+        e_v = data[:, 15]
+        u_nx = data[:, 16]
+        u_e1 = data[:, 17]
+        ia = data[:, 18]
+        ib = data[:, 19]
+        if np.any(np.isfinite(e_f)) or np.any(np.isfinite(e_v)):
+            any_ef = True
+        if np.any(np.isfinite(u_nx)) or np.any(np.isfinite(u_e1)):
+            any_u = True
+        if np.any(np.isfinite(ia)) or np.any(np.isfinite(ib)):
+            any_adapter = True
+        ax_ef.plot(t, e_f, label=label.split("\n")[0][:36], alpha=0.9)
+        ax_ev.plot(t, e_v, label=label.split("\n")[0][:36], alpha=0.9)
+        ax_u_nx.plot(t, u_nx, label=label.split("\n")[0][:36], alpha=0.9)
+        ax_u_e1.plot(t, u_e1, label=label.split("\n")[0][:36], alpha=0.9)
+        ax_ad_nx.plot(t, ia, label=label.split("\n")[0][:36], alpha=0.9)
+        ax_ad_e1.plot(t, ib, label=label.split("\n")[0][:36], alpha=0.9)
+    ax_ef.set_xlabel("t - t0 [s]")
+    ax_ef.set_ylabel("e_f")
+    ax_ef.set_title("Adapt: normal force error (F_des - F_real)·n")
+    ax_ef.grid(True, alpha=0.3)
+    ax_ef.legend(fontsize=6, loc="best")
+    ax_ev.set_xlabel("t - t0 [s]")
+    ax_ev.set_ylabel("e_v")
+    ax_ev.set_title("Adapt: tangential velocity error (v_des_e1 - v_real)·e1")
+    ax_ev.grid(True, alpha=0.3)
+    ax_ev.legend(fontsize=6, loc="best")
+    ax_u_nx.set_xlabel("t - t0 [s]")
+    ax_u_nx.set_ylabel("u_nx")
+    ax_u_nx.set_title("Adapt: normal channel PI scalar (total u along n)")
+    ax_u_nx.grid(True, alpha=0.3)
+    ax_u_nx.legend(fontsize=6, loc="best")
+    ax_u_e1.set_xlabel("t - t0 [s]")
+    ax_u_e1.set_ylabel("u_e1")
+    ax_u_e1.set_title("Adapt: tangential channel PI scalar (total u along e1)")
+    ax_u_e1.grid(True, alpha=0.3)
+    ax_u_e1.legend(fontsize=6, loc="best")
+    ax_ad_nx.set_xlabel("t - t0 [s]")
+    ax_ad_nx.set_ylabel("adapter_nx (I-state)")
+    ax_ad_nx.set_title("Adapt: normal force channel integrator")
+    ax_ad_nx.grid(True, alpha=0.3)
+    ax_ad_nx.legend(fontsize=6, loc="best")
+    ax_ad_e1.set_xlabel("t - t0 [s]")
+    ax_ad_e1.set_ylabel("adapter_e1 (I-state)")
+    ax_ad_e1.set_title("Adapt: tangential velocity channel integrator")
+    ax_ad_e1.grid(True, alpha=0.3)
+    ax_ad_e1.legend(fontsize=6, loc="best")
+    if not any_ef:
+        ax_ef.text(
+            0.5,
+            0.5,
+            "No e_f / e_v (need 20-col log)",
+            ha="center",
+            va="center",
+            transform=ax_ef.transAxes,
+            fontsize=10,
+        )
+        ax_ev.text(
+            0.5,
+            0.5,
+            "No e_f / e_v (need 20-col log)",
+            ha="center",
+            va="center",
+            transform=ax_ev.transAxes,
+            fontsize=10,
+        )
+    if not any_u:
+        ax_u_nx.text(
+            0.5,
+            0.5,
+            "No u_nx / u_e1 (need 18+ col log)",
+            ha="center",
+            va="center",
+            transform=ax_u_nx.transAxes,
+            fontsize=10,
+        )
+        ax_u_e1.text(
+            0.5,
+            0.5,
+            "No u_nx / u_e1 (need 18+ col log)",
+            ha="center",
+            va="center",
+            transform=ax_u_e1.transAxes,
+            fontsize=10,
+        )
+    if not any_adapter:
+        ax_ad_nx.text(
+            0.5,
+            0.5,
+            "No adapter integrator (legacy 14-col log)",
+            ha="center",
+            va="center",
+            transform=ax_ad_nx.transAxes,
+            fontsize=10,
+        )
+        ax_ad_e1.text(
+            0.5,
+            0.5,
+            "No adapter integrator (legacy 14-col log)",
+            ha="center",
+            va="center",
+            transform=ax_ad_e1.transAxes,
+            fontsize=10,
+        )
+    if series:
+        _lbl0, _d0, _p0, meta0 = series[0]
+        param_txt = format_meta_pretty(meta0).strip()
+        fig.text(
+            0.02,
+            0.01,
+            "First file PI params:\n" + param_txt,
+            fontsize=6,
+            verticalalignment="bottom",
+            family="monospace",
+        )
+
+    plt.tight_layout(rect=[0, 0.02, 1, 0.96])
 
     if out_png:
-        fig.savefig(out_png.with_name(out_png.stem + "_forces" + out_png.suffix), dpi=150)
-        print(f"Saved force figure to {out_png.with_name(out_png.stem + '_forces' + out_png.suffix)}")
+        p_force = out_png.with_name(out_png.stem + "_forces" + out_png.suffix)
+        fig.savefig(p_force, dpi=150)
+        print(f"Saved force figure to {p_force}")
 
     # -------- figure 2: point cloud + EE trajectory + recorded waypoint polyline --------
     fig2 = plt.figure(figsize=(11, 9))
     ax5 = fig2.add_subplot(111, projection="3d")
     max_pts = 8000
     first_cloud = True
-    for si, ((label, data, pth), (c_xyz, c_rgb, ply_path), wp) in enumerate(
+    for si, ((label, data, pth, _meta), (c_xyz, c_rgb, ply_path), wp) in enumerate(
         zip(series, clouds, waypoints_list)
     ):
-        color = f"C{si % 10}"
+        traj_color = _TRAJ_LINE_COLORS[si % len(_TRAJ_LINE_COLORS)]
+        wp_color = _WP_LINE_COLORS[si % len(_WP_LINE_COLORS)]
         if c_xyz.shape[0] > 0:
             step = max(1, len(c_xyz) // max_pts)
             xyz_s = c_xyz[::step]
@@ -596,7 +870,7 @@ def plot_comparison(
             data[:, 1],
             data[:, 2],
             data[:, 3],
-            color=color,
+            color=traj_color,
             label=label.split("\n")[0][:40],
             linewidth=2.0,
             alpha=0.95,
@@ -606,7 +880,7 @@ def plot_comparison(
                 wp[:, 0],
                 wp[:, 1],
                 wp[:, 2],
-                color=color,
+                color=wp_color,
                 linestyle="--",
                 linewidth=2.4,
                 alpha=0.95,
@@ -617,7 +891,7 @@ def plot_comparison(
                 [wp[0, 0]],
                 [wp[0, 1]],
                 [wp[0, 2]],
-                color=color,
+                color=wp_color,
                 marker="x",
                 s=80,
                 label=f"waypoint ({pth.parent.name})",
@@ -626,18 +900,20 @@ def plot_comparison(
     ax5.set_xlabel("x [m]")
     ax5.set_ylabel("y [m]")
     ax5.set_zlabel("z [m]")
-    ax5.set_title("Target PLY + EE trajectory + recorded waypoint file (dashed)")
+    ax5.set_title("Target PLY + EE trajectory (solid) + waypoints (dashed, different color)")
     ax5.legend(fontsize=7, loc="upper left")
     plt.tight_layout()
 
     if out_png:
-        p2 = out_png.with_name(out_png.stem + "_cloud" + out_png.suffix)
-        fig2.savefig(p2, dpi=150)
-        print(f"Saved cloud figure to {p2}")
+        p_cloud = out_png.with_name(out_png.stem + "_cloud" + out_png.suffix)
+        fig2.savefig(p_cloud, dpi=150)
+        print(f"Saved cloud figure to {p_cloud}")
+
+    if show:
+        plt.show()
+    else:
         plt.close(fig)
         plt.close(fig2)
-    else:
-        plt.show()
 
 
 def main() -> None:
@@ -646,15 +922,36 @@ def main() -> None:
         description="Plot phase2 recordings, overlay target PLY, compute coverage/force metrics."
     )
     p.add_argument("--data-dir", type=Path, default=script_dir, help="Base folder with run subdirs")
+    p.add_argument(
+        "--all",
+        action="store_true",
+        help="Plot every run folder that has phase2_*.txt (default: newest run only)",
+    )
     p.add_argument("--runs", nargs="*", default=None, help="Only these timestamp subfolder names")
-    p.add_argument("--output", type=Path, default=None, help="PNG base name (writes *_forces.png and *_cloud.png)")
+    p.add_argument(
+        "--output",
+        type=Path,
+        default=None,
+        help="PNG path prefix (writes <stem>_forces.png and <stem>_cloud.png). "
+        "Default: <run_dir>/plot_comparison.png when using newest/single run.",
+    )
+    p.add_argument(
+        "--show",
+        action="store_true",
+        help="Also open interactive figure windows after saving (default: save only)",
+    )
     p.add_argument(
         "--tool-radius",
         type=float,
         default=0.004,
         help="Polishing tool radius [m] for coverage tube (default 4 mm)",
     )
-    p.add_argument("--raster-grid", type=int, default=280, help="Raster resolution for CR/OPR")
+    p.add_argument(
+        "--raster-grid",
+        type=int,
+        default=120,
+        help="Raster N for N×N cells for CR/OPR (higher = slower; 120–200 is usually enough)",
+    )
     p.add_argument("--cu-grid", type=int, default=16, help="K = cu_grid^2 cells for uniformity (inside hull)")
     p.add_argument(
         "--recovery-json",
@@ -668,23 +965,48 @@ def main() -> None:
         print(f"Not a directory: {base}", file=sys.stderr)
         raise SystemExit(1)
 
-    files = discover_phase2_files(base, args.runs if args.runs else None)
+    if args.runs and args.all:
+        print("Warning: --all ignored when --runs is set", file=sys.stderr)
+
+    if args.runs:
+        files = discover_phase2_files(base, args.runs)
+        default_save_dir = base / args.runs[0] if len(args.runs) == 1 else base
+    elif args.all:
+        files = discover_phase2_files(base, None)
+        default_save_dir = base
+    else:
+        nd = newest_run_dir(base)
+        if nd is None:
+            print(f"No run subfolder with phase2_*.txt under {base}", file=sys.stderr)
+            raise SystemExit(2)
+        files = sorted(p for p in nd.glob("phase2_*.txt") if is_phase2_log_txt(p))
+        default_save_dir = nd
+        print(f"Newest run folder (by mtime): {nd.name}")
+
     if not files:
         print(f"No phase2_*.txt found under {base}", file=sys.stderr)
         raise SystemExit(2)
 
+    if args.output is not None:
+        out_png = args.output.resolve()
+    else:
+        stem = "plot_comparison_all" if args.all and not args.runs else "plot_comparison"
+        out_png = (default_save_dir / stem).with_suffix(".png")
+
     print("Using files:")
     for f in files:
         print(f"  {f}")
+    print(f"Saving figures to: {out_png.parent} ({out_png.stem}_forces/cloud.png)")
 
     plot_comparison(
         files,
         base,
-        args.output,
+        out_png,
         args.tool_radius,
         args.raster_grid,
         args.cu_grid,
         args.recovery_json,
+        args.show,
     )
 
 
