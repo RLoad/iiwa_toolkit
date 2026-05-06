@@ -16,6 +16,7 @@
 
 #include "ros/ros.h"
 #include <Eigen/Dense>
+#include <Eigen/Geometry>
 #include <iiwa_tools/iiwa_tools.h>
 
 #define No_JOINTS 7
@@ -237,20 +238,23 @@ private:
         ee_vel_msg.angular.z = w_cur.z();
         pub_ee_vel_.publish(ee_vel_msg);
 
+        Eigen::Vector3d p_target = p_cur;
+        Eigen::Quaterniond q_target = q_cur;
+
         Eigen::VectorXd xdot_des(6);
         xdot_des.setZero();
         if (active_mode == INPUT_POSE) {
-            const Eigen::Vector3d p_des(pose_cmd_.position.x, pose_cmd_.position.y, pose_cmd_.position.z);
-            Eigen::Quaterniond q_des(pose_cmd_.orientation.w, pose_cmd_.orientation.x, pose_cmd_.orientation.y,
-                                     pose_cmd_.orientation.z);
-            if (q_des.norm() < 1e-6)
-                q_des = q_cur;
-            q_des.normalize();
+            p_target = Eigen::Vector3d(pose_cmd_.position.x, pose_cmd_.position.y, pose_cmd_.position.z);
+            q_target = Eigen::Quaterniond(pose_cmd_.orientation.w, pose_cmd_.orientation.x, pose_cmd_.orientation.y,
+                                          pose_cmd_.orientation.z);
+            if (q_target.norm() < 1e-6)
+                q_target = q_cur;
+            q_target.normalize();
 
-            Eigen::Vector3d v = kp_pos_ * (p_des - p_cur);
+            Eigen::Vector3d v = kp_pos_ * (p_target - p_cur);
             if (v.norm() > max_lin_speed_)
                 v = v.normalized() * max_lin_speed_;
-            Eigen::Vector3d w = kp_ori_ * quatErrorOmega(q_des, q_cur);
+            Eigen::Vector3d w = kp_ori_ * quatErrorOmega(q_target, q_cur);
             if (w.norm() > max_ang_speed_)
                 w = w.normalized() * max_ang_speed_;
             xdot_des.head(3) = w;
@@ -264,6 +268,14 @@ private:
                 w = w.normalized() * max_ang_speed_;
             xdot_des.head(3) = w;
             xdot_des.tail(3) = v;
+
+            // Twist mode has no absolute pose command; integrate one cycle for logging purposes.
+            p_target = p_cur + v * dt_;
+            const double angle = w.norm() * dt_;
+            if (angle > 1e-9) {
+                const Eigen::AngleAxisd aa(angle, w.normalized());
+                q_target = (q_cur * Eigen::Quaterniond(aa)).normalized();
+            }
         }
 
         const Eigen::MatrixXd J_pinv = pseudo_inverse(J);
@@ -288,6 +300,26 @@ private:
             q_next(i) = q_(i) + step_clamped;
         }
         q_cmd_ = q_next;
+
+        iiwa_tools::RobotState st_cmd;
+        st_cmd.position.resize(No_JOINTS);
+        st_cmd.velocity.resize(No_JOINTS);
+        for (int i = 0; i < No_JOINTS; ++i) {
+            st_cmd.position[i] = q_cmd_(i);
+            st_cmd.velocity[i] = 0.0;
+        }
+        const auto ee_cmd_state = tools_.perform_fk(st_cmd);
+        const Eigen::Vector3d p_cmd = ee_cmd_state.translation.cast<double>();
+        const Eigen::Quaterniond q_cmd_cart(ee_cmd_state.orientation.w(), ee_cmd_state.orientation.x(),
+                                            ee_cmd_state.orientation.y(), ee_cmd_state.orientation.z());
+
+        ROS_INFO_STREAM_THROTTLE(1.0, "pure_velocity_track_kinematic\n"
+                                           << "  cartesian command sent: p=[" << p_cmd.transpose() << "], q=["
+                                           << q_cmd_cart.w() << ", " << q_cmd_cart.x() << ", " << q_cmd_cart.y() << ", "
+                                           << q_cmd_cart.z() << "]\n"
+                                           << "  cartesian target      : p=[" << p_target.transpose() << "], q=["
+                                           << q_target.w() << ", " << q_target.x() << ", " << q_target.y() << ", "
+                                           << q_target.z() << "]");
 
         std_msgs::Float64MultiArray cmd_msg;
         cmd_msg.data.resize(No_JOINTS);
