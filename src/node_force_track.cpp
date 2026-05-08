@@ -24,6 +24,7 @@
 #include "sensor_msgs/JointState.h"
 #include "geometry_msgs/PoseStamped.h"
 #include "geometry_msgs/Twist.h"
+#include "geometry_msgs/WrenchStamped.h"
 
 #include "ros/ros.h"
 #include <ros/package.h>
@@ -83,16 +84,29 @@ class IiwaRosMaster
         //!
         _subRobotStates[0]= _n.subscribe<sensor_msgs::JointState> (ns+"/joint_states", 1,
                 boost::bind(&IiwaRosMaster::updateRobotStates,this,_1,0),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
-        
+
         // _subOptitrack[0] = _n.subscribe<geometry_msgs::PoseStamped>("/vrpn_client_node/baseHand/pose", 1,
         //     boost::bind(&IiwaRosMaster::updateOptitrack,this,_1,0),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
+
+        // Force input mode: via_vel (default, legacy) or direct (subscribe to cmd_wrench).
+        std::string force_input_mode_str;
+        _n.param<std::string>("force_input_mode", force_input_mode_str, std::string("via_vel"));
+        _force_direct_mode = (force_input_mode_str == "direct");
+        ROS_INFO("force_track: force_input_mode=%s", force_input_mode_str.c_str());
+
         _subControl[0] = _n.subscribe<geometry_msgs::Pose>("/passive_control/pos_quat", 1,
             boost::bind(&IiwaRosMaster::updateControlPos,this,_1),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
-        _subControl[1] = _n.subscribe<geometry_msgs::Pose>("/passive_control/vel_quat", 1,
-            boost::bind(&IiwaRosMaster::updateControlVel,this,_1),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
 
-        _subDamping = _n.subscribe<std_msgs::Float64MultiArray>("/lwr/joint_controllers/passive_ds_eig", 1,
-            boost::bind(&IiwaRosMaster::updateDamping,this,_1),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
+        if (_force_direct_mode) {
+            _subCmdWrench = _n.subscribe<geometry_msgs::WrenchStamped>("/passive_control/cmd_wrench", 1,
+                boost::bind(&IiwaRosMaster::updateCmdWrench,this,_1),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
+        } else {
+            _subControl[1] = _n.subscribe<geometry_msgs::Pose>("/passive_control/vel_quat", 1,
+                boost::bind(&IiwaRosMaster::updateControlVel,this,_1),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
+
+            _subDamping = _n.subscribe<std_msgs::Float64MultiArray>("/lwr/joint_controllers/passive_ds_eig", 1,
+                boost::bind(&IiwaRosMaster::updateDamping,this,_1),ros::VoidPtr(),ros::TransportHints().reliable().tcpNoDelay());
+        }
 
         _TrqCmdPublisher = _n.advertise<std_msgs::Float64MultiArray>(ns+"/TorqueController/command",1);
         _EEPosePublisher = _n.advertise<geometry_msgs::Pose>(ns+"/ee_info/Pose",1);
@@ -152,6 +166,7 @@ class IiwaRosMaster
         _controller->set_desired_pose(des_pos,des_quat);
         _controller->set_pos_gains(ds_gain_pos,lambda0_pos,lambda1_pos);
         _controller->set_ori_gains(ds_gain_ori,lambda0_ori,lambda1_ori);
+        _controller->set_force_input_mode(_force_direct_mode);
         // plotting
         _plotPublisher = _n.advertise<std_msgs::Float64MultiArray>(ns+"/plotvar",1);
         
@@ -199,6 +214,7 @@ class IiwaRosMaster
     ros::Subscriber _subControl[2];
 
     ros::Subscriber _subDamping;
+    ros::Subscriber _subCmdWrench;
 
     ros::Subscriber _subOptitrack[TOTAL_No_MARKERS];  // optitrack markers pose
 
@@ -230,8 +246,9 @@ class IiwaRosMaster
     double lambda1_pos;
     double lambda0_ori;
     double lambda1_ori;
-    Eigen::Vector3d des_pos = {0.8 , 0., 0.3}; 
+    Eigen::Vector3d des_pos = {0.8 , 0., 0.3};
     Eigen::Vector4d des_quat = Eigen::Vector4d::Zero();
+    bool _force_direct_mode = false;
 
   private:
 
@@ -299,16 +316,30 @@ class IiwaRosMaster
 
         pos << (double)msg->position.x, (double)msg->position.y, (double)msg->position.z;
         quat << (double)msg->orientation.w, (double)msg->orientation.x, (double)msg->orientation.y, (double)msg->orientation.z;
-        
-        if((pos.norm()>0)&&(pos.norm()<1.5)){
-            _controller->set_desired_position(pos);
-            if((quat.norm() >0)&&(quat.norm() < 1.1)){
-                quat.normalize();
-                _controller->set_desired_quat(quat);
+
+        // In direct-force mode, ignore the position field (force comes from cmd_wrench);
+        // only the orientation field is consumed.
+        if (!_force_direct_mode) {
+            if((pos.norm()>0)&&(pos.norm()<1.5)){
+                _controller->set_desired_position(pos);
+            }else{
+                ROS_WARN("INCORRECT POSITIONING");
             }
-        }else{
-            ROS_WARN("INCORRECT POSITIONING"); 
         }
+        if((quat.norm() >0)&&(quat.norm() < 1.1)){
+            quat.normalize();
+            _controller->set_desired_quat(quat);
+        }
+    }
+
+    void updateCmdWrench(const geometry_msgs::WrenchStamped::ConstPtr& msg){
+        Eigen::Vector3d w(msg->wrench.force.x, msg->wrench.force.y, msg->wrench.force.z);
+        // sanity bound: clamp to 100 N to prevent runaway commands.
+        if (w.norm() > 100.0) {
+            ROS_WARN_STREAM_THROTTLE(1.0, "force_track: cmd_wrench |F|=" << w.norm() << " > 100 N, clamping");
+            w = w.normalized() * 100.0;
+        }
+        _controller->set_desired_wrench(w);
     }
 
     void updateControlVel(const geometry_msgs::Pose::ConstPtr& msg){

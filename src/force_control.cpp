@@ -246,6 +246,20 @@ void ForceControl::set_desired_velocity(const Eigen::Vector3d& vel){
 void ForceControl::set_load(const double& mass ){
     load_added = mass;
 }
+
+void ForceControl::set_force_input_mode(bool direct){
+    force_direct_mode_ = direct;
+    if (direct) {
+        ROS_INFO("ForceControl: force_input_mode=direct (skipping velocity->force mapping)");
+    } else {
+        ROS_INFO("ForceControl: force_input_mode=via_vel (legacy path)");
+    }
+}
+
+void ForceControl::set_desired_wrench(const Eigen::Vector3d& w){
+    desired_wrench_ = w;
+}
+
 void ForceControl::computeTorqueCmd(){
     
     // desired position values
@@ -283,8 +297,15 @@ void ForceControl::computeTorqueCmd(){
     _robot.ee_des_angVel  = 2 * dsGain_ori*(1+std::exp(theta_gq)) * tmp_angular_vel;
 
     // -----------------------get desired force in task space
-    dsContPos->update(_robot.ee_vel,_robot.ee_des_vel);
-    Eigen::Vector3d wrenchPos = dsContPos->get_output() + load_added * 9.8*Eigen::Vector3d::UnitZ();   
+    Eigen::Vector3d wrenchPos;
+    if (force_direct_mode_) {
+        // Direct-force path: use externally injected desired_wrench_ verbatim,
+        // skipping the velocity->force mapping and the magic-eig passive fallback.
+        wrenchPos = desired_wrench_ + load_added * 9.8*Eigen::Vector3d::UnitZ();
+    } else {
+        dsContPos->update(_robot.ee_vel,_robot.ee_des_vel);
+        wrenchPos = dsContPos->get_output() + load_added * 9.8*Eigen::Vector3d::UnitZ();
+    }
     Eigen::VectorXd tmp_jnt_trq_pos = _robot.jacobPos.transpose() * wrenchPos;
 
     // Orientation

@@ -118,21 +118,30 @@ private:
     double dsGain_ori;
     double load_added = 0.;
 
+    bool force_direct_mode_ = false;
+    Eigen::Vector3d desired_wrench_ = Eigen::Vector3d::Zero();
+
     Eigen::VectorXd _trq_cmd = Eigen::VectorXd::Zero(7);
     void computeTorqueCmd();
     std::unique_ptr<ForceDS> dsContPos;
     std::unique_ptr<ForceDS> dsContOri;
-    
+
 public:
     ForceControl();
     ForceControl(const std::string& urdf_string,const std::string& end_effector);
     ~ForceControl();
     void updateRobot(const Eigen::VectorXd& jnt_p,const Eigen::VectorXd& jnt_v,const Eigen::VectorXd& jnt_t);
-    
+
     void set_desired_pose(const Eigen::Vector3d& pos, const Eigen::Vector4d& quat);
     void set_desired_position(const Eigen::Vector3d& pos);
     void set_desired_quat(const Eigen::Vector4d& quat);
     void set_desired_velocity(const Eigen::Vector3d& vel);
+
+    // Direct-force mode: when enabled, position-channel torque is computed from
+    // the externally injected desired_wrench_ (via set_desired_wrench) instead
+    // of via the velocity-derived ForceDS damping path.
+    void set_force_input_mode(bool direct);
+    void set_desired_wrench(const Eigen::Vector3d& w);
 
 
     void set_pos_gains(const double& ds, const double& lambda0,const double& lambda1);

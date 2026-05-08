@@ -5,6 +5,7 @@
     <arg name="robot_name" default="iiwa"/>
     <arg name="model" default="14" />
     <arg name="controller" default="TorqueController"/>
+    <arg name="force_input_mode" default="via_vel"/>
 
 
     <include file="$(find iiwa_driver)/launch/iiwa_bringup.launch">
@@ -15,6 +16,7 @@
 
     <group ns="/$(arg robot_name)">
         <node name="force_tracking" pkg="iiwa_toolkit" type="force_track" output="screen">
+            <param name="force_input_mode" value="$(arg force_input_mode)"/>
         </node>
 
         <rosparam file="$(find iiwa_toolkit)/config/force_track_param.yaml" command="load"/>

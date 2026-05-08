@@ -3,6 +3,7 @@
     <arg name="robot_name_1" default="iiwa"/>
 
     <arg name="iiwa_model_1" default="14"/>
+    <arg name="force_input_mode" default="via_vel"/>
 
     <include file="$(find iiwa_gazebo)/launch/iiwa_gazebo.launch">
         <arg name="robot_name_1" value="$(arg robot_name_1)"/>
@@ -11,6 +12,7 @@
 
     <group ns="/$(arg robot_name_1)">
         <node name="force_tracking" pkg="iiwa_toolkit" type="force_track" output="screen">
+            <param name="force_input_mode" value="$(arg force_input_mode)"/>
         </node>
 
         <rosparam file="$(find iiwa_toolkit)/config/force_track_param.yaml" command="load"/>
