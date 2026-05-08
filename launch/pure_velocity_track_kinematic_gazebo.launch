@@ -3,6 +3,7 @@
   <arg name="robot_name_1" default="iiwa"/>
   <arg name="iiwa_model_1" default="14"/>
   <arg name="controller" default="PositionController"/>
+  <arg name="input_convention" default="passive"/>
 
   <include file="$(find iiwa_gazebo)/launch/iiwa_gazebo.launch">
     <arg name="robot_name_1" value="$(arg robot_name_1)"/>
@@ -13,7 +14,9 @@
   <group ns="/$(arg robot_name_1)">
     <!-- PositionController in Gazebo needs gazebo_ros_control PID gains -->
     <rosparam file="$(find iiwa_gazebo)/config/iiwa_control.yaml" command="load"/>
-    <node name="pure_velocity_track_kinematic" pkg="iiwa_toolkit" type="pure_velocity_track_kinematic" output="screen"/>
+    <node name="pure_velocity_track_kinematic" pkg="iiwa_toolkit" type="pure_velocity_track_kinematic" output="screen">
+        <param name="input_convention" value="$(arg input_convention)"/>
+    </node>
     <rosparam file="$(find iiwa_toolkit)/config/pure_velocity_track_kinematic_params.yaml" command="load"/>
   </group>
 </launch>
