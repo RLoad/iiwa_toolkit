@@ -11,8 +11,8 @@
     </include>
 
     <group ns="/$(arg robot_name_1)">
+        <param name="force_input_mode" value="$(arg force_input_mode)"/>
         <node name="force_tracking" pkg="iiwa_toolkit" type="force_track" output="screen">
-            <param name="force_input_mode" value="$(arg force_input_mode)"/>
         </node>
 
         <rosparam file="$(find iiwa_toolkit)/config/force_track_param.yaml" command="load"/>
