@@ -62,12 +62,28 @@ public:
             ns + "/joint_states", 1, &PureVelocityKinematicNode::onJointState, this,
             ros::TransportHints().reliable().tcpNoDelay());
 
+        n_.param<std::string>("input_convention", input_convention_, std::string("passive"));
+
         std::string cmd_pose_topic;
         std::string cmd_twist_topic;
+        std::string passive_pos_topic;
+        std::string passive_vel_topic;
         n_.param<std::string>("topics/cmd_pose", cmd_pose_topic, std::string("/pure_kinematic/cmd_pose"));
         n_.param<std::string>("topics/cmd_twist", cmd_twist_topic, std::string("/pure_kinematic/cmd_twist"));
-        sub_cmd_pose_ = n_.subscribe<geometry_msgs::Pose>(cmd_pose_topic, 1, &PureVelocityKinematicNode::onPoseCmd, this);
-        sub_cmd_twist_ = n_.subscribe<geometry_msgs::Twist>(cmd_twist_topic, 1, &PureVelocityKinematicNode::onTwistCmd, this);
+        n_.param<std::string>("topics/passive_pos_quat", passive_pos_topic, std::string("/passive_control/pos_quat"));
+        n_.param<std::string>("topics/passive_vel_quat", passive_vel_topic, std::string("/passive_control/vel_quat"));
+
+        if (input_convention_ == "passive") {
+            sub_cmd_pose_ = n_.subscribe<geometry_msgs::Pose>(passive_pos_topic, 1, &PureVelocityKinematicNode::onPassivePosQuat, this);
+            sub_cmd_twist_ = n_.subscribe<geometry_msgs::Pose>(passive_vel_topic, 1, &PureVelocityKinematicNode::onPassiveVelQuat, this);
+            ROS_INFO("pure_velocity_track_kinematic: input_convention=passive (subscribing %s, %s)",
+                     passive_pos_topic.c_str(), passive_vel_topic.c_str());
+        } else {
+            sub_cmd_pose_ = n_.subscribe<geometry_msgs::Pose>(cmd_pose_topic, 1, &PureVelocityKinematicNode::onPoseCmd, this);
+            sub_cmd_twist_ = n_.subscribe<geometry_msgs::Twist>(cmd_twist_topic, 1, &PureVelocityKinematicNode::onTwistCmd, this);
+            ROS_INFO("pure_velocity_track_kinematic: input_convention=kinematic (subscribing %s, %s)",
+                     cmd_pose_topic.c_str(), cmd_twist_topic.c_str());
+        }
 
         pub_joint_pos_cmd_ = n_.advertise<std_msgs::Float64MultiArray>(ns + "/PositionController/command", 1);
         pub_ee_pose_ = n_.advertise<geometry_msgs::Pose>(ns + "/ee_info/Pose", 1);
@@ -171,6 +187,36 @@ private:
     {
         std::lock_guard<std::mutex> lock(mtx_);
         twist_cmd_ = *msg;
+        last_twist_cmd_time_ = ros::Time::now().toSec();
+        last_input_mode_ = INPUT_TWIST;
+    }
+
+    // Passive convention: vel_quat carries linear velocity in `position` and target
+    // quaternion in `orientation` (no angular velocity). pos_quat is a normal Pose.
+    void onPassivePosQuat(const geometry_msgs::Pose::ConstPtr& msg)
+    {
+        std::lock_guard<std::mutex> lock(mtx_);
+        pose_cmd_.position.x = msg->position.x;
+        pose_cmd_.position.y = msg->position.y;
+        pose_cmd_.position.z = msg->position.z;
+        pose_cmd_.orientation = msg->orientation;
+        last_pose_cmd_time_ = ros::Time::now().toSec();
+        has_pose_target_ = true;
+        last_input_mode_ = INPUT_POSE;
+    }
+
+    void onPassiveVelQuat(const geometry_msgs::Pose::ConstPtr& msg)
+    {
+        std::lock_guard<std::mutex> lock(mtx_);
+        twist_cmd_.linear.x = msg->position.x;
+        twist_cmd_.linear.y = msg->position.y;
+        twist_cmd_.linear.z = msg->position.z;
+        twist_cmd_.angular.x = 0.0;
+        twist_cmd_.angular.y = 0.0;
+        twist_cmd_.angular.z = 0.0;
+        // Also update orientation target so passive convention can drive both channels
+        // even when only vel_quat is published cyclically.
+        pose_cmd_.orientation = msg->orientation;
         last_twist_cmd_time_ = ros::Time::now().toSec();
         last_input_mode_ = INPUT_TWIST;
     }
@@ -349,6 +395,7 @@ private:
 
     geometry_msgs::Pose pose_cmd_;
     geometry_msgs::Twist twist_cmd_;
+    std::string input_convention_ = "passive";
 
     bool has_joint_state_ = false;
     bool q_cmd_initialized_ = false;
