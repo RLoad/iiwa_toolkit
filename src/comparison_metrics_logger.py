@@ -33,6 +33,7 @@ import time
 
 import rospy
 from geometry_msgs.msg import Twist, WrenchStamped
+from std_msgs.msg import Int32
 
 
 def _twist_lin(tw):
@@ -90,6 +91,7 @@ class ComparisonMetricsLogger(object):
         self._meas_v = None
         self._meas_f = None
         self._have_wrench = False
+        self._phase = -1  # not yet received; planners publish 0..5
 
         self._rows = []  # (t_ros, ev, ef, ewc)
 
@@ -116,11 +118,34 @@ class ComparisonMetricsLogger(object):
 
         self._csv_file = open(self.csv_path, "w")
         self._csv = csv.writer(self._csv_file)
-        self._csv.writerow(["ros_time", "ev", "ef", "ewc"])
+        # Columns:
+        #   ros_time           : ROS clock time (sec)
+        #   ev/ef/ewc          : scalar error magnitudes (legacy)
+        #   vdx,vdy,vdz        : desired Cartesian linear velocity (m/s)
+        #   vx,vy,vz           : measured Cartesian linear velocity (m/s)
+        #   fx,fy,fz           : measured wrench force (N) in the FT sensor's
+        #                        published frame (note: not transformed to a
+        #                        common base frame; ef computed against f_ref
+        #                        is a frame-naive distance, treat as relative
+        #                        across runs not absolute)
+        #   fdx,fdy,fdz        : desired force reference (N), constant
+        #   phase              : planner phase int (-1=not received, 0=init/wrench-zero,
+        #                        1=approach, 2=contact/cut, 3=leave, 5=stop). Latest
+        #                        value from /experiment/phase, sampled at each tick.
+        self._csv.writerow([
+            "ros_time", "ev", "ef", "ewc",
+            "vdx", "vdy", "vdz",
+            "vx", "vy", "vz",
+            "fx", "fy", "fz",
+            "fdx", "fdy", "fdz",
+            "phase",
+        ])
 
         rospy.Subscriber(self.des_twist_topic, Twist, self._cb_des, queue_size=1)
         rospy.Subscriber(self.meas_twist_topic, Twist, self._cb_meas, queue_size=1)
         rospy.Subscriber(self.meas_wrench_topic, WrenchStamped, self._cb_wrench, queue_size=1)
+        # All planners publish their internal phase int to this shared topic.
+        rospy.Subscriber("/experiment/phase", Int32, self._cb_phase, queue_size=1)
 
         self._timer = rospy.Timer(rospy.Duration(0.01), self._tick)
         rospy.on_shutdown(self._shutdown)
@@ -137,6 +162,9 @@ class ComparisonMetricsLogger(object):
         self._have_wrench = True
         w = msg.wrench
         self._meas_f = (w.force.x, w.force.y, w.force.z)
+
+    def _cb_phase(self, msg):
+        self._phase = int(msg.data)
 
     def _tick(self, _evt):
         if self._des_v is None or self._meas_v is None:
@@ -156,7 +184,15 @@ class ComparisonMetricsLogger(object):
         self.max_wc = max(self.max_wc, ewc)
 
         self._rows.append((now, ev, ef, ewc))
-        self._csv.writerow(["{:.6f}".format(now), "{:.8f}".format(ev), "{:.8f}".format(ef), "{:.8f}".format(ewc)])
+        meas_f = self._meas_f if self._meas_f is not None else (float("nan"), float("nan"), float("nan"))
+        self._csv.writerow([
+            "{:.6f}".format(now), "{:.8f}".format(ev), "{:.8f}".format(ef), "{:.8f}".format(ewc),
+            "{:.8f}".format(self._des_v[0]), "{:.8f}".format(self._des_v[1]), "{:.8f}".format(self._des_v[2]),
+            "{:.8f}".format(self._meas_v[0]), "{:.8f}".format(self._meas_v[1]), "{:.8f}".format(self._meas_v[2]),
+            "{:.8f}".format(meas_f[0]), "{:.8f}".format(meas_f[1]), "{:.8f}".format(meas_f[2]),
+            "{:.8f}".format(self.f_ref[0]), "{:.8f}".format(self.f_ref[1]), "{:.8f}".format(self.f_ref[2]),
+            "{:d}".format(self._phase),
+        ])
         if len(self._rows) % 200 == 0:
             self._csv_file.flush()
 
