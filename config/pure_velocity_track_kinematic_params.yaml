@@ -1,0 +1,39 @@
+# Kinematic Cartesian controller, always publishing joint position command
+# to /iiwa/PositionController/command.
+
+topics:
+  cmd_pose: "/pure_kinematic/cmd_pose"
+  cmd_twist: "/pure_kinematic/cmd_twist"
+  # ds_motion_generator passive-track convention: vel_quat is geometry_msgs::Pose where
+  # .position is desired linear velocity and .orientation is target quaternion.
+  # pos_quat is a full Pose target. Setting either to "" disables that subscriber.
+  cmd_vel_quat: "/passive_control/vel_quat"
+  cmd_pos_quat: "/passive_control/pos_quat"
+
+control:
+  # Pose-input mode: xdot = [kp_ori * q_error, kp_pos * p_error]
+  kp_pos: 10
+  kp_ori: 10
+
+  # Saturations
+  max_lin_speed: 0.25
+  max_ang_speed: 0.7
+  max_qdot: 0.8
+  max_step_per_cycle: 0.02
+  nullspace_gain: 0.2
+  nullspace_damping: 0.1
+  nullspace_max_qdot: 0.4
+
+  # If no pose/twist command in this window, command is held.
+  command_timeout: 0.5
+
+# Optional startup pose target (same convention as passive_track_params.yaml):
+# quat is [w, x, y, z].
+target:
+    pos: [0.7, 0.0, 0.5]
+    quat: [0.7071068, 0.0, 0.7071068,  0.0]
+    # pos: [0.0, 0.0, 1.6]
+    # quat: [0.9962, 0.0, 0.0872, 0.0]
+
+# null-space posture is fixed in code to match passive_control.cpp:
+# [0.0, 0.0, 0.0, -0.75, 0.0, 0.0, 0.0]

@@ -69,3 +69,6 @@ add_executable(shared_control src/node_passive_shared_control.cpp  src/motion_ca
 target_link_libraries(shared_control ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
 add_dependencies(shared_control ${PROJECT_NAME}_gencfg)
 
+add_executable(pure_velocity_track_kinematic src/node_pure_velocity_track_kinematic.cpp ${MODEL_SOURCES})
+target_link_libraries(pure_velocity_track_kinematic ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
+
