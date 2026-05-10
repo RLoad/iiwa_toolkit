@@ -24,16 +24,25 @@ control:
   nullspace_damping: 0.1
   nullspace_max_qdot: 0.4
 
-  # If no pose/twist command in this window, command is held.
+  # When the active velocity stream stops, no joint command is republished and the
+  # robot holds the last commanded joint position. command_timeout sets that window.
   command_timeout: 0.5
 
-# Optional startup pose target (same convention as passive_track_params.yaml):
+behavior:
+  # When false (default), target/pos and target/quat below are NOT auto-applied.
+  # The controller boots in HOLD: it holds the joint pose it sees at startup and
+  # only moves when a velocity (cmd_twist or vel_quat) or pose (cmd_pose / pos_quat)
+  # command arrives. Once any velocity command has been received, the YAML startup
+  # target is permanently disabled (the controller never snaps back to it on timeout).
+  # Set to true for the legacy passive_track-style behavior where the robot drives
+  # toward target/pos at boot.
+  use_startup_target: false
+
+# Optional startup pose target (only used when behavior/use_startup_target is true).
 # quat is [w, x, y, z].
 target:
     pos: [0.7, 0.0, 0.5]
     quat: [0.7071068, 0.0, 0.7071068,  0.0]
-    # pos: [0.0, 0.0, 1.6]
-    # quat: [0.9962, 0.0, 0.0872, 0.0]
 
 # null-space posture is fixed in code to match passive_control.cpp:
 # [0.0, 0.0, 0.0, -0.75, 0.0, 0.0, 0.0]
