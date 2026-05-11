@@ -3,8 +3,8 @@ options:
 
 control:
     dsGainPos: 5.0
-    lambda0Pos: 40.0
-    lambda1Pos: 40.0
+    lambda0Pos: 150.0
+    lambda1Pos: 150.0
     # lambda0Pos: 100.0
     # lambda1Pos: 100.0
     # dsGainOri: 3.0
@@ -18,10 +18,18 @@ control:
     # lambda1Ori: 8
 
 target:
-    pos: [0.7, 0.0, 0.5]
-    quat: [0.7071068, 0.0, 0.7071068,  0.0]
+    pos: [0.65, 0.0, 0.6]
+    # quat: [0.7071068, 0.0, 0.7071068,  0.0]
+    quat: [0.5, 0.5, 0.5, 0.5] # calibration
+    # quat: [0.0, 0.707, 0.707, 0.0] # contact
     # pos: [0.0, 0.0, 1.6]
     # quat: [0.9962, 0.0, 0.0872, 0.0]
     #----- for polishing
     # pos: [0.7, 0.0, 0.3]
     # quat: [0.0000, 0.9999, 0.0000, 0.0]
+
+
+#   #----- for demonstration
+# target:
+#   pos: [0.8, 0.0, 0.4]
+#   quat: [0.9962, 0.0, 0.0872, 0.0]

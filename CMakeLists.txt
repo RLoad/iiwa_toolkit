@@ -57,6 +57,9 @@ add_executable(passive_twist_track src/node_passive_twist_track.cpp  src/passive
 target_link_libraries(passive_twist_track ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
 add_dependencies(passive_twist_track ${PROJECT_NAME}_gencfg)
 
+add_executable(velocity_ik_track src/node_velocity_ik_track.cpp include/thirdparty/Utils.cpp ${MODEL_SOURCES})
+target_link_libraries(velocity_ik_track ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
+
 
 add_executable(marker_following src/node_marker_following.cpp  src/motion_capture.cpp src/passive_control.cpp include/thirdparty/Utils.cpp ${MODEL_SOURCES})
 target_link_libraries(marker_following ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
