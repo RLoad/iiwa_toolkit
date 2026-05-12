@@ -5,6 +5,8 @@
     <arg name="robot_name" default="iiwa"/>
     <arg name="model" default="14" />
     <arg name="controller" default="TorqueController"/>
+    <arg name="launch_rviz" default="true"/>
+    <arg name="rviz_config" default="$(find ds_motion_generator)/config/rviz/iiwaWithPath.rviz"/>
 
 
     <include file="$(find iiwa_driver)/launch/iiwa_bringup.launch">
@@ -40,6 +42,33 @@
 		    args="--address $(arg ip_address) --rate $(arg rate) --bias $(arg bias) --rot $(arg rot) --alpha $(arg alpha) --scale_x $(arg scale_x) --scale_y $(arg scale_y) --scale_z $(arg scale_z)" 
 			 required="true" output="screen"/>
 	</group>
+
+    <!-- Launch RViz with robot visualization (same stack as passive_track_real.launch) -->
+    <include file="$(find iiwa_description)/launch/display_iiwa.launch">
+        <arg name="gui" value="false" />
+        <arg name="launch_rviz" value="false" />
+    </include>
+
+    <!-- 发布点云 PLY 文件到 RViz (自动监测最新文件) -->
+    <node name="ply_pointcloud_publisher" pkg="ds_motion_generator" type="publish_pointcloud.py" output="screen">
+        <param name="pointcloud_dir" value="$(find ds_motion_generator)/ply"/>
+        <param name="topic"          value="/pointcloud_ply"/>
+        <param name="frame_id"       value="world"/>
+        <param name="rate"           value="2.0"/>
+        <param name="check_interval" value="2.0"/>
+    </node>
+
+    <!-- Publish final_trajectory.txt as /waypoint_path for RViz -->
+    <node name="final_trajectory_path_publisher" pkg="ds_motion_generator" type="publish_final_trajectory_path.py" output="screen">
+        <param name="trajectory_file" value="$(find ds_motion_generator)/trj/final_trajectory.txt"/>
+        <param name="topic"           value="/waypoint_path"/>
+        <param name="frame_id"        value="world"/>
+        <param name="rate"            value="2.0"/>
+        <param name="reload_interval" value="2.0"/>
+    </node>
+
+    <!-- Auto-open RViz with DS topics preconfigured -->
+    <node if="$(arg launch_rviz)" name="damping_ds_rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config)"/>
 
     <!-- <node name="optimal_control" pkg="iiwa_toolkit" type="optimal_manipulability_node.py" output="screen">
     </node> Properly closed this node tag -->
