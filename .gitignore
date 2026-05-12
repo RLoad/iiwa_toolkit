@@ -1,5 +1,18 @@
 
-# large robot logs
+# Large robot logs
+#
+# .gitignore only affects *untracked* files. If Git already tracks a log (e.g. you
+# added it before these rules), GitHub will still push it until you remove it from
+# the index (file stays on disk):
+#   git rm --cached -- Data/robot_data.txt
+#   git commit -m "Stop tracking large log"
+
+Data/robot_data.txt
+Data/**/robot_data.txt
 Data/Robot_state.txt
+Data/**/Robot_state.txt
 Data/F_flowMatch/Robot_state.txt
+Data/F_flowmatchDS/**/*.txt
+Data/F_flowmatchDS/**/*.ply
 Data/*.txt
+Data/**/*.txt
