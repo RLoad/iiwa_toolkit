@@ -33,8 +33,17 @@ Metrics (aligned with paper definitions where data allows):
   target-plane normal from PCA (sign aligned with mean measured force). If no PLY, falls back
   to Fz vs desired Fz as a rough proxy.
 
+The force/velocity **nx / e1** panels use **adapt_frame_nx** and **adapt_frame_e1** from
+``Robot_state.txt`` (same unit vectors passed to ``AdaptForce2Motion`` in the node). If those
+lines are missing (old logs), the script falls back to a PCA target normal plus path tangent.
+
 Outputs (default): only the **newest** timestamp run folder is plotted; PNGs are written **into
-that folder** as ``plot_comparison_forces.png`` and ``plot_comparison_cloud.png``.
+that folder** as ``plot_comparison_forces.png``. The 3D point-cloud overlay is saved only with
+``--plot-cloud`` (``plot_comparison_cloud.png``).
+
+``Robot_state.txt`` (same run folder as ``phase2_*.txt``) supplies ``desired_velocity_``,
+``real_vel_filtered_``, ``adaptive_velocity``, and ``desired_velocity_nx`` when present; missing
+columns fall back to a numerical speed estimate from the phase-2 pose column.
 
 Usage:
   python3 plot_method_comparation.py
@@ -42,14 +51,18 @@ Usage:
   python3 plot_method_comparation.py --runs 2026-04-19-12-39-21
   python3 plot_method_comparation.py --output /tmp/fig.png [--recovery-json ev.json]
   python3 plot_method_comparation.py --show
+  python3 plot_method_comparation.py --plot-cloud
 """
 
 from __future__ import annotations
 
 import argparse
+import getpass
 import json
 import math
+import os
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -62,6 +75,46 @@ try:
 except ImportError as e:
     print("This script needs matplotlib. Install with: pip install matplotlib", file=sys.stderr)
     raise SystemExit(1) from e
+
+
+def _run_cmd(cmd: list[str]) -> tuple[int, str]:
+    try:
+        proc = subprocess.run(cmd, check=False, capture_output=True, text=True)
+        out = (proc.stdout or "") + (proc.stderr or "")
+        return proc.returncode, out.strip()
+    except Exception as exc:
+        return 999, str(exc)
+
+
+def ensure_plot_data_permissions(script_dir: Path) -> None:
+    """Best-effort permission fix for Data tree before writing figures."""
+    data_root = script_dir.parent  # .../src/iiwa_toolkit/Data
+    fflow_root = script_dir        # .../src/iiwa_toolkit/Data/F_flowmatchDS
+    user = getpass.getuser()
+    group = user
+
+    print(f"[perm-fix] chmod -R 777 {data_root}")
+    rc, out = _run_cmd(["chmod", "-R", "777", str(data_root)])
+    if rc != 0:
+        print(f"[perm-fix] Warning: chmod failed (rc={rc}): {out}", file=sys.stderr)
+
+    # Try direct chown first (works when current user already owns files).
+    print(f"[perm-fix] chown -R {user}:{group} {fflow_root}")
+    rc1, out1 = _run_cmd(["chown", "-R", f"{user}:{group}", str(fflow_root)])
+    if rc1 != 0:
+        # Fallback to sudo non-interactive (won't hang for password prompt).
+        print(f"[perm-fix] trying sudo -n chown for {fflow_root}")
+        rc1, out1 = _run_cmd(["sudo", "-n", "chown", "-R", f"{user}:{group}", str(fflow_root)])
+    if rc1 != 0:
+        print(f"[perm-fix] Warning: chown F_flowmatchDS failed (rc={rc1}): {out1}", file=sys.stderr)
+
+    print(f"[perm-fix] chown -R {user}:{group} {data_root}")
+    rc2, out2 = _run_cmd(["chown", "-R", f"{user}:{group}", str(data_root)])
+    if rc2 != 0:
+        print(f"[perm-fix] trying sudo -n chown for {data_root}")
+        rc2, out2 = _run_cmd(["sudo", "-n", "chown", "-R", f"{user}:{group}", str(data_root)])
+    if rc2 != 0:
+        print(f"[perm-fix] Warning: chown Data failed (rc={rc2}): {out2}", file=sys.stderr)
 
 
 # 3D overlay: EE trajectory vs waypoint file — distinct palettes (same index = same run)
@@ -168,6 +221,153 @@ def find_waypoints_txt(phase2_txt: Path) -> Path | None:
     return cands[0] if cands else None
 
 
+def _first_float_in_line(line: str) -> float | None:
+    for tok in line.split()[1:]:
+        try:
+            return float(tok)
+        except ValueError:
+            continue
+    return None
+
+
+def _last_three_floats(line: str) -> np.ndarray | None:
+    toks = line.split()
+    if len(toks) < 4:
+        return None
+    try:
+        return np.array([float(toks[-3]), float(toks[-2]), float(toks[-1])], dtype=np.float64)
+    except ValueError:
+        return None
+
+
+def parse_robot_state_txt(path: Path) -> dict[str, np.ndarray] | None:
+    """Parse Robot_state.txt blocks written by surf_flowmatch_magnetic_DS.
+
+    Returns keys: t (M,), dv, rv, av, v_nx (each M,3), frame_nx, frame_e1 (unit axes logged for AdaptForce2Motion).
+    Missing lines in a block become NaN.
+    """
+    if not path.is_file():
+        return None
+    text = path.read_text(encoding="utf-8", errors="replace")
+    chunks = [c for c in text.split("----------------------------------------") if c.strip()]
+    rows_t: list[float] = []
+    rows_dv: list[np.ndarray] = []
+    rows_rv: list[np.ndarray] = []
+    rows_av: list[np.ndarray] = []
+    rows_v_nx: list[np.ndarray] = []
+    rows_frame_nx: list[np.ndarray] = []
+    rows_frame_e1: list[np.ndarray] = []
+    nan3 = np.full(3, np.nan, dtype=np.float64)
+    for chunk in chunks:
+        t_v: float | None = None
+        dv = nan3.copy()
+        rv = nan3.copy()
+        av = nan3.copy()
+        v_nx = nan3.copy()
+        frame_nx = nan3.copy()
+        frame_e1 = nan3.copy()
+        for raw in chunk.splitlines():
+            line = raw.strip()
+            if not line:
+                continue
+            if line.startswith("time:"):
+                t_v = _first_float_in_line(line)
+            elif line.startswith("desired_velocity_:") and not line.startswith("desired_velocity_e1"):
+                v = _last_three_floats(line)
+                if v is not None:
+                    dv = v
+            elif line.startswith("real_vel_filtered_:"):
+                v = _last_three_floats(line)
+                if v is not None:
+                    rv = v
+            elif line.startswith("adaptive_velocity:"):
+                v = _last_three_floats(line)
+                if v is not None:
+                    av = v
+            elif line.startswith("desired_velocity_nx:"):
+                v = _last_three_floats(line)
+                if v is not None:
+                    v_nx = v
+            elif line.startswith("adapt_frame_nx:"):
+                v = _last_three_floats(line)
+                if v is not None:
+                    frame_nx = v
+            elif line.startswith("adapt_frame_e1:"):
+                v = _last_three_floats(line)
+                if v is not None:
+                    frame_e1 = v
+        if t_v is None:
+            continue
+        rows_t.append(t_v)
+        rows_dv.append(dv)
+        rows_rv.append(rv)
+        rows_av.append(av)
+        rows_v_nx.append(v_nx)
+        rows_frame_nx.append(frame_nx)
+        rows_frame_e1.append(frame_e1)
+    if not rows_t:
+        return None
+    return {
+        "t": np.asarray(rows_t, dtype=np.float64),
+        "dv": np.stack(rows_dv, axis=0),
+        "rv": np.stack(rows_rv, axis=0),
+        "av": np.stack(rows_av, axis=0),
+        "v_nx": np.stack(rows_v_nx, axis=0),
+        "frame_nx": np.stack(rows_frame_nx, axis=0),
+        "frame_e1": np.stack(rows_frame_e1, axis=0),
+    }
+
+
+def _merge_duplicate_timestamps(t: np.ndarray, v: np.ndarray, eps: float = 1e-6) -> tuple[np.ndarray, np.ndarray]:
+    if len(t) == 0:
+        return t, v
+    order = np.argsort(t.astype(np.float64))
+    ts = t[order]
+    vs = v[order].astype(np.float64)
+    out_t: list[float] = []
+    out_v: list[np.ndarray] = []
+    cur_t = float(ts[0])
+    cur_v = vs[0].copy()
+    for i in range(1, len(ts)):
+        ti = float(ts[i])
+        if abs(ti - cur_t) <= eps:
+            cur_v = vs[i].copy()
+        else:
+            out_t.append(cur_t)
+            out_v.append(cur_v)
+            cur_t = ti
+            cur_v = vs[i].copy()
+    out_t.append(cur_t)
+    out_v.append(cur_v)
+    return np.asarray(out_t, dtype=np.float64), np.stack(out_v, axis=0)
+
+
+def interp_vec_on_times(t_tgt: np.ndarray, t_src: np.ndarray, vec_src: np.ndarray) -> np.ndarray:
+    """Interpolate each column of vec_src (M,3) onto t_tgt (N,); outside src range -> NaN."""
+    out = np.full((len(t_tgt), 3), np.nan, dtype=np.float64)
+    if t_src is None or vec_src is None or len(t_src) == 0:
+        return out
+    m = np.isfinite(t_src) & np.all(np.isfinite(vec_src), axis=1)
+    t_src = t_src[m]
+    vec_src = vec_src[m]
+    if len(t_src) == 0:
+        return out
+    ts, vs = _merge_duplicate_timestamps(t_src, vec_src)
+    for j in range(3):
+        out[:, j] = np.interp(t_tgt.astype(np.float64), ts, vs[:, j], left=np.nan, right=np.nan)
+    return out
+
+
+def cartesian_velocity_from_pose(pos: np.ndarray, t_abs: np.ndarray) -> np.ndarray:
+    """World-frame d p / dt (N,3) from numpy.gradient."""
+    if pos.shape[0] < 2 or len(t_abs) != pos.shape[0]:
+        return np.full_like(pos, np.nan, dtype=np.float64)
+    vx = np.gradient(pos[:, 0], t_abs, edge_order=1)
+    vy = np.gradient(pos[:, 1], t_abs, edge_order=1)
+    vz = np.gradient(pos[:, 2], t_abs, edge_order=1)
+    return np.stack([vx, vy, vz], axis=1)
+
+
 # ---------------------------------------------------------------------------
 # Geometry: PCA plane, 2D hull, raster
 # ---------------------------------------------------------------------------
@@ -189,6 +389,48 @@ def pca_plane_basis(xyz: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray
     v = np.cross(n, u)
     v = v / (np.linalg.norm(v) + 1e-15)
     return c, n, u, v
+
+
+def nx_e1_axes_for_plot(
+    c_xyz: np.ndarray,
+    fr: np.ndarray,
+    pos: np.ndarray,
+    t_abs: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray]:
+    """nx: PCA normal of target cloud (sign with mean measured force). e1: unit path tangent in plane ⟂ nx.
+
+    Matches the script's force-RMS convention when a PLY is present; without PLY, nx=z and e1 is a stable in-plane axis.
+    """
+    if c_xyz.shape[0] >= 3:
+        c, n, u, v = pca_plane_basis(c_xyz)
+        n = n.astype(np.float64)
+        mf = fr.mean(axis=0)
+        if np.dot(n, mf) < 0:
+            n = -n
+        n = n / (np.linalg.norm(n) + 1e-15)
+        u = u.astype(np.float64)
+        u = u / (np.linalg.norm(u) + 1e-15)
+    else:
+        n = np.array([0.0, 0.0, 1.0], dtype=np.float64)
+        u = np.array([1.0, 0.0, 0.0], dtype=np.float64)
+        u = u - np.dot(u, n) * n
+        u = u / (np.linalg.norm(u) + 1e-15)
+
+    vt = cartesian_velocity_from_pose(pos, t_abs)
+    proj = vt - np.outer(vt @ n, n)
+    en = np.linalg.norm(proj, axis=1)
+    e1 = np.zeros_like(pos, dtype=np.float64)
+    good = en > 1e-9
+    e1[good] = (proj[good].T / en[good]).T
+    e1[~good] = u
+    return n, e1
+
+
+def project_rows(vec_nx3: np.ndarray, axis_nx3_or_3: np.ndarray) -> np.ndarray:
+    """Scalar projection v·axis for each row (axis may be (3,) or (N,3))."""
+    if axis_nx3_or_3.ndim == 1:
+        return (vec_nx3 * axis_nx3_or_3.reshape(1, 3)).sum(axis=1)
+    return (vec_nx3 * axis_nx3_or_3).sum(axis=1)
 
 
 def project_uv(xyz: np.ndarray, c: np.ndarray, u: np.ndarray, v: np.ndarray) -> np.ndarray:
@@ -556,16 +798,19 @@ def plot_comparison(
     cu_grid: int,
     recovery_json: Path | None,
     show: bool,
+    plot_cloud: bool = False,
 ) -> None:
     series: list[tuple[str, np.ndarray, Path, dict[str, float]]] = []
     clouds: list[tuple[np.ndarray, np.ndarray, Path | None]] = []
     waypoints_list: list[np.ndarray | None] = []
+    robot_rs_list: list[dict[str, np.ndarray] | None] = []
     for p in files:
         method, data, meta = parse_phase2_txt(p)
         if data.size == 0:
             print(f"Warning: no data rows in {p}", file=sys.stderr)
             continue
         series.append((label_for(p, base, method), data, p, meta))
+        robot_rs_list.append(parse_robot_state_txt(p.parent / "Robot_state.txt"))
         ply = find_target_ply(p)
         if ply and ply.is_file():
             try:
@@ -660,11 +905,29 @@ def plot_comparison(
     else:
         print("RSR, T_rec: n/a (pass --recovery-json; see script docstring)\n")
 
-    # -------- figure 1: forces + errors (e_f, e_v) + PI scalars + adapter integrators --------
-    fig = plt.figure(figsize=(12, 22))
-    fig.suptitle("Method comparison (phase 2 recordings)", fontsize=14)
+    # -------- figure 1: 7×2 grid (tall): forces, adapt, + F/v projections on nx and e1 --------
+    fig = plt.figure(figsize=(11, 26))
+    fig.suptitle(
+        "Method comparison (phase 2 recordings)\n"
+        "nx, e1: adapt_frame_nx / adapt_frame_e1 from Robot_state.txt when logged; else PCA+path tangent",
+        fontsize=12,
+    )
 
-    ax1 = fig.add_subplot(5, 2, 1)
+    ax1 = plt.subplot2grid((7, 2), (0, 0), fig=fig)
+    ax2 = plt.subplot2grid((7, 2), (0, 1), fig=fig)
+    ax3 = plt.subplot2grid((7, 2), (1, 0), fig=fig)
+    ax4 = plt.subplot2grid((7, 2), (1, 1), projection="3d", fig=fig)
+    ax_ef = plt.subplot2grid((7, 2), (2, 0), fig=fig)
+    ax_ev = plt.subplot2grid((7, 2), (2, 1), fig=fig)
+    ax_u_nx = plt.subplot2grid((7, 2), (3, 0), fig=fig)
+    ax_u_e1 = plt.subplot2grid((7, 2), (3, 1), fig=fig)
+    ax_ad_nx = plt.subplot2grid((7, 2), (4, 0), fig=fig)
+    ax_ad_e1 = plt.subplot2grid((7, 2), (4, 1), fig=fig)
+    ax_f_nx = plt.subplot2grid((7, 2), (5, 0), fig=fig)
+    ax_f_e1 = plt.subplot2grid((7, 2), (5, 1), fig=fig)
+    ax_v_nx = plt.subplot2grid((7, 2), (6, 0), fig=fig)
+    ax_v_e1 = plt.subplot2grid((7, 2), (6, 1), fig=fig)
+
     for label, data, _, _ in series:
         t = data[:, 0] - data[0, 0]
         fr = data[:, 8:11]
@@ -675,7 +938,6 @@ def plot_comparison(
     ax1.grid(True, alpha=0.3)
     ax1.legend(fontsize=7, loc="best")
 
-    ax2 = fig.add_subplot(5, 2, 2)
     for label, data, _, _ in series:
         t = data[:, 0] - data[0, 0]
         fd = data[:, 11:14]
@@ -686,7 +948,6 @@ def plot_comparison(
     ax2.grid(True, alpha=0.3)
     ax2.legend(fontsize=7, loc="best")
 
-    ax3 = fig.add_subplot(5, 2, 3)
     for label, data, _, _ in series:
         t = data[:, 0] - data[0, 0]
         ax3.plot(t, data[:, 10], label=label, alpha=0.85)
@@ -696,7 +957,6 @@ def plot_comparison(
     ax3.grid(True, alpha=0.3)
     ax3.legend(fontsize=7, loc="best")
 
-    ax4 = fig.add_subplot(5, 2, 4, projection="3d")
     for label, data, _, _ in series:
         ax4.plot(data[:, 1], data[:, 2], data[:, 3], label=label, alpha=0.85, linewidth=1.2)
     ax4.set_xlabel("px [m]")
@@ -705,12 +965,6 @@ def plot_comparison(
     ax4.set_title("Trajectories only")
     ax4.legend(fontsize=6, loc="upper left")
 
-    ax_ef = fig.add_subplot(5, 2, 5)
-    ax_ev = fig.add_subplot(5, 2, 6)
-    ax_u_nx = fig.add_subplot(5, 2, 7)
-    ax_u_e1 = fig.add_subplot(5, 2, 8)
-    ax_ad_nx = fig.add_subplot(5, 2, 9)
-    ax_ad_e1 = fig.add_subplot(5, 2, 10)
     any_ef = False
     any_u = False
     any_adapter = False
@@ -821,12 +1075,137 @@ def plot_comparison(
             transform=ax_ad_e1.transAxes,
             fontsize=10,
         )
+
+    any_vproj = False
+    for si, ((label, data, _pth, _meta), (c_xyz, _c_rgb, _ply_path), rs) in enumerate(
+        zip(series, clouds, robot_rs_list)
+    ):
+        t_rel = data[:, 0] - data[0, 0]
+        t_abs = data[:, 0]
+        pos = data[:, 1:4].astype(np.float64)
+        fr = data[:, 8:11].astype(np.float64)
+        fd = data[:, 11:14].astype(np.float64)
+        short = label.split("\n")[0][:36]
+        color = plt.cm.tab10(si % 10)
+        use_logged = False
+        if rs is not None and rs.get("frame_nx") is not None and rs.get("frame_e1") is not None:
+            fnx = rs["frame_nx"]
+            fe1 = rs["frame_e1"]
+            if fnx.size > 0 and fe1.size > 0:
+                # Use logged frames only when they are not merely finite but also non-degenerate.
+                # Some logs keep adapt_frame_nx/e1 at (0,0,0), which would force projected
+                # force/velocity channels to zero even if raw values are valid.
+                fnx_norm = np.linalg.norm(fnx, axis=1)
+                fe1_norm = np.linalg.norm(fe1, axis=1)
+                fnx_ok = np.isfinite(fnx_norm)
+                fe1_ok = np.isfinite(fe1_norm)
+                valid_logged = (
+                    fnx_ok
+                    & fe1_ok
+                    & (np.where(fnx_ok, fnx_norm, 0.0) > 1e-6)
+                    & (np.where(fe1_ok, fe1_norm, 0.0) > 1e-6)
+                )
+                use_logged = np.any(valid_logged)
+        if use_logged:
+            tt = rs["t"]
+            fnx_mat = interp_vec_on_times(t_abs, tt, rs["frame_nx"])
+            fe1_mat = interp_vec_on_times(t_abs, tt, rs["frame_e1"])
+            fn = np.linalg.norm(fnx_mat, axis=1, keepdims=True)
+            fn = np.maximum(fn, 1e-15)
+            fe = np.linalg.norm(fe1_mat, axis=1, keepdims=True)
+            fe = np.maximum(fe, 1e-15)
+            fnx_u = fnx_mat / fn
+            fe1_u = fe1_mat / fe
+        else:
+            n_fix, e1_series = nx_e1_axes_for_plot(c_xyz, fr, pos, t_abs)
+            fnx_u = np.broadcast_to(n_fix, pos.shape).copy()
+            fe1_u = e1_series
+
+        f_rn = project_rows(fr, fnx_u)
+        f_dn = project_rows(fd, fnx_u)
+        f_re1 = project_rows(fr, fe1_u)
+        f_de1 = project_rows(fd, fe1_u)
+        ax_f_nx.plot(t_rel, f_dn, color=color, linestyle="-", label=f"{short} F_des·nx", alpha=0.92)
+        ax_f_nx.plot(t_rel, f_rn, color=color, linestyle="--", label=f"{short} F_real·nx", alpha=0.88)
+        ax_f_e1.plot(t_rel, f_de1, color=color, linestyle="-", label=f"{short} F_des·e1", alpha=0.92)
+        ax_f_e1.plot(t_rel, f_re1, color=color, linestyle="--", label=f"{short} F_real·e1", alpha=0.88)
+
+        dv_vec = np.full((len(t_abs), 3), np.nan, dtype=np.float64)
+        rv_vec = np.full((len(t_abs), 3), np.nan, dtype=np.float64)
+        if rs is not None:
+            tt = rs["t"]
+            dv_vec = interp_vec_on_times(t_abs, tt, rs["dv"])
+            rv_vec = interp_vec_on_times(t_abs, tt, rs["rv"])
+        pose_v = cartesian_velocity_from_pose(pos, t_abs)
+        dead = ~np.all(np.isfinite(rv_vec), axis=1)
+        rv_vec = np.where(dead[:, np.newaxis], pose_v, rv_vec)
+
+        v_dn = project_rows(dv_vec, fnx_u)
+        v_rn = project_rows(rv_vec, fnx_u)
+        v_de1 = project_rows(dv_vec, fe1_u)
+        v_re1 = project_rows(rv_vec, fe1_u)
+        if (
+            np.any(np.isfinite(v_dn))
+            or np.any(np.isfinite(v_rn))
+            or np.any(np.isfinite(v_de1))
+            or np.any(np.isfinite(v_re1))
+        ):
+            any_vproj = True
+        ax_v_nx.plot(t_rel, v_dn, color=color, linestyle="-", label=f"{short} v_des·nx", alpha=0.92)
+        ax_v_nx.plot(t_rel, v_rn, color=color, linestyle="--", label=f"{short} v_real·nx", alpha=0.88)
+        ax_v_e1.plot(t_rel, v_de1, color=color, linestyle="-", label=f"{short} v_des·e1", alpha=0.92)
+        ax_v_e1.plot(t_rel, v_re1, color=color, linestyle="--", label=f"{short} v_real·e1", alpha=0.88)
+
+    ax_f_nx.set_xlabel("t - t0 [s]")
+    ax_f_nx.set_ylabel("[N]")
+    ax_f_nx.set_title("Force along nx (phase2 F; nx = logged adapt_frame_nx or fallback)")
+    ax_f_nx.grid(True, alpha=0.3)
+    ax_f_nx.legend(fontsize=5, loc="best", ncol=2)
+
+    ax_f_e1.set_xlabel("t - t0 [s]")
+    ax_f_e1.set_ylabel("[N]")
+    ax_f_e1.set_title("Force along e1 (phase2 F; e1 = logged adapt_frame_e1 or fallback)")
+    ax_f_e1.grid(True, alpha=0.3)
+    ax_f_e1.legend(fontsize=5, loc="best", ncol=2)
+
+    ax_v_nx.set_xlabel("t - t0 [s]")
+    ax_v_nx.set_ylabel("[m/s]")
+    ax_v_nx.set_title("Velocity along nx (Robot_state; nx = logged adapt_frame_nx or fallback)")
+    ax_v_nx.grid(True, alpha=0.3)
+    ax_v_nx.legend(fontsize=5, loc="best", ncol=2)
+
+    ax_v_e1.set_xlabel("t - t0 [s]")
+    ax_v_e1.set_ylabel("[m/s]")
+    ax_v_e1.set_title("Velocity along e1 (same sources)")
+    ax_v_e1.grid(True, alpha=0.3)
+    ax_v_e1.legend(fontsize=5, loc="best", ncol=2)
+
+    if not any_vproj:
+        ax_v_nx.text(
+            0.5,
+            0.5,
+            "No velocity (need Robot_state.txt desired_velocity_; v_real from real_vel_filtered_ or pose ∂)",
+            ha="center",
+            va="center",
+            transform=ax_v_nx.transAxes,
+            fontsize=9,
+        )
+        ax_v_e1.text(
+            0.5,
+            0.5,
+            "No velocity (need Robot_state.txt desired_velocity_; v_real from real_vel_filtered_ or pose ∂)",
+            ha="center",
+            va="center",
+            transform=ax_v_e1.transAxes,
+            fontsize=9,
+        )
+
     if series:
         _lbl0, _d0, _p0, meta0 = series[0]
         param_txt = format_meta_pretty(meta0).strip()
         fig.text(
             0.02,
-            0.01,
+            0.005,
             "First file PI params:\n" + param_txt,
             fontsize=6,
             verticalalignment="bottom",
@@ -840,84 +1219,170 @@ def plot_comparison(
         fig.savefig(p_force, dpi=150)
         print(f"Saved force figure to {p_force}")
 
-    # -------- figure 2: point cloud + EE trajectory + recorded waypoint polyline --------
-    fig2 = plt.figure(figsize=(11, 9))
-    ax5 = fig2.add_subplot(111, projection="3d")
-    max_pts = 8000
-    first_cloud = True
-    for si, ((label, data, pth, _meta), (c_xyz, c_rgb, ply_path), wp) in enumerate(
-        zip(series, clouds, waypoints_list)
+    # -------- figure 1b: XYZ force/velocity components (world frame) --------
+    fig_xyz = plt.figure(figsize=(14, 10))
+    fig_xyz.suptitle(
+        "Method comparison in world XYZ (phase2 force + Robot_state velocity)",
+        fontsize=12,
+    )
+    ax_fx = fig_xyz.add_subplot(3, 2, 1)
+    ax_vx = fig_xyz.add_subplot(3, 2, 2)
+    ax_fy = fig_xyz.add_subplot(3, 2, 3)
+    ax_vy = fig_xyz.add_subplot(3, 2, 4)
+    ax_fz = fig_xyz.add_subplot(3, 2, 5)
+    ax_vz = fig_xyz.add_subplot(3, 2, 6)
+
+    any_vel_xyz = False
+    for si, ((label, data, _pth, _meta), rs) in enumerate(zip(series, robot_rs_list)):
+        t_rel = data[:, 0] - data[0, 0]
+        t_abs = data[:, 0]
+        fr = data[:, 8:11].astype(np.float64)
+        fd = data[:, 11:14].astype(np.float64)
+        short = label.split("\n")[0][:36]
+        color = plt.cm.tab10(si % 10)
+
+        # Force components from phase2 log
+        ax_fx.plot(t_rel, fd[:, 0], color=color, linestyle="-", alpha=0.92, label=f"{short} F_des_x")
+        ax_fx.plot(t_rel, fr[:, 0], color=color, linestyle="--", alpha=0.88, label=f"{short} F_real_x")
+        ax_fy.plot(t_rel, fd[:, 1], color=color, linestyle="-", alpha=0.92, label=f"{short} F_des_y")
+        ax_fy.plot(t_rel, fr[:, 1], color=color, linestyle="--", alpha=0.88, label=f"{short} F_real_y")
+        ax_fz.plot(t_rel, fd[:, 2], color=color, linestyle="-", alpha=0.92, label=f"{short} F_des_z")
+        ax_fz.plot(t_rel, fr[:, 2], color=color, linestyle="--", alpha=0.88, label=f"{short} F_real_z")
+
+        # Velocity components from Robot_state; v_real falls back to pose derivative if missing
+        dv_vec = np.full((len(t_abs), 3), np.nan, dtype=np.float64)
+        rv_vec = np.full((len(t_abs), 3), np.nan, dtype=np.float64)
+        if rs is not None:
+            tt = rs["t"]
+            dv_vec = interp_vec_on_times(t_abs, tt, rs["dv"])
+            rv_vec = interp_vec_on_times(t_abs, tt, rs["rv"])
+        pose_v = cartesian_velocity_from_pose(data[:, 1:4].astype(np.float64), t_abs)
+        dead = ~np.all(np.isfinite(rv_vec), axis=1)
+        rv_vec = np.where(dead[:, np.newaxis], pose_v, rv_vec)
+        if np.any(np.isfinite(dv_vec)) or np.any(np.isfinite(rv_vec)):
+            any_vel_xyz = True
+
+        ax_vx.plot(t_rel, dv_vec[:, 0], color=color, linestyle="-", alpha=0.92, label=f"{short} v_des_x")
+        ax_vx.plot(t_rel, rv_vec[:, 0], color=color, linestyle="--", alpha=0.88, label=f"{short} v_real_x")
+        ax_vy.plot(t_rel, dv_vec[:, 1], color=color, linestyle="-", alpha=0.92, label=f"{short} v_des_y")
+        ax_vy.plot(t_rel, rv_vec[:, 1], color=color, linestyle="--", alpha=0.88, label=f"{short} v_real_y")
+        ax_vz.plot(t_rel, dv_vec[:, 2], color=color, linestyle="-", alpha=0.92, label=f"{short} v_des_z")
+        ax_vz.plot(t_rel, rv_vec[:, 2], color=color, linestyle="--", alpha=0.88, label=f"{short} v_real_z")
+
+    for ax, ttl, ylb in (
+        (ax_fx, "Force X", "[N]"),
+        (ax_fy, "Force Y", "[N]"),
+        (ax_fz, "Force Z", "[N]"),
+        (ax_vx, "Velocity X", "[m/s]"),
+        (ax_vy, "Velocity Y", "[m/s]"),
+        (ax_vz, "Velocity Z", "[m/s]"),
     ):
-        traj_color = _TRAJ_LINE_COLORS[si % len(_TRAJ_LINE_COLORS)]
-        wp_color = _WP_LINE_COLORS[si % len(_WP_LINE_COLORS)]
-        if c_xyz.shape[0] > 0:
-            step = max(1, len(c_xyz) // max_pts)
-            xyz_s = c_xyz[::step]
-            rgb_s = c_rgb[::step] if c_rgb.shape[0] == c_xyz.shape[0] else np.zeros((len(xyz_s), 3), dtype=np.uint8)
-            cols = pointcloud_colors(xyz_s, rgb_s)
-            ax5.scatter(
-                xyz_s[:, 0],
-                xyz_s[:, 1],
-                xyz_s[:, 2],
-                c=np.clip(cols, 0, 1),
-                s=2,
-                alpha=0.35,
-                linewidths=0,
-                label=f"PLY {ply_path.name}" if ply_path and first_cloud else None,
-            )
-            first_cloud = False
-        ax5.plot(
-            data[:, 1],
-            data[:, 2],
-            data[:, 3],
-            color=traj_color,
-            label=label.split("\n")[0][:40],
-            linewidth=2.0,
-            alpha=0.95,
+        ax.set_xlabel("t - t0 [s]")
+        ax.set_ylabel(ylb)
+        ax.set_title(ttl)
+        ax.grid(True, alpha=0.3)
+        ax.legend(fontsize=5, loc="best", ncol=2)
+
+    if not any_vel_xyz:
+        ax_vx.text(
+            0.5,
+            0.5,
+            "No velocity (need Robot_state.txt desired_velocity_; v_real from real_vel_filtered_ or pose ∂)",
+            ha="center",
+            va="center",
+            transform=ax_vx.transAxes,
+            fontsize=9,
         )
-        if wp is not None and wp.shape[0] >= 2:
-            ax5.plot(
-                wp[:, 0],
-                wp[:, 1],
-                wp[:, 2],
-                color=wp_color,
-                linestyle="--",
-                linewidth=2.4,
-                alpha=0.95,
-                label=f"waypoints ({pth.parent.name})",
-            )
-        elif wp is not None and wp.shape[0] == 1:
-            ax5.scatter(
-                [wp[0, 0]],
-                [wp[0, 1]],
-                [wp[0, 2]],
-                color=wp_color,
-                marker="x",
-                s=80,
-                label=f"waypoint ({pth.parent.name})",
-            )
 
-    ax5.set_xlabel("x [m]")
-    ax5.set_ylabel("y [m]")
-    ax5.set_zlabel("z [m]")
-    ax5.set_title("Target PLY + EE trajectory (solid) + waypoints (dashed, different color)")
-    ax5.legend(fontsize=7, loc="upper left")
-    plt.tight_layout()
-
+    plt.tight_layout(rect=[0, 0, 1, 0.96])
     if out_png:
-        p_cloud = out_png.with_name(out_png.stem + "_cloud" + out_png.suffix)
-        fig2.savefig(p_cloud, dpi=150)
-        print(f"Saved cloud figure to {p_cloud}")
+        p_xyz = out_png.with_name(out_png.stem + "_xyz" + out_png.suffix)
+        fig_xyz.savefig(p_xyz, dpi=150)
+        print(f"Saved XYZ figure to {p_xyz}")
+
+    # -------- figure 2 (optional): point cloud + EE trajectory + waypoints --------
+    fig2 = None
+    if plot_cloud:
+        fig2 = plt.figure(figsize=(11, 9))
+        ax5 = fig2.add_subplot(111, projection="3d")
+        max_pts = 8000
+        first_cloud = True
+        for si, ((label, data, pth, _meta), (c_xyz, c_rgb, ply_path), wp) in enumerate(
+            zip(series, clouds, waypoints_list)
+        ):
+            traj_color = _TRAJ_LINE_COLORS[si % len(_TRAJ_LINE_COLORS)]
+            wp_color = _WP_LINE_COLORS[si % len(_WP_LINE_COLORS)]
+            if c_xyz.shape[0] > 0:
+                step = max(1, len(c_xyz) // max_pts)
+                xyz_s = c_xyz[::step]
+                rgb_s = c_rgb[::step] if c_rgb.shape[0] == c_xyz.shape[0] else np.zeros((len(xyz_s), 3), dtype=np.uint8)
+                cols = pointcloud_colors(xyz_s, rgb_s)
+                ax5.scatter(
+                    xyz_s[:, 0],
+                    xyz_s[:, 1],
+                    xyz_s[:, 2],
+                    c=np.clip(cols, 0, 1),
+                    s=2,
+                    alpha=0.35,
+                    linewidths=0,
+                    label=f"PLY {ply_path.name}" if ply_path and first_cloud else None,
+                )
+                first_cloud = False
+            ax5.plot(
+                data[:, 1],
+                data[:, 2],
+                data[:, 3],
+                color=traj_color,
+                label=label.split("\n")[0][:40],
+                linewidth=2.0,
+                alpha=0.95,
+            )
+            if wp is not None and wp.shape[0] >= 2:
+                ax5.plot(
+                    wp[:, 0],
+                    wp[:, 1],
+                    wp[:, 2],
+                    color=wp_color,
+                    linestyle="--",
+                    linewidth=2.4,
+                    alpha=0.95,
+                    label=f"waypoints ({pth.parent.name})",
+                )
+            elif wp is not None and wp.shape[0] == 1:
+                ax5.scatter(
+                    [wp[0, 0]],
+                    [wp[0, 1]],
+                    [wp[0, 2]],
+                    color=wp_color,
+                    marker="x",
+                    s=80,
+                    label=f"waypoint ({pth.parent.name})",
+                )
+
+        ax5.set_xlabel("x [m]")
+        ax5.set_ylabel("y [m]")
+        ax5.set_zlabel("z [m]")
+        ax5.set_title("Target PLY + EE trajectory (solid) + waypoints (dashed, different color)")
+        ax5.legend(fontsize=7, loc="upper left")
+        plt.tight_layout()
+
+        if out_png:
+            p_cloud = out_png.with_name(out_png.stem + "_cloud" + out_png.suffix)
+            fig2.savefig(p_cloud, dpi=150)
+            print(f"Saved cloud figure to {p_cloud}")
 
     if show:
         plt.show()
     else:
         plt.close(fig)
-        plt.close(fig2)
+        plt.close(fig_xyz)
+        if fig2 is not None:
+            plt.close(fig2)
 
 
 def main() -> None:
     script_dir = Path(__file__).resolve().parent
+    ensure_plot_data_permissions(script_dir)
     p = argparse.ArgumentParser(
         description="Plot phase2 recordings, overlay target PLY, compute coverage/force metrics."
     )
@@ -929,10 +1394,15 @@ def main() -> None:
     )
     p.add_argument("--runs", nargs="*", default=None, help="Only these timestamp subfolder names")
     p.add_argument(
+        "--plot-cloud",
+        action="store_true",
+        help="Also write the 3D PLY + trajectory + waypoints figure (*_cloud.png)",
+    )
+    p.add_argument(
         "--output",
         type=Path,
         default=None,
-        help="PNG path prefix (writes <stem>_forces.png and <stem>_cloud.png). "
+        help="PNG path prefix (writes <stem>_forces.png; add --plot-cloud for <stem>_cloud.png). "
         "Default: <run_dir>/plot_comparison.png when using newest/single run.",
     )
     p.add_argument(
@@ -996,7 +1466,8 @@ def main() -> None:
     print("Using files:")
     for f in files:
         print(f"  {f}")
-    print(f"Saving figures to: {out_png.parent} ({out_png.stem}_forces/cloud.png)")
+    extra = f", {out_png.stem}_cloud.png" if args.plot_cloud else ""
+    print(f"Saving figures to: {out_png.parent} ({out_png.stem}_forces.png{extra})")
 
     plot_comparison(
         files,
@@ -1007,6 +1478,7 @@ def main() -> None:
         args.cu_grid,
         args.recovery_json,
         args.show,
+        args.plot_cloud,
     )
 
 
