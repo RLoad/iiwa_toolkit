@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="robot_name_1" default="iiwa"/>
+  <arg name="iiwa_model_1" default="14"/>
+  <arg name="controller" default="PositionController"/>
+  <arg name="input_convention" default="passive"/>
+  <arg name="passive_pos_quat_topic" default="/passive_control/pos_quat"/>
+  <arg name="passive_vel_quat_topic" default="/passive_control/vel_quat"/>
+
+  <include file="$(find iiwa_gazebo)/launch/iiwa_gazebo.launch">
+    <arg name="robot_name_1" value="$(arg robot_name_1)"/>
+    <arg name="iiwa_model_1" value="$(arg iiwa_model_1)"/>
+    <arg name="controller" value="$(arg controller)"/>
+  </include>
+
+  <group ns="/$(arg robot_name_1)">
+    <!-- PositionController in Gazebo needs gazebo_ros_control PID gains -->
+    <rosparam file="$(find iiwa_gazebo)/config/iiwa_control.yaml" command="load"/>
+    <param name="input_convention" value="$(arg input_convention)"/>
+    <rosparam file="$(find iiwa_toolkit)/config/pure_velocity_track_kinematic_params.yaml" command="load"/>
+    <param name="topics/passive_pos_quat" value="$(arg passive_pos_quat_topic)"/>
+    <param name="topics/passive_vel_quat" value="$(arg passive_vel_quat_topic)"/>
+    <node name="pure_velocity_track_kinematic" pkg="iiwa_toolkit" type="pure_velocity_track_kinematic" output="screen"/>
+  </group>
+</launch>

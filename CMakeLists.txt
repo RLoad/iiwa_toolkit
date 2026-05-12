@@ -15,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   sensor_msgs
+  geometry_msgs
   message_generation
   iiwa_tools
   dynamic_reconfigure
@@ -35,7 +36,7 @@ find_package(Eigen3 REQUIRED eigen3)
 catkin_package(
  INCLUDE_DIRS include
  LIBRARIES ${PROJECT_NAME}
- CATKIN_DEPENDS roscpp rospy std_msgs sensor_msgs message_generation iiwa_tools dynamic_reconfigure
+ CATKIN_DEPENDS roscpp rospy std_msgs sensor_msgs geometry_msgs message_generation iiwa_tools dynamic_reconfigure
 #  DEPENDS system_lib
 )
 
@@ -60,6 +61,8 @@ add_dependencies(passive_twist_track ${PROJECT_NAME}_gencfg)
 add_executable(velocity_ik_track src/node_velocity_ik_track.cpp include/thirdparty/Utils.cpp ${MODEL_SOURCES})
 target_link_libraries(velocity_ik_track ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
 
+add_executable(pure_velocity_track_kinematic src/node_pure_velocity_track_kinematic.cpp ${MODEL_SOURCES})
+target_link_libraries(pure_velocity_track_kinematic ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
 
 add_executable(marker_following src/node_marker_following.cpp  src/motion_capture.cpp src/passive_control.cpp include/thirdparty/Utils.cpp ${MODEL_SOURCES})
 target_link_libraries(marker_following ${catkin_LIBRARIES} ${Eigen3_LIBRARIES})
