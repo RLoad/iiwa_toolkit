@@ -10,6 +10,8 @@
     <arg name="controller" value="$(arg controller)"/>
   </include>
 
+  <node name="spawn_box" pkg="gazebo_ros" type="spawn_model" args="-file $(find box_spawner)/models/box1.urdf -x 0.5 -y 0.0 -z 0.0 -urdf -model box1" />
+
   <group ns="/$(arg robot_name_1)">
     <!-- PositionController in Gazebo needs gazebo_ros_control PID gains -->
     <rosparam file="$(find iiwa_gazebo)/config/iiwa_control.yaml" command="load"/>

@@ -2,6 +2,9 @@
 //| Kinematic Cartesian controller using iiwa_ros PositionController.
 //| - If latest input is pose: track Cartesian pose with proportional law.
 //| - If latest input is twist: integrate twist through Jacobian pseudo-inverse.
+//| - If latest input is vel_quat (ds_motion_generator filtered output, a Pose where
+//|   .position is desired linear velocity and .orientation is target quaternion):
+//|   feed linear velocity directly and derive angular velocity from quaternion error.
 //|
 
 #include <algorithm>
@@ -41,7 +44,10 @@ pseudo_inverse(const MatT& mat, typename MatT::Scalar tolerance = typename MatT:
 enum InputMode {
     INPUT_NONE = 0,
     INPUT_POSE = 1,
-    INPUT_TWIST = 2
+    INPUT_TWIST = 2,
+    // ds_motion_generator's /passive_control/vel_quat: geometry_msgs::Pose where
+    // .position is desired linear velocity (m/s) and .orientation is target quaternion.
+    INPUT_VEL_QUAT = 3
 };
 
 class PureVelocityKinematicNode {
@@ -64,10 +70,17 @@ public:
 
         std::string cmd_pose_topic;
         std::string cmd_twist_topic;
+        std::string cmd_vel_quat_topic;
+        std::string cmd_pos_quat_topic;
         n_.param<std::string>("topics/cmd_pose", cmd_pose_topic, std::string("/pure_kinematic/cmd_pose"));
         n_.param<std::string>("topics/cmd_twist", cmd_twist_topic, std::string("/pure_kinematic/cmd_twist"));
+        // DS-compatible inputs from ds_motion_generator passive-track convention.
+        n_.param<std::string>("topics/cmd_vel_quat", cmd_vel_quat_topic, std::string("/passive_control/vel_quat"));
+        n_.param<std::string>("topics/cmd_pos_quat", cmd_pos_quat_topic, std::string("/passive_control/pos_quat"));
         sub_cmd_pose_ = n_.subscribe<geometry_msgs::Pose>(cmd_pose_topic, 1, &PureVelocityKinematicNode::onPoseCmd, this);
         sub_cmd_twist_ = n_.subscribe<geometry_msgs::Twist>(cmd_twist_topic, 1, &PureVelocityKinematicNode::onTwistCmd, this);
+        sub_cmd_vel_quat_ = n_.subscribe<geometry_msgs::Pose>(cmd_vel_quat_topic, 1, &PureVelocityKinematicNode::onVelQuatCmd, this);
+        sub_cmd_pos_quat_ = n_.subscribe<geometry_msgs::Pose>(cmd_pos_quat_topic, 1, &PureVelocityKinematicNode::onPosQuatCmd, this);
 
         pub_joint_pos_cmd_ = n_.advertise<std_msgs::Float64MultiArray>(ns + "/PositionController/command", 1);
         pub_ee_pose_ = n_.advertise<geometry_msgs::Pose>(ns + "/ee_info/Pose", 1);
@@ -84,10 +97,15 @@ public:
         n_.param("control/nullspace_damping", nullspace_damping_, 0.1);
         n_.param("control/nullspace_max_qdot", nullspace_max_qdot_, 0.4);
 
+        // OFF by default: when the velocity stream stops, the controller holds the
+        // last commanded joint position instead of snapping back to the YAML target.
+        // Set to true to restore the legacy snap-on-boot behavior.
+        n_.param("behavior/use_startup_target", use_startup_target_, false);
+
         // Keep null-space posture fixed to match passive_control.cpp behavior.
         q_null_ << 0.0, 0.0, 0.0, -0.75, 0.0, 0.0, 0.0;
 
-        // Optional startup target: mimic passive_track behavior (go to target pose on boot).
+        // Optional startup target: only auto-activated if behavior/use_startup_target is true.
         std::vector<double> target_pos;
         std::vector<double> target_quat;
         if (n_.getParam("target/pos", target_pos) && target_pos.size() == 3) {
@@ -146,11 +164,14 @@ private:
         if (!q_cmd_initialized_) {
             q_cmd_ = q_;
             q_cmd_initialized_ = true;
-            if (has_startup_pose_target_) {
+            if (has_startup_pose_target_ && use_startup_target_) {
                 last_pose_cmd_time_ = ros::Time::now().toSec();
                 has_pose_target_ = true;
                 last_input_mode_ = INPUT_POSE;
                 ROS_INFO("pure_velocity_track_kinematic: using startup target/pose from params");
+            } else {
+                ROS_INFO("pure_velocity_track_kinematic: holding initial joint pose; "
+                         "no startup target (behavior/use_startup_target=false)");
             }
         }
     }
@@ -165,6 +186,7 @@ private:
         last_pose_cmd_time_ = ros::Time::now().toSec();
         has_pose_target_ = true;
         last_input_mode_ = INPUT_POSE;
+        explicit_pose_cmd_received_ = true;
     }
 
     void onTwistCmd(const geometry_msgs::Twist::ConstPtr& msg)
@@ -173,6 +195,55 @@ private:
         twist_cmd_ = *msg;
         last_twist_cmd_time_ = ros::Time::now().toSec();
         last_input_mode_ = INPUT_TWIST;
+        velocity_cmd_received_ = true;
+    }
+
+    // ds_motion_generator filtered output: .position is linear velocity, .orientation is
+    // absolute target quaternion. Matches passive_track / damping_track semantics.
+    void onVelQuatCmd(const geometry_msgs::Pose::ConstPtr& msg)
+    {
+        const Eigen::Vector3d v(msg->position.x, msg->position.y, msg->position.z);
+        if (v.norm() >= 1.0) {
+            ROS_WARN_THROTTLE(1.0, "pure_velocity_track_kinematic: vel_quat |v|=%.3f out of bound, ignored", v.norm());
+            return;
+        }
+        const Eigen::Vector4d q(msg->orientation.w, msg->orientation.x, msg->orientation.y, msg->orientation.z);
+        std::lock_guard<std::mutex> lock(mtx_);
+        lin_vel_cmd_ = v;
+        if (q.norm() > 1e-6 && q.norm() < 1.1) {
+            Eigen::Quaterniond qd(q(0), q(1), q(2), q(3));
+            qd.normalize();
+            ori_target_ = qd;
+            has_ori_target_ = true;
+        }
+        last_vel_quat_cmd_time_ = ros::Time::now().toSec();
+        last_input_mode_ = INPUT_VEL_QUAT;
+        velocity_cmd_received_ = true;
+    }
+
+    // /passive_control/pos_quat: full Pose target (used as INPUT_POSE).
+    void onPosQuatCmd(const geometry_msgs::Pose::ConstPtr& msg)
+    {
+        const Eigen::Vector3d p(msg->position.x, msg->position.y, msg->position.z);
+        if (p.norm() <= 0.0 || p.norm() >= 1.5) {
+            ROS_WARN_THROTTLE(1.0, "pure_velocity_track_kinematic: pos_quat |p|=%.3f out of bound, ignored", p.norm());
+            return;
+        }
+        std::lock_guard<std::mutex> lock(mtx_);
+        pose_cmd_.position.x = p.x();
+        pose_cmd_.position.y = p.y();
+        pose_cmd_.position.z = p.z();
+        const Eigen::Vector4d q(msg->orientation.w, msg->orientation.x, msg->orientation.y, msg->orientation.z);
+        if (q.norm() > 1e-6 && q.norm() < 1.1) {
+            pose_cmd_.orientation.w = q(0);
+            pose_cmd_.orientation.x = q(1);
+            pose_cmd_.orientation.y = q(2);
+            pose_cmd_.orientation.z = q(3);
+        }
+        last_pose_cmd_time_ = ros::Time::now().toSec();
+        has_pose_target_ = true;
+        last_input_mode_ = INPUT_POSE;
+        explicit_pose_cmd_received_ = true;
     }
 
     Eigen::Vector3d quatErrorOmega(const Eigen::Quaterniond& q_des, const Eigen::Quaterniond& q_cur) const
@@ -192,10 +263,19 @@ private:
 
         const double now = ros::Time::now().toSec();
         InputMode active_mode = INPUT_NONE;
-        if (last_input_mode_ == INPUT_TWIST && (now - last_twist_cmd_time_) < command_timeout_)
+        if (last_input_mode_ == INPUT_VEL_QUAT && (now - last_vel_quat_cmd_time_) < command_timeout_)
+            active_mode = INPUT_VEL_QUAT;
+        else if (last_input_mode_ == INPUT_TWIST && (now - last_twist_cmd_time_) < command_timeout_)
             active_mode = INPUT_TWIST;
-        else if (has_pose_target_)
-            active_mode = INPUT_POSE;
+        else if (has_pose_target_) {
+            // Only fall back to POSE if the user actually sent an explicit pose command
+            // (onPoseCmd / onPosQuatCmd), or if no velocity command has ever arrived.
+            // After velocity input, the YAML startup target is permanently consumed and
+            // the controller HOLDs the last commanded joint position on timeout, instead
+            // of snapping back to it.
+            if (explicit_pose_cmd_received_ || !velocity_cmd_received_)
+                active_mode = INPUT_POSE;
+        }
 
         if (active_mode == INPUT_NONE)
             return;
@@ -259,6 +339,23 @@ private:
                 w = w.normalized() * max_ang_speed_;
             xdot_des.head(3) = w;
             xdot_des.tail(3) = v;
+        } else if (active_mode == INPUT_VEL_QUAT) {
+            // ds_motion_generator passive-track convention: lin velocity from .position,
+            // absolute target orientation from .orientation. Angular velocity is derived
+            // from quaternion error so we converge to the target attitude.
+            Eigen::Vector3d v = lin_vel_cmd_;
+            if (v.norm() > max_lin_speed_)
+                v = v.normalized() * max_lin_speed_;
+            Eigen::Vector3d w = Eigen::Vector3d::Zero();
+            if (has_ori_target_) {
+                q_target = ori_target_;
+                w = kp_ori_ * quatErrorOmega(q_target, q_cur);
+                if (w.norm() > max_ang_speed_)
+                    w = w.normalized() * max_ang_speed_;
+            }
+            xdot_des.head(3) = w;
+            xdot_des.tail(3) = v;
+            p_target = p_cur + v * dt_;
         } else {
             Eigen::Vector3d v(twist_cmd_.linear.x, twist_cmd_.linear.y, twist_cmd_.linear.z);
             Eigen::Vector3d w(twist_cmd_.angular.x, twist_cmd_.angular.y, twist_cmd_.angular.z);
@@ -337,6 +434,8 @@ private:
     ros::Subscriber sub_joint_state_;
     ros::Subscriber sub_cmd_pose_;
     ros::Subscriber sub_cmd_twist_;
+    ros::Subscriber sub_cmd_vel_quat_;
+    ros::Subscriber sub_cmd_pos_quat_;
     ros::Publisher pub_joint_pos_cmd_;
     ros::Publisher pub_ee_pose_;
     ros::Publisher pub_ee_vel_;
@@ -349,14 +448,21 @@ private:
 
     geometry_msgs::Pose pose_cmd_;
     geometry_msgs::Twist twist_cmd_;
+    Eigen::Vector3d lin_vel_cmd_ = Eigen::Vector3d::Zero();
+    Eigen::Quaterniond ori_target_ = Eigen::Quaterniond::Identity();
 
     bool has_joint_state_ = false;
     bool q_cmd_initialized_ = false;
     bool has_pose_target_ = false;
+    bool has_ori_target_ = false;
     double last_pose_cmd_time_ = -1.0;
     double last_twist_cmd_time_ = -1.0;
+    double last_vel_quat_cmd_time_ = -1.0;
     InputMode last_input_mode_ = INPUT_NONE;
     bool has_startup_pose_target_ = false;
+    bool use_startup_target_ = false;
+    bool velocity_cmd_received_ = false;
+    bool explicit_pose_cmd_received_ = false;
 
     double kp_pos_ = 2.5;
     double kp_ori_ = 2.0;
