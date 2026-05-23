@@ -96,6 +96,112 @@ envs.  Works on CPU and CUDA, `float32` or `float64`.
 
 ---
 
+## Core's two execution modes — and why `attractor_ds.py` is separate
+
+`PassiveDSCore.compute(...)` ([core.py:185](core.py)) is a small dispatcher.
+Its **position branch** can be driven two different ways; its **orientation
+branch** has only one.  This asymmetry is exactly why `core.py` and
+`attractor_ds.py` are separate files — one provides Mode 2 for the
+position branch, the other is just the inner machinery.
+
+### Position branch — two modes
+
+```
+   Mode 1 ─ "give me an attractor"            Mode 2 ─ "give me a velocity"
+   (use core.compute() standalone;            (AttractorDSController sits on top
+    constant gain set at construction)         of core and drives this mode)
+   ────────────────────────────────           ────────────────────────────────
+
+  caller passes:                              caller (AttractorDSController) passes:
+    ee_des_pos  = (B, 3)  attractor              ee_des_pos = None
+    ee_des_vel  = None                            ee_des_vel = v_des  (pre-computed:
+                                                    v_raw  = -K_linear·(ee_pos - attractor_pos)
+                                                    v_des  = clamp_norm(v_raw, velocity_limit))
+         │                                                    │
+         ▼                                                    │
+  ┌───────────────────────────────────┐                       │
+  │  core's outer-pos DS              │                       │
+  │    Δx = clamp(ee_des_pos-ee_pos)  │                       │
+  │    v_des = ds_gain_pos · Δx       │   ← ds_gain_pos is a  │
+  │                                   │     CONSTRUCTOR scalar│
+  └───────────────────┬───────────────┘                       │
+                      │                                       │
+                      └───────────────┬───────────────────────┘
+                                      ▼
+                                    v_des
+                                      │
+                                      ▼
+                ┌──────────────────────────────────────┐
+                │  inner PassiveDS  (position branch)  │
+                │    wrenchPos = D(a,b)·(ee_vel-v_des) │
+                └──────────────────┬───────────────────┘
+                                   ▼
+                             J_pos^T · wrenchPos
+```
+
+Mode 2 exists because `K_linear` is a **per-call batched tensor** that an RL
+policy can change every step per env — a constructor scalar like Mode 1's
+`ds_gain_pos` can't express that.  Splitting the "outer position DS" into a
+separate file (`attractor_ds.py`) keeps that runtime-tunable logic out of
+core's tighter API.
+
+### Orientation branch — one mode only
+
+```
+  caller (core OR attractor_ds) passes:
+    ee_des_quat = (B, 4)  quaternion target
+                          (no equivalent of "give me an angular velocity";
+                           the outer-ori DS is always active)
+         │
+         ▼
+  ┌──────────────────────────────────────────┐
+  │  core's outer-ori DS                     │
+  │    Δq    = slerp_half(ee_quat,           │
+  │                       ee_des_quat)       │
+  │    ω_des = 2 · ds_gain_ori · Δq.xyz      │   ← ds_gain_ori is a
+  │                                          │     CONSTRUCTOR scalar
+  └──────────────────┬───────────────────────┘
+                     ▼
+                   ω_des
+                     │
+                     ▼
+   ┌─────────────────────────────────────────┐
+   │ inner PassiveDS  (orientation branch)   │
+   │    wrenchOri = D(a,b)·(ee_angVel-ω_des) │
+   └────────────────┬────────────────────────┘
+                    ▼
+              J_ang^T · wrenchOri
+```
+
+`AttractorDSController` passes `attractor_quat` through to core unmodified —
+that's why the file has zero orientation-specific code.
+
+### Both branches combine into one torque
+
+```
+   tau = J_pos^T · wrenchPos                ← position task effort
+       + J_ang^T · wrenchOri                ← orientation task effort
+       + null_scale · N · τ_null_pd         ← null-space PD toward null_q
+
+   (N = (I − J^# · J) is the null-space projector)
+```
+
+### Quick reference
+
+| aspect | Mode 1 (`ee_des_pos`) | Mode 2 (`ee_des_vel`) | Orientation |
+|---|---|---|---|
+| where the outer DS lives | inside `core.py` | inside `attractor_ds.py` (linear attractor + ‖v‖ clamp) | inside `core.py` |
+| gain | `ds_gain_pos` — constructor scalar | `K_linear` — per-call (B,) tensor | `ds_gain_ori` — constructor scalar |
+| `velocity_limit` clamp | **not** applied | applied in `attractor_ds.py` | n/a |
+| RL-tunable each step | no | yes (`K_linear`, `attractor_pos` per env) | partial (`attractor_quat` batched; gain fixed) |
+| who uses it | direct callers of `core.compute()` (rare in this repo) | `AttractorDSController.compute_from_state` — the PyBullet demo, the Isaac Lab path | all callers, always |
+
+The PyBullet demo and the Isaac Lab walkthrough below both use **Mode 2** for
+position.  Mode 1 is exposed so you can swap in a different outer position
+DS (learned SEDS / LPV-DS / flow-matching DS) without touching `core.py`.
+
+---
+
 ## Package layout
 
 ```
