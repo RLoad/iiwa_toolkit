@@ -1,0 +1,110 @@
+pybullet build time: Jan 29 2025 23:19:57
+Unknown tag "material" in /robot[@name='iiwa14']/link[@name='iiwa_link_0']/collision[1]
+Unknown tag "self_collision_checking" in /robot[@name='iiwa14']/link[@name='iiwa_link_0']
+Unknown tag "material" in /robot[@name='iiwa14']/link[@name='iiwa_link_1']/collision[1]
+Unknown tag "material" in /robot[@name='iiwa14']/link[@name='iiwa_link_2']/collision[1]
+Unknown tag "material" in /robot[@name='iiwa14']/link[@name='iiwa_link_3']/collision[1]
+Unknown tag "material" in /robot[@name='iiwa14']/link[@name='iiwa_link_4']/collision[1]
+Unknown tag "material" in /robot[@name='iiwa14']/link[@name='iiwa_link_5']/collision[1]
+Unknown tag "material" in /robot[@name='iiwa14']/link[@name='iiwa_link_6']/collision[1]
+Unknown tag "material" in /robot[@name='iiwa14']/link[@name='iiwa_link_7']/collision[1]
+Unknown tag "material" in /robot[@name='iiwa14']/link[@name='iiwa_link_FTS']/collision[1]
+Unknown tag "material" in /robot[@name='iiwa14']/link[@name='iiwa_link_grabber']/collision[1]
+Unknown tag "surface" in /robot[@name='iiwa14']/link[@name='iiwa_link_grabber']/collision[1]
+Unknown tag "hardwareInterface" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_1']/actuator[@name='iiwa_motor_1']
+Unknown tag "robotNamespace" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_1']
+Unknown tag "hardwareInterface" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_2']/actuator[@name='iiwa_motor_2']
+Unknown tag "robotNamespace" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_2']
+Unknown tag "hardwareInterface" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_3']/actuator[@name='iiwa_motor_3']
+Unknown tag "robotNamespace" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_3']
+Unknown tag "hardwareInterface" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_4']/actuator[@name='iiwa_motor_4']
+Unknown tag "robotNamespace" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_4']
+Unknown tag "hardwareInterface" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_5']/actuator[@name='iiwa_motor_5']
+Unknown tag "robotNamespace" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_5']
+Unknown tag "hardwareInterface" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_6']/actuator[@name='iiwa_motor_6']
+Unknown tag "robotNamespace" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_6']
+Unknown tag "hardwareInterface" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_7']/actuator[@name='iiwa_motor_7']
+Unknown tag "robotNamespace" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_7']
+[pybullet_test] using URDF: /tmp/iiwa14_pybullet.urdf
+[pybullet_test] plots will be written to /home/ros/ros_ws/src/iiwa_toolkit/test_runs/pybullet_interface_test_20260523T104109Z
+[pybullet_test] controller built with kinematics=None  velocity_limit=0.150
+[pybullet_test] PyBullet ready; iiwa loaded with 7 joints
+[pybullet_test] home EE pos  = [3.2787e-01 2.8663e-08 1.1319e+00]
+[pybullet_test] home EE quat = [9.3051e-01 1.6010e-08 3.6627e-01 1.2202e-07]
+  t= 5.00s  ee=[3.279e-01 2.866e-08 1.132e+00]  att=[0.7 0.  0.6]  err=0.649  tau_norm=53.09
+  t= 6.00s  ee=[4.155e-01 2.770e-05 1.008e+00]  att=[0.7 0.  0.6]  err=0.498  tau_norm=83.59
+  t= 7.00s  ee=[5.020e-01 5.701e-05 8.921e-01]  att=[0.7 0.  0.6]  err=0.353  tau_norm=86.03
+  t= 8.00s  ee=[5.785e-01 4.872e-05 7.838e-01]  att=[0.7 0.  0.6]  err=0.220  tau_norm=92.40
+  t= 9.00s  ee=[6.262e-01 2.233e-05 7.134e-01]  att=[0.7 0.  0.6]  err=0.135  tau_norm=94.70
+  t=10.00s  ee=[ 6.549e-01 -7.925e-06  6.697e-01]  att=[0.7 0.  0.6]  err=0.083  tau_norm=95.00
+  t=11.00s  ee=[ 6.723e-01 -3.202e-05  6.427e-01]  att=[0.7 0.  0.6]  err=0.051  tau_norm=95.25
+  t=12.00s  ee=[ 6.829e-01 -4.773e-05  6.261e-01]  att=[0.7 0.  0.6]  err=0.031  tau_norm=95.46
+  t=13.00s  ee=[ 6.894e-01 -5.695e-05  6.159e-01]  att=[0.7 0.  0.6]  err=0.019  tau_norm=95.62
+  t=14.00s  ee=[ 6.934e-01 -6.205e-05  6.097e-01]  att=[0.7 0.  0.6]  err=0.012  tau_norm=95.73
+  t=15.00s  ee=[ 6.959e-01 -6.477e-05  6.059e-01]  att=[0.7 0.  0.6]  err=0.007  tau_norm=95.80
+  t=16.00s  ee=[ 6.975e-01 -6.619e-05  6.036e-01]  att=[0.7 0.  0.6]  err=0.004  tau_norm=95.85
+  t=17.00s  ee=[ 6.984e-01 -6.691e-05  6.022e-01]  att=[ 0.7 -0.2  0.4]  err=0.284  tau_norm=106.31
+  t=18.00s  ee=[ 0.7   -0.073  0.525]  att=[ 0.7 -0.2  0.4]  err=0.178  tau_norm=93.97
+  t=19.00s  ee=[ 0.701 -0.117  0.477]  att=[ 0.7 -0.2  0.4]  err=0.113  tau_norm=93.27
+  t=20.00s  ee=[ 0.702 -0.142  0.446]  att=[ 0.7 -0.2  0.4]  err=0.074  tau_norm=93.08
+  t=21.00s  ee=[ 0.701 -0.158  0.427]  att=[ 0.7 -0.2  0.4]  err=0.050  tau_norm=93.05
+  t=22.00s  ee=[ 0.701 -0.166  0.415]  att=[ 0.7 -0.2  0.4]  err=0.037  tau_norm=93.06
+  t=23.00s  ee=[ 0.701 -0.172  0.408]  att=[ 0.7 -0.2  0.4]  err=0.029  tau_norm=93.07
+  t=24.00s  ee=[ 0.701 -0.175  0.403]  att=[ 0.7 -0.2  0.4]  err=0.025  tau_norm=93.07
+  t=25.00s  ee=[ 0.701 -0.177  0.4  ]  att=[ 0.7 -0.2  0.4]  err=0.023  tau_norm=93.07
+  t=26.00s  ee=[ 0.701 -0.178  0.399]  att=[ 0.7 -0.2  0.4]  err=0.022  tau_norm=93.07
+  t=27.00s  ee=[ 0.701 -0.178  0.397]  att=[ 0.7 -0.2  0.4]  err=0.022  tau_norm=93.07
+  t=28.00s  ee=[ 0.701 -0.179  0.397]  att=[ 0.7 -0.2  0.4]  err=0.021  tau_norm=93.07
+  t=29.00s  ee=[ 0.7   -0.179  0.396]  att=[0.4 0.2 0.6]  err=0.525  tau_norm=92.69
+  t=30.00s  ee=[ 0.627 -0.073  0.45 ]  att=[0.4 0.2 0.6]  err=0.386  tau_norm=87.07
+  t=31.00s  ee=[0.546 0.027 0.506]  att=[0.4 0.2 0.6]  err=0.244  tau_norm=83.03
+  t=32.00s  ee=[0.472 0.108 0.555]  att=[0.4 0.2 0.6]  err=0.125  tau_norm=82.44
+  t=33.00s  ee=[0.436 0.143 0.577]  att=[0.4 0.2 0.6]  err=0.072  tau_norm=83.03
+  t=34.00s  ee=[0.422 0.156 0.587]  att=[0.4 0.2 0.6]  err=0.051  tau_norm=83.43
+  t=35.00s  ee=[0.415 0.161 0.591]  att=[0.4 0.2 0.6]  err=0.043  tau_norm=83.65
+  t=36.00s  ee=[0.413 0.163 0.593]  att=[0.4 0.2 0.6]  err=0.040  tau_norm=83.76
+  t=37.00s  ee=[0.412 0.164 0.594]  att=[0.4 0.2 0.6]  err=0.039  tau_norm=83.82
+  t=38.00s  ee=[0.411 0.164 0.595]  att=[0.4 0.2 0.6]  err=0.038  tau_norm=83.85
+  t=39.00s  ee=[0.411 0.164 0.595]  att=[0.4 0.2 0.6]  err=0.038  tau_norm=83.87
+  t=40.00s  ee=[0.411 0.164 0.595]  att=[0.4 0.2 0.6]  err=0.038  tau_norm=83.88
+  t=41.00s  ee=[0.411 0.164 0.595]  att=[0.5 0.  0.4]  err=0.270  tau_norm=44.64
+  t=42.00s  ee=[0.445 0.093 0.525]  att=[0.5 0.  0.4]  err=0.166  tau_norm=0.62
+  t=43.00s  ee=[0.468 0.057 0.481]  att=[0.5 0.  0.4]  err=0.104  tau_norm=0.24
+  t=44.00s  ee=[0.48  0.037 0.453]  att=[0.5 0.  0.4]  err=0.068  tau_norm=0.20
+  t=45.00s  ee=[0.487 0.025 0.435]  att=[0.5 0.  0.4]  err=0.045  tau_norm=0.15
+  t=46.00s  ee=[0.492 0.017 0.423]  att=[0.5 0.  0.4]  err=0.030  tau_norm=0.11
+  t=47.00s  ee=[0.495 0.012 0.415]  att=[0.5 0.  0.4]  err=0.020  tau_norm=0.08
+  t=48.00s  ee=[0.497 0.008 0.41 ]  att=[0.5 0.  0.4]  err=0.013  tau_norm=0.05
+  t=49.00s  ee=[0.498 0.006 0.406]  att=[0.5 0.  0.4]  err=0.009  tau_norm=0.04
+  t=50.00s  ee=[0.499 0.004 0.404]  att=[0.5 0.  0.4]  err=0.006  tau_norm=0.02
+  t=51.00s  ee=[0.499 0.003 0.403]  att=[0.5 0.  0.4]  err=0.004  tau_norm=0.02
+  t=52.00s  ee=[0.5   0.002 0.402]  att=[0.5 0.  0.4]  err=0.003  tau_norm=0.01
+  t=53.00s  ee=[0.5   0.001 0.401]  att=[0.5 0.  0.6]  err=0.199  tau_norm=35.47
+  t=54.00s  ee=[0.5   0.001 0.477]  att=[0.5 0.  0.6]  err=0.123  tau_norm=151.94
+  t=55.00s  ee=[0.5   0.001 0.524]  att=[0.5 0.  0.6]  err=0.076  tau_norm=153.99
+  t=56.00s  ee=[0.5   0.001 0.553]  att=[0.5 0.  0.6]  err=0.047  tau_norm=155.22
+  t=57.00s  ee=[4.996e-01 4.759e-04 5.711e-01]  att=[0.5 0.  0.6]  err=0.029  tau_norm=155.88
+  t=58.00s  ee=[4.997e-01 4.165e-04 5.821e-01]  att=[0.5 0.  0.6]  err=0.018  tau_norm=156.22
+  t=59.00s  ee=[4.997e-01 3.795e-04 5.889e-01]  att=[0.5 0.  0.6]  err=0.011  tau_norm=156.42
+  t=60.00s  ee=[4.998e-01 3.565e-04 5.931e-01]  att=[0.5 0.  0.6]  err=0.007  tau_norm=156.52
+  t=61.00s  ee=[4.999e-01 3.422e-04 5.957e-01]  att=[0.5 0.  0.6]  err=0.004  tau_norm=156.59
+  t=62.00s  ee=[4.999e-01 3.334e-04 5.973e-01]  att=[0.5 0.  0.6]  err=0.003  tau_norm=156.63
+  t=63.00s  ee=[4.999e-01 3.279e-04 5.982e-01]  att=[0.5 0.  0.6]  err=0.002  tau_norm=156.65
+  t=64.00s  ee=[4.999e-01 3.245e-04 5.988e-01]  att=[0.5 0.  0.6]  err=0.001  tau_norm=156.66
+  t=65.00s  ee=[5.000e-01 3.224e-04 5.992e-01]  att=[0.5 0.  0.6]  err=0.001  tau_norm=156.67
+  t=66.00s  ee=[5.000e-01 3.211e-04 5.994e-01]  att=[0.5 0.  0.6]  err=0.001  tau_norm=156.68
+  t=67.00s  ee=[5.000e-01 3.203e-04 5.996e-01]  att=[0.5 0.  0.6]  err=0.001  tau_norm=156.68
+  t=68.00s  ee=[5.000e-01 3.198e-04 5.997e-01]  att=[0.5 0.  0.6]  err=0.000  tau_norm=156.68
+  t=69.00s  ee=[5.000e-01 3.195e-04 5.997e-01]  att=[0.5 0.  0.6]  err=0.000  tau_norm=156.68
+[pybullet_test] per-segment best position errors during segment:
+  seg 0 (A — front high      (K=0.5)): best=0.0027 m  final=0.0027 m  [PASS]
+  seg 1 (B — front-right low (K=0.5)): best=0.0212 m  final=0.0212 m  [PASS]
+  seg 2 (C — back-left high  (K=0.8)): best=0.0379 m  final=0.0379 m  [PASS]
+  seg 3 (D — center low      (soft damping)): best=0.0017 m  final=0.0017 m  [PASS]
+  seg 4 (E — center          (stiff damping)): best=0.0004 m  final=0.0004 m  [PASS]
+[pybullet_test] OVERALL: PASS
+                (PASS = best EE-attractor distance < 5 cm during every segment.)
+[pybullet_test] plots saved to /home/ros/ros_ws/src/iiwa_toolkit/test_runs/pybullet_interface_test_20260523T104109Z/
+    ee_trajectory_3d.png
+    position_error.png
+    torque_norm.png

@@ -39,13 +39,18 @@ from std_msgs.msg import Float64MultiArray
 from geometry_msgs.msg import Pose
 
 
+# Tool-z-along-world-+x (90° about y) — matches C++ phase-2 desired quat in
+# task_space_control.cpp.  All 5 segments share the same orientation; only
+# position + gains change.
+_TOOL_Z_ALONG_X = [0.7071068, 0.0, 0.7071068, 0.0]   # [w, x, y, z]
+
 # (attractor_pos[3], attractor_quat[wxyz], gains[K_linear, damping_a, damping_b], label)
 SCHEDULE = [
-    ([0.7,  0.0,  0.6], [0.0, 1.0, 0.0, 0.0], [0.5, 1.0, 1.0], "front high      (K=0.5)"),
-    ([0.7, -0.2,  0.4], [0.0, 1.0, 0.0, 0.0], [0.5, 1.0, 1.0], "front-right low (K=0.5)"),
-    ([0.4,  0.2,  0.6], [0.0, 1.0, 0.0, 0.0], [0.8, 1.0, 1.0], "back-left high  (K=0.8)"),
-    ([0.5,  0.0,  0.4], [0.0, 1.0, 0.0, 0.0], [0.5, 0.5, 0.5], "center low      (soft  damping a=b=0.5)"),
-    ([0.5,  0.0,  0.6], [0.0, 1.0, 0.0, 0.0], [0.5, 2.0, 2.0], "center          (stiff damping a=b=2.0)"),
+    ([0.7,  0.0,  0.6], _TOOL_Z_ALONG_X, [0.5, 1.0, 1.0], "front high      (K=0.5)"),
+    ([0.7, -0.2,  0.4], _TOOL_Z_ALONG_X, [0.5, 1.0, 1.0], "front-right low (K=0.5)"),
+    ([0.4,  0.2,  0.6], _TOOL_Z_ALONG_X, [0.8, 1.0, 1.0], "back-left high  (K=0.8)"),
+    ([0.5,  0.0,  0.4], _TOOL_Z_ALONG_X, [0.5, 0.5, 0.5], "center low      (soft  damping a=b=0.5)"),
+    ([0.5,  0.0,  0.6], _TOOL_Z_ALONG_X, [0.5, 2.0, 2.0], "center          (stiff damping a=b=2.0)"),
 ]
 
 
