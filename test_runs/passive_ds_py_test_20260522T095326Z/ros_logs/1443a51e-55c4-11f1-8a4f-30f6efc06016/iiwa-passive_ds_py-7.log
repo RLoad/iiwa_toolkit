@@ -1,0 +1,51 @@
+[rospy.client][INFO] 2026-05-22 09:53:28,080: init_node, name[/iiwa/passive_ds_py], pid[13013]
+[xmlrpc][INFO] 2026-05-22 09:53:28,081: XML-RPC server binding to 127.0.0.1:0
+[xmlrpc][INFO] 2026-05-22 09:53:28,081: Started XML-RPC server [http://localhost:35557/]
+[rospy.impl.masterslave][INFO] 2026-05-22 09:53:28,081: _ready: http://localhost:35557/
+[rospy.init][INFO] 2026-05-22 09:53:28,081: ROS Slave URI: [http://localhost:35557/]
+[rospy.registration][INFO] 2026-05-22 09:53:28,081: Registering with master node http://localhost:11311
+[xmlrpc][INFO] 2026-05-22 09:53:28,082: xml rpc node: starting XML-RPC server
+[rospy.init][INFO] 2026-05-22 09:53:28,182: registered with master
+[rospy.rosout][INFO] 2026-05-22 09:53:28,182: initializing /rosout core topic
+[rospy.rosout][INFO] 2026-05-22 09:53:28,186: connected to core topic /rosout
+[rospy.simtime][INFO] 2026-05-22 09:53:28,187: initializing /clock core topic
+[rospy.simtime][INFO] 2026-05-22 09:53:28,189: connected to core topic /clock
+[rospy.internal][INFO] 2026-05-22 09:53:28,191: topic[/clock] adding connection to [http://localhost:37971/], count 0
+[rosout][INFO] 2026-05-22 09:53:28,210: [passive_ds_py] building kinematics chain iiwa_link_0 -> iiwa_link_ee on cpu
+[rosout][INFO] 2026-05-22 09:53:28,390: [passive_ds_py] startup target  pos=[0.5, 0.0, 0.5]  quat=[0.0, 1.0, 0.0, 0.0]
+[rosout][INFO] 2026-05-22 09:53:28,399: [passive_ds_py] logging to /home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T095326Z/passive_ds_py_log_20260522T095326Z.csv
+[rosout][INFO] 2026-05-22 09:53:28,399: [passive_ds_py] ready, 500 Hz, device=cpu
+[rospy.internal][INFO] 2026-05-22 09:53:28,437: topic[/iiwa/joint_states] adding connection to [http://localhost:37971/], count 0
+[rospy.internal][INFO] 2026-05-22 09:53:28,535: topic[/rosout] adding connection to [/rosout], count 0
+[rospy.internal][INFO] 2026-05-22 09:53:28,636: topic[/iiwa/TorqueController/command] adding connection to [/gazebo], count 0
+[rospy.internal][INFO] 2026-05-22 09:53:29,540: topic[/passive_control/vel_quat] adding connection to [http://localhost:36627/], count 0
+[rospy.internal][INFO] 2026-05-22 09:53:29,740: topic[/iiwa/ee_info/Pose] adding connection to [/test/task_space_control_node], count 0
+[rospy.internal][INFO] 2026-05-22 09:53:29,740: topic[/iiwa/ee_info/Vel] adding connection to [/test/task_space_control_node], count 0
+[rosout][INFO] 2026-05-22 09:53:29,744: [passive_ds_py] vel_quat cmd  des_vel=[0.0, 0.0, 0.0]
+[rosout][INFO] 2026-05-22 09:53:31,757: [passive_ds_py] vel_quat cmd  des_vel=[-0.08061015088050542, -0.10973484326969693, -0.06293065824856116]
+[rosout][INFO] 2026-05-22 09:53:33,784: [passive_ds_py] vel_quat cmd  des_vel=[-0.06854592688635916, -0.12253736984955965, -0.05278303607829062]
+[rosout][INFO] 2026-05-22 09:53:35,873: [passive_ds_py] vel_quat cmd  des_vel=[-0.07432930674059436, -0.1187230047645584, -0.05366565288093746]
+[rosout][INFO] 2026-05-22 09:53:37,910: [passive_ds_py] vel_quat cmd  des_vel=[-0.006200194358825684, 0.043138650655746444, 0.06388752222061156]
+[rosout][INFO] 2026-05-22 09:53:39,947: [passive_ds_py] vel_quat cmd  des_vel=[-0.016544365882873533, 0.020535085201263414, -0.005388357639312757]
+[rosout][INFO] 2026-05-22 09:53:42,016: [passive_ds_py] vel_quat cmd  des_vel=[0.08384100171819417, 0.08797986344677386, 0.08792172688691224]
+[rosout][INFO] 2026-05-22 09:53:44,112: [passive_ds_py] vel_quat cmd  des_vel=[0.07760265519434442, 0.09578529019443373, 0.08545762744867075]
+[rosout][INFO] 2026-05-22 09:53:46,168: [passive_ds_py] vel_quat cmd  des_vel=[0.07915791084740768, 0.09158697096619646, 0.06262798165366017]
+[rosout][INFO] 2026-05-22 09:53:48,235: [passive_ds_py] vel_quat cmd  des_vel=[0.088135976309559, 0.06579262103973699, 0.015517055899905926]
+[rosout][INFO] 2026-05-22 09:53:50,275: [passive_ds_py] vel_quat cmd  des_vel=[0.05412934287300016, 0.03945466185209474, 0.008002525824867619]
+[rosout][INFO] 2026-05-22 09:53:52,324: [passive_ds_py] vel_quat cmd  des_vel=[0.001151888769087942, 0.030137799521751572, 0.010651843107066834]
+[rosout][INFO] 2026-05-22 09:53:54,341: [passive_ds_py] vel_quat cmd  des_vel=[-0.007697586570179457, 0.019202949877779298, 0.018815718944215815]
+[rosout][INFO] 2026-05-22 09:53:56,398: [passive_ds_py] vel_quat cmd  des_vel=[0.05121046500591246, 0.012066942073932494, 0.006124251412840518]
+[rosout][INFO] 2026-05-22 09:53:58,467: [passive_ds_py] vel_quat cmd  des_vel=[-0.012191796576171579, -0.006989405722269915, 0.02045154393853201]
+[rosout][INFO] 2026-05-22 09:54:00,527: [passive_ds_py] vel_quat cmd  des_vel=[-0.015671798255316012, -0.012562797603624188, 0.01677035338517213]
+[rosout][INFO] 2026-05-22 09:54:02,588: [passive_ds_py] vel_quat cmd  des_vel=[0.05694354972429634, 0.009100334023978186, 0.006156241846674765]
+[rospy.core][INFO] 2026-05-22 09:54:04,148: signal_shutdown [signal-2]
+[rosout][INFO] 2026-05-22 09:54:04,297: [passive_ds_py] wrote 10888 rows to /home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T095326Z/passive_ds_py_log_20260522T095326Z.csv
+[rospy.internal][INFO] 2026-05-22 09:54:04,310: topic[/rosout] removing connection to /rosout
+[rospy.internal][INFO] 2026-05-22 09:54:04,311: topic[/iiwa/TorqueController/command] removing connection to /gazebo
+[rospy.internal][INFO] 2026-05-22 09:54:04,311: topic[/iiwa/ee_info/Pose] removing connection to /test/task_space_control_node
+[rospy.internal][INFO] 2026-05-22 09:54:04,311: topic[/iiwa/ee_info/Vel] removing connection to /test/task_space_control_node
+[rospy.internal][INFO] 2026-05-22 09:54:04,311: topic[/clock] removing connection to http://localhost:37971/
+[rospy.internal][INFO] 2026-05-22 09:54:04,311: topic[/iiwa/joint_states] removing connection to http://localhost:37971/
+[rospy.internal][INFO] 2026-05-22 09:54:04,311: topic[/passive_control/vel_quat] removing connection to http://localhost:36627/
+[rospy.impl.masterslave][INFO] 2026-05-22 09:54:04,311: signal-2
+[rospy.core][INFO] 2026-05-22 09:54:04,912: signal_shutdown [atexit]

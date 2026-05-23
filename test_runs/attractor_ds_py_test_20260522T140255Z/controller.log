@@ -1,0 +1,331 @@
+WARNING: Package name "RL_controller" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "cFunc" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "lpvDS" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "lagsDS" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+xacro: in-order processing became default in ROS Melodic. You can drop the option.
+... logging to /home/ros/.ros/log/ee90c752-55e6-11f1-ac49-30f6efc06016/roslaunch-rui-Precision-3581-18565.log
+Checking log directory for disk usage. This may take a while.
+Press Ctrl-C to interrupt
+Done checking log file disk usage. Usage is <1GB.
+]2;/home/ros/ros_ws/src/iiwa_toolkit/launch/attractor_ds_gazebo.launch
+[1mstarted roslaunch server http://localhost:33355/[0m
+
+SUMMARY
+========
+
+PARAMETERS
+ * /gazebo/enable_ros_network: True
+ * /iiwa/CustomControllers/controllers/PD/input: Orientation
+ * /iiwa/CustomControllers/controllers/PD/output: Torque
+ * /iiwa/CustomControllers/controllers/PD/params: [20.0, 8.9]
+ * /iiwa/CustomControllers/controllers/PD/type: PidController
+ * /iiwa/CustomControllers/controllers/PassiveDS/params: [180, 180]
+ * /iiwa/CustomControllers/controllers/PassiveDS/type: PassiveDSController
+ * /iiwa/CustomControllers/joints: ['iiwa_joint_1', ...
+ * /iiwa/CustomControllers/params/end_effector: iiwa_link_ee
+ * /iiwa/CustomControllers/params/null_space/Kd: 0.1
+ * /iiwa/CustomControllers/params/null_space/Kp: 20.0
+ * /iiwa/CustomControllers/params/null_space/joints: [0.04475269104532...
+ * /iiwa/CustomControllers/params/null_space/max_torque: 10.0
+ * /iiwa/CustomControllers/params/space: task
+ * /iiwa/CustomControllers/type: iiwa_control/Cust...
+ * /iiwa/PositionController/joints: ['iiwa_joint_1', ...
+ * /iiwa/PositionController/pid_gains/iiwa_joint_1/d: 80.0
+ * /iiwa/PositionController/pid_gains/iiwa_joint_1/i: 100
+ * /iiwa/PositionController/pid_gains/iiwa_joint_1/i_clamp_max: 10000
+ * /iiwa/PositionController/pid_gains/iiwa_joint_1/i_clamp_min: -10000
+ * /iiwa/PositionController/pid_gains/iiwa_joint_1/p: 800.0
+ * /iiwa/PositionController/pid_gains/iiwa_joint_2/d: 100.0
+ * /iiwa/PositionController/pid_gains/iiwa_joint_2/i: 1000
+ * /iiwa/PositionController/pid_gains/iiwa_joint_2/i_clamp_max: 10000
+ * /iiwa/PositionController/pid_gains/iiwa_joint_2/i_clamp_min: -10000
+ * /iiwa/PositionController/pid_gains/iiwa_joint_2/p: 800.0
+ * /iiwa/PositionController/pid_gains/iiwa_joint_3/d: 80.0
+ * /iiwa/PositionController/pid_gains/iiwa_joint_3/i: 10
+ * /iiwa/PositionController/pid_gains/iiwa_joint_3/i_clamp_max: 10000
+ * /iiwa/PositionController/pid_gains/iiwa_joint_3/i_clamp_min: -10000
+ * /iiwa/PositionController/pid_gains/iiwa_joint_3/p: 800.0
+ * /iiwa/PositionController/pid_gains/iiwa_joint_4/d: 80.0
+ * /iiwa/PositionController/pid_gains/iiwa_joint_4/i: 10
+ * /iiwa/PositionController/pid_gains/iiwa_joint_4/i_clamp_max: 10000
+ * /iiwa/PositionController/pid_gains/iiwa_joint_4/i_clamp_min: -10000
+ * /iiwa/PositionController/pid_gains/iiwa_joint_4/p: 800.0
+ * /iiwa/PositionController/pid_gains/iiwa_joint_5/d: 10.0
+ * /iiwa/PositionController/pid_gains/iiwa_joint_5/i: 5
+ * /iiwa/PositionController/pid_gains/iiwa_joint_5/i_clamp_max: 10000
+ * /iiwa/PositionController/pid_gains/iiwa_joint_5/i_clamp_min: -10000
+ * /iiwa/PositionController/pid_gains/iiwa_joint_5/p: 300.0
+ * /iiwa/PositionController/pid_gains/iiwa_joint_6/d: 1.0
+ * /iiwa/PositionController/pid_gains/iiwa_joint_6/i: 1
+ * /iiwa/PositionController/pid_gains/iiwa_joint_6/i_clamp_max: 10000
+ * /iiwa/PositionController/pid_gains/iiwa_joint_6/i_clamp_min: -10000
+ * /iiwa/PositionController/pid_gains/iiwa_joint_6/p: 50.0
+ * /iiwa/PositionController/pid_gains/iiwa_joint_7/d: 1.0
+ * /iiwa/PositionController/pid_gains/iiwa_joint_7/i: 0.1
+ * /iiwa/PositionController/pid_gains/iiwa_joint_7/i_clamp_max: 10000
+ * /iiwa/PositionController/pid_gains/iiwa_joint_7/i_clamp_min: -10000
+ * /iiwa/PositionController/pid_gains/iiwa_joint_7/p: 10.0
+ * /iiwa/PositionController/type: position_controll...
+ * /iiwa/PositionTorqueController/iiwa_joint_1/pid/d: 80.0
+ * /iiwa/PositionTorqueController/iiwa_joint_1/pid/i: 100
+ * /iiwa/PositionTorqueController/iiwa_joint_1/pid/i_clamp_max: 10000
+ * /iiwa/PositionTorqueController/iiwa_joint_1/pid/i_clamp_min: -10000
+ * /iiwa/PositionTorqueController/iiwa_joint_1/pid/p: 800.0
+ * /iiwa/PositionTorqueController/iiwa_joint_2/pid/d: 100.0
+ * /iiwa/PositionTorqueController/iiwa_joint_2/pid/i: 1000
+ * /iiwa/PositionTorqueController/iiwa_joint_2/pid/i_clamp_max: 10000
+ * /iiwa/PositionTorqueController/iiwa_joint_2/pid/i_clamp_min: -10000
+ * /iiwa/PositionTorqueController/iiwa_joint_2/pid/p: 800.0
+ * /iiwa/PositionTorqueController/iiwa_joint_3/pid/d: 80.0
+ * /iiwa/PositionTorqueController/iiwa_joint_3/pid/i: 10
+ * /iiwa/PositionTorqueController/iiwa_joint_3/pid/i_clamp_max: 10000
+ * /iiwa/PositionTorqueController/iiwa_joint_3/pid/i_clamp_min: -10000
+ * /iiwa/PositionTorqueController/iiwa_joint_3/pid/p: 800.0
+ * /iiwa/PositionTorqueController/iiwa_joint_4/pid/d: 80.0
+ * /iiwa/PositionTorqueController/iiwa_joint_4/pid/i: 10
+ * /iiwa/PositionTorqueController/iiwa_joint_4/pid/i_clamp_max: 10000
+ * /iiwa/PositionTorqueController/iiwa_joint_4/pid/i_clamp_min: -10000
+ * /iiwa/PositionTorqueController/iiwa_joint_4/pid/p: 800.0
+ * /iiwa/PositionTorqueController/iiwa_joint_5/pid/d: 10.0
+ * /iiwa/PositionTorqueController/iiwa_joint_5/pid/i: 5
+ * /iiwa/PositionTorqueController/iiwa_joint_5/pid/i_clamp_max: 10000
+ * /iiwa/PositionTorqueController/iiwa_joint_5/pid/i_clamp_min: -10000
+ * /iiwa/PositionTorqueController/iiwa_joint_5/pid/p: 300.0
+ * /iiwa/PositionTorqueController/iiwa_joint_6/pid/d: 1.0
+ * /iiwa/PositionTorqueController/iiwa_joint_6/pid/i: 1
+ * /iiwa/PositionTorqueController/iiwa_joint_6/pid/i_clamp_max: 10000
+ * /iiwa/PositionTorqueController/iiwa_joint_6/pid/i_clamp_min: -10000
+ * /iiwa/PositionTorqueController/iiwa_joint_6/pid/p: 50.0
+ * /iiwa/PositionTorqueController/iiwa_joint_7/pid/d: 1.0
+ * /iiwa/PositionTorqueController/iiwa_joint_7/pid/i: 0.1
+ * /iiwa/PositionTorqueController/iiwa_joint_7/pid/i_clamp_max: 10000
+ * /iiwa/PositionTorqueController/iiwa_joint_7/pid/i_clamp_min: -10000
+ * /iiwa/PositionTorqueController/iiwa_joint_7/pid/p: 10.0
+ * /iiwa/PositionTorqueController/joints: ['iiwa_joint_1', ...
+ * /iiwa/PositionTorqueController/type: effort_controller...
+ * /iiwa/PositionTrajectoryController/action_monitor_rate: 30
+ * /iiwa/PositionTrajectoryController/constraints/goal_time: 0.5
+ * /iiwa/PositionTrajectoryController/joints: ['iiwa_joint_1', ...
+ * /iiwa/PositionTrajectoryController/state_publish_rate: 25
+ * /iiwa/PositionTrajectoryController/stop_trajectory_duration: 0
+ * /iiwa/PositionTrajectoryController/type: position_controll...
+ * /iiwa/TorqueController/joints: ['iiwa_joint_1', ...
+ * /iiwa/TorqueController/type: effort_controller...
+ * /iiwa/attractor_ds_py/cmd_timeout: 0.5
+ * /iiwa/attractor_ds_py/default_K_linear: 0.5
+ * /iiwa/attractor_ds_py/default_attractor_pos: [0.5, 0.0, 0.5]
+ * /iiwa/attractor_ds_py/default_attractor_quat: [0.0, 1.0, 0.0, 0.0]
+ * /iiwa/attractor_ds_py/default_damping_a: 1.0
+ * /iiwa/attractor_ds_py/default_damping_b: 1.0
+ * /iiwa/attractor_ds_py/device: cpu
+ * /iiwa/attractor_ds_py/ds_gain_ori: 2.5
+ * /iiwa/attractor_ds_py/ds_gain_pos: 5.0
+ * /iiwa/attractor_ds_py/ee_link: iiwa_link_ee
+ * /iiwa/attractor_ds_py/enable_init_phase: True
+ * /iiwa/attractor_ds_py/init_phase_norm: 1.5
+ * /iiwa/attractor_ds_py/joint_names: ['iiwa_joint_1', ...
+ * /iiwa/attractor_ds_py/lam0_ori: 5.0
+ * /iiwa/attractor_ds_py/lam0_pos: 100.0
+ * /iiwa/attractor_ds_py/lam1_ori: 5.0
+ * /iiwa/attractor_ds_py/lam1_pos: 100.0
+ * /iiwa/attractor_ds_py/load_added: 0.0
+ * /iiwa/attractor_ds_py/log_csv: /home/ros/ros_ws/...
+ * /iiwa/attractor_ds_py/max_dq: 0.2
+ * /iiwa/attractor_ds_py/max_dx: 0.1
+ * /iiwa/attractor_ds_py/null_damping: 1.0
+ * /iiwa/attractor_ds_py/null_gains: [5.0, 80.0, 10.0,...
+ * /iiwa/attractor_ds_py/null_q: [0.0, 0.0, 0.0, -...
+ * /iiwa/attractor_ds_py/null_scale: 10.0
+ * /iiwa/attractor_ds_py/rate_hz: 500.0
+ * /iiwa/attractor_ds_py/root_link: iiwa_link_0
+ * /iiwa/attractor_ds_py/urdf_param: robot_description
+ * /iiwa/attractor_ds_py/velocity_limit: 0.15
+ * /iiwa/joint_state_controller/publish_rate: 500
+ * /iiwa/joint_state_controller/type: joint_state_contr...
+ * /iiwa/robot_description: <?xml version="1....
+ * /iiwa/service/end_effector: iiwa_link_ee
+ * /iiwa/service/fk_service_name: iiwa_fk_server
+ * /iiwa/service/gravity_service_name: iiwa_gravity_server
+ * /iiwa/service/ik_service_name: iiwa_ik_server
+ * /iiwa/service/jacobian_deriv_service_name: iiwa_jacobian_der...
+ * /iiwa/service/jacobian_service_name: iiwa_jacobian_server
+ * /iiwa/service/jacobians_service_name: iiwa_jacobians_se...
+ * /iiwa/service/robot_description: /robot_description
+ * /rosdistro: noetic
+ * /rosversion: 1.17.4
+ * /use_sim_time: True
+
+NODES
+  /
+    gazebo (gazebo_ros/gzserver)
+  /iiwa/
+    attractor_ds_py (iiwa_toolkit/node_attractor_ds_gazebo.py)
+    iiwa_controller (controller_manager/spawner)
+    iiwa_service (iiwa_tools/iiwa_service)
+    robot_state_publisher (robot_state_publisher/robot_state_publisher)
+    urdf_spawner (gazebo_ros/spawn_model)
+[0m[INFO] [1779458576.434552953]: Starting Iiwa IK server..[0m
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBbb
+/iiwa
+iiwa_link_ee
+WARNING: Package name "RL_controller" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "cFunc" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "lpvDS" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "lagsDS" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "RL_controller" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "cFunc" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "lpvDS" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "lagsDS" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+[INFO] [1779458576.673198, 0.000000]: Loading model XML from ros parameter robot_description
+[INFO] [1779458576.677616, 0.000000]: Waiting for service /gazebo/spawn_urdf_model
+[INFO] [1779458576.979571, 0.048000]: Calling service /gazebo/spawn_urdf_model
+[INFO] [1779458577.173819, 0.181000]: Spawn status: SpawnModel: Successfully spawned entity
+[0m[INFO] [1779458576.745827676]: Finished loading Gazebo ROS API Plugin.[0m
+[0m[INFO] [1779458576.746609548]: waitForService: Service [/gazebo/set_physics_properties] has not been advertised, waiting...[0m
+[0m[INFO] [1779458576.930710460, 0.001000000]: waitForService: Service [/gazebo/set_physics_properties] is now available.[0m
+[0m[INFO] [1779458576.942345442, 0.012000000]: Physics dynamic reconfigure ready.[0m
+[0m[INFO] [1779458577.210995403, 0.181000000]: ft_sensor plugin reporting wrench values to the frame [iiwa_link_FTS][0m
+[0m[INFO] [1779458577.211012398, 0.181000000]: ft_sensor plugin missing <gaussianNoise>, defaults to 0.0[0m
+[0m[INFO] [1779458577.220703973, 0.181000000]: Loading gazebo_ros_control plugin[0m
+[0m[INFO] [1779458577.220753205, 0.181000000]: Starting gazebo_ros_control plugin in namespace: /iiwa[0m
+[0m[INFO] [1779458577.221058565, 0.181000000]: gazebo_ros_control plugin is waiting for model URDF in parameter [/iiwa/robot_description] on the ROS param server.[0m
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+/iiwa
+[0m[INFO] [1779458576.436227807]: IiwaService is waiting for model URDF in parameter [/iiwa/robot_description] on the ROS param server.[0m
+[0m[INFO] [1779458576.536694119]: Received urdf from param server, parsing...[0m
+[0m[INFO] [1779458576.537725797]: Number of joints found: 7[0m
+[0m[INFO] [1779458576.538287160]: Started Iiwa FK server..[0m
+[0m[INFO] [1779458576.538687062]: Started Iiwa IK server..[0m
+[0m[INFO] [1779458576.538980438]: Started Iiwa Jacobian server..[0m
+[0m[INFO] [1779458576.539254004]: Started Iiwa Jacobian Derivative server..[0m
+[0m[INFO] [1779458576.539564682]: Started Iiwa Jacobians server..[0m
+[0m[INFO] [1779458576.539855544]: Started Iiwa Gravity Compensation server..[0m
+/home/ros/.local/lib/python3.8/site-packages/scipy/__init__.py:143: UserWarning: A NumPy version >=1.19.5 and <1.27.0 is required for this version of SciPy (detected version 1.17.4)
+  warnings.warn(f"A NumPy version >={np_minversion} and <{np_maxversion}"
+Unknown tag "material" in /robot[@name='iiwa14']/link[@name='iiwa_link_0']/collision[1]
+Unknown tag "self_collision_checking" in /robot[@name='iiwa14']/link[@name='iiwa_link_0']
+Unknown tag "material" in /robot[@name='iiwa14']/link[@name='iiwa_link_1']/collision[1]
+Unknown tag "material" in /robot[@name='iiwa14']/link[@name='iiwa_link_2']/collision[1]
+Unknown tag "material" in /robot[@name='iiwa14']/link[@name='iiwa_link_3']/collision[1]
+Unknown tag "material" in /robot[@name='iiwa14']/link[@name='iiwa_link_4']/collision[1]
+Unknown tag "material" in /robot[@name='iiwa14']/link[@name='iiwa_link_5']/collision[1]
+Unknown tag "material" in /robot[@name='iiwa14']/link[@name='iiwa_link_6']/collision[1]
+Unknown tag "material" in /robot[@name='iiwa14']/link[@name='iiwa_link_7']/collision[1]
+Unknown tag "material" in /robot[@name='iiwa14']/link[@name='iiwa_link_FTS']/collision[1]
+Unknown tag "material" in /robot[@name='iiwa14']/link[@name='iiwa_link_grabber']/collision[1]
+Unknown tag "surface" in /robot[@name='iiwa14']/link[@name='iiwa_link_grabber']/collision[1]
+Unknown tag "hardwareInterface" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_1']/actuator[@name='iiwa_motor_1']
+Unknown tag "robotNamespace" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_1']
+Unknown tag "hardwareInterface" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_2']/actuator[@name='iiwa_motor_2']
+Unknown tag "robotNamespace" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_2']
+Unknown tag "hardwareInterface" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_3']/actuator[@name='iiwa_motor_3']
+Unknown tag "robotNamespace" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_3']
+Unknown tag "hardwareInterface" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_4']/actuator[@name='iiwa_motor_4']
+Unknown tag "robotNamespace" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_4']
+Unknown tag "hardwareInterface" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_5']/actuator[@name='iiwa_motor_5']
+Unknown tag "robotNamespace" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_5']
+Unknown tag "hardwareInterface" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_6']/actuator[@name='iiwa_motor_6']
+Unknown tag "robotNamespace" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_6']
+Unknown tag "hardwareInterface" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_7']/actuator[@name='iiwa_motor_7']
+Unknown tag "robotNamespace" in /robot[@name='iiwa14']/transmission[@name='iiwa_tran_7']
+[INFO] [1779458577.341206, 0.000000]: [attractor_ds_py] default attractor  pos=[0.5, 0.0, 0.5]  quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458577.345056, 0.182000]: [attractor_ds_py] building kinematics chain iiwa_link_0 -> iiwa_link_ee on cpu
+[INFO] [1779458577.614656, 0.369000]: [attractor_ds_py] logging to /home/ros/ros_ws/src/iiwa_toolkit/test_runs/attractor_ds_py_test_20260522T140255Z/attractor_ds_py_log_20260522T140255Z.csv
+[INFO] [1779458577.615166, 0.370000]: [attractor_ds_py] ready, 500 Hz, device=cpu, velocity_limit=0.150
+[INFO] [1779458578.634479, 1.379000]: [attractor_ds_py] attractor pos=[0.5, 0.0, 0.5] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458578.634677, 1.379000]: [attractor_ds_py] gains K=0.500 a=1.000 b=1.000
+[INFO] [1779458580.674892, 3.398000]: [attractor_ds_py] attractor pos=[0.5, 0.0, 0.5] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458582.717979, 5.418000]: [attractor_ds_py] attractor pos=[0.5, 0.0, 0.5] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458584.752837, 7.438000]: [attractor_ds_py] attractor pos=[0.5, 0.0, 0.5] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458586.782174, 9.458000]: [attractor_ds_py] attractor pos=[0.5, 0.0, 0.5] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458588.805967, 11.478000]: [attractor_ds_py] attractor pos=[0.5, 0.0, 0.5] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458590.836996, 13.498000]: [attractor_ds_py] attractor pos=[0.5, 0.0, 0.5] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458592.879419, 15.518000]: [attractor_ds_py] attractor pos=[0.5, 0.0, 0.5] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458593.652142, 16.279000]: [attractor_ds_py] gains K=0.500 a=1.000 b=1.000
+[INFO] [1779458594.947721, 17.538000]: [attractor_ds_py] attractor pos=[0.7, -0.2, 0.4] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458597.007695, 19.558000]: [attractor_ds_py] attractor pos=[0.7, -0.2, 0.4] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458599.034920, 21.578000]: [attractor_ds_py] attractor pos=[0.7, -0.2, 0.4] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458601.083921, 23.598000]: [attractor_ds_py] attractor pos=[0.7, -0.2, 0.4] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458603.132157, 25.618000]: [attractor_ds_py] attractor pos=[0.7, -0.2, 0.4] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458605.164651, 27.638000]: [attractor_ds_py] attractor pos=[0.7, -0.2, 0.4] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458606.654384, 29.119000]: [attractor_ds_py] gains K=0.800 a=1.000 b=1.000
+[INFO] [1779458607.194848, 29.658000]: [attractor_ds_py] attractor pos=[0.4, 0.2, 0.7] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458609.232805, 31.678000]: [attractor_ds_py] attractor pos=[0.4, 0.2, 0.7] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458611.272765, 33.698000]: [attractor_ds_py] attractor pos=[0.4, 0.2, 0.7] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458613.302749, 35.718000]: [attractor_ds_py] attractor pos=[0.4, 0.2, 0.7] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458615.344689, 37.738000]: [attractor_ds_py] attractor pos=[0.4, 0.2, 0.7] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458617.377539, 39.758000]: [attractor_ds_py] attractor pos=[0.4, 0.2, 0.7] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458618.648698, 41.019000]: [attractor_ds_py] gains K=0.500 a=0.500 b=0.500
+[INFO] [1779458619.410689, 41.778000]: [attractor_ds_py] attractor pos=[0.6, 0.0, 0.6] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458621.434758, 43.798000]: [attractor_ds_py] attractor pos=[0.6, 0.0, 0.6] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458623.457829, 45.818000]: [attractor_ds_py] attractor pos=[0.6, 0.0, 0.6] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458625.505667, 47.838000]: [attractor_ds_py] attractor pos=[0.6, 0.0, 0.6] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458627.534781, 49.858000]: [attractor_ds_py] attractor pos=[0.6, 0.0, 0.6] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458629.570602, 51.878000]: [attractor_ds_py] attractor pos=[0.6, 0.0, 0.6] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458630.636776, 52.939000]: [attractor_ds_py] gains K=0.500 a=2.000 b=2.000
+[INFO] [1779458631.600014, 53.898000]: [attractor_ds_py] attractor pos=[0.6, 0.0, 0.6] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458633.632715, 55.918000]: [attractor_ds_py] attractor pos=[0.6, 0.0, 0.6] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458635.739112, 57.938000]: [attractor_ds_py] attractor pos=[0.6, 0.0, 0.6] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458637.784859, 59.958000]: [attractor_ds_py] attractor pos=[0.6, 0.0, 0.6] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458639.851226, 61.978000]: [attractor_ds_py] attractor pos=[0.6, 0.0, 0.6] quat=[0.0, 1.0, 0.0, 0.0]
+[INFO] [1779458641.802588, 63.577000]: [attractor_ds_py] wrote 21321 rows to /home/ros/ros_ws/src/iiwa_toolkit/test_runs/attractor_ds_py_test_20260522T140255Z/attractor_ds_py_log_20260522T140255Z.csv
+Traceback (most recent call last):
+  File "/home/ros/ros_ws/devel/lib/iiwa_toolkit/node_attractor_ds_gazebo.py", line 15, in <module>
+    exec(compile(fh.read(), python_script, 'exec'), context)
+  File "/home/ros/ros_ws/src/iiwa_toolkit/src/node_attractor_ds_gazebo.py", line 339, in <module>
+    main()
+  File "/home/ros/ros_ws/src/iiwa_toolkit/src/node_attractor_ds_gazebo.py", line 335, in main
+    node.run()
+  File "/home/ros/ros_ws/src/iiwa_toolkit/src/node_attractor_ds_gazebo.py", line 216, in run
+    rate.sleep()
+  File "/opt/ros/noetic/lib/python3/dist-packages/rospy/timer.py", line 103, in sleep
+    sleep(self._remaining(curr_time))
+  File "/opt/ros/noetic/lib/python3/dist-packages/rospy/timer.py", line 165, in sleep
+    raise rospy.exceptions.ROSInterruptException("ROS shutdown request")
+rospy.exceptions.ROSInterruptException: ROS shutdown request
+[WARN] [1779458656.507457, 63.577000]: Controller Spawner error while taking down controllers: transport error completing service call: unable to receive data from sender, check sender's logs for details
+[INFO] [1779458576.577153, 0.000000]: Controller Spawner: Waiting for service controller_manager/load_controller
+[INFO] [1779458577.481585, 0.239000]: Controller Spawner: Waiting for service controller_manager/switch_controller
+[INFO] [1779458577.483218, 0.240000]: Controller Spawner: Waiting for service controller_manager/unload_controller
+[INFO] [1779458577.484625, 0.242000]: Loading controller: TorqueController
+[INFO] [1779458577.492618, 0.250000]: Loading controller: joint_state_controller
+[INFO] [1779458577.496712, 0.254000]: Controller Spawner: Loaded controllers: TorqueController, joint_state_controller
+[INFO] [1779458577.500664, 0.258000]: Started controllers: TorqueController, joint_state_controller
+[INFO] [1779458641.464224, 63.577000]: Shutting down spawner. Stopping and unloading controllers...
+[INFO] [1779458641.465069, 63.577000]: Stopping all controllers...
+WARNING: Package name "RL_controller" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "cFunc" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "lpvDS" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "lagsDS" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "RL_controller" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "cFunc" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "lpvDS" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "lagsDS" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+[31m[gazebo-6] escalating to SIGTERM[0m
+[31m[iiwa/iiwa_controller-4] escalating to SIGTERM[0m
+
+auto-starting new master
+[1mprocess[master]: started with pid [18596][0m
+[1mROS_MASTER_URI=http://localhost:11311[0m
+]2;/home/ros/ros_ws/src/iiwa_toolkit/launch/attractor_ds_gazebo.launch http://localhost:11311
+[1msetting /run_id to ee90c752-55e6-11f1-ac49-30f6efc06016[0m
+[1mprocess[rosout-1]: started with pid [18606][0m
+started core service [/rosout]
+[1mprocess[iiwa/iiwa_service-2]: started with pid [18613][0m
+[1mprocess[iiwa/urdf_spawner-3]: started with pid [18614][0m
+[1mprocess[iiwa/iiwa_controller-4]: started with pid [18616][0m
+[1mprocess[iiwa/robot_state_publisher-5]: started with pid [18620][0m
+[1mprocess[gazebo-6]: started with pid [18622][0m
+[1mprocess[iiwa/attractor_ds_py-7]: started with pid [18631][0m
+[1m[iiwa/urdf_spawner-3] process has finished cleanly
+log file: /home/ros/.ros/log/ee90c752-55e6-11f1-ac49-30f6efc06016/iiwa-urdf_spawner-3*.log[0m
+[iiwa/attractor_ds_py-7] killing on exit
+[gazebo-6] killing on exit
+[iiwa/robot_state_publisher-5] killing on exit
+[iiwa/iiwa_controller-4] killing on exit
+[iiwa/iiwa_service-2] killing on exit
+[rosout-1] killing on exit
+[master] killing on exit
+shutting down processing monitor...
+... shutting down processing monitor complete
+[1mdone[0m

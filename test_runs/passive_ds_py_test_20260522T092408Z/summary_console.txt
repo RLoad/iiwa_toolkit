@@ -1,0 +1,17 @@
+=== passive_ds_py_log_20260522T092408Z ===
+n_rows                     : 7108
+duration_s                 : 33.077000000000005
+eff_rate_hz                : 214.89252350575924
+frac_mode_vel              : 0.9590602138435566
+frac_mode_pos              : 0.04093978615644345
+frac_mode_none             : 0.0
+frac_init_phase            : 0.0
+ee_pos_range_xyz           : [0.76296515784535, 0.5159367292863414, 0.9639501541171944]
+pos_err_final              : nan
+pos_err_rms_postinit       : 0.0
+vel_err_rms_vel_mode       : 0.07178050651490923
+des_pos_first              : [-7.033530064831849e-08, -2.886803929334925e-13, 1.2609999924897919]
+des_pos_last               : [0.7127601990566973, -0.0014420907412754638, 0.7498464644237015]
+ee_pos_first               : [-7.033530064831849e-08, -2.886803929334925e-13, 1.2609999924897919]
+ee_pos_last                : [0.7127601990566973, -0.0014420907412754638, 0.7498464644237015]
+plots written under: /home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T092408Z

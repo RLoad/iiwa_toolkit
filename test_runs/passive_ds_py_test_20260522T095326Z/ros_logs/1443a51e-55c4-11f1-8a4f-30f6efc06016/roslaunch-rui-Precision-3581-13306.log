@@ -1,0 +1,67 @@
+[roslaunch][INFO] 2026-05-22 09:53:29,291: Checking log directory for disk usage. This may take a while.
+Press Ctrl-C to interrupt
+[roslaunch][INFO] 2026-05-22 09:53:29,294: Done checking log file disk usage. Usage is <1GB.
+[roslaunch][INFO] 2026-05-22 09:53:29,294: roslaunch starting with args ['/opt/ros/noetic/bin/roslaunch', 'RL_controller', 'task_space_control_gazebo.launch', 'show_force_plot:=false']
+[roslaunch][INFO] 2026-05-22 09:53:29,294: roslaunch env is environ({'USER_GROUP': 'ros', 'ROS_VERSION': '1', 'PKG_CONFIG_PATH': '/home/ros/ros_ws/devel/lib/pkgconfig:/opt/ros/noetic/lib/pkgconfig', 'ROS_PYTHON_VERSION': '3', 'HOSTNAME': 'rui-Precision-3581', 'DURATION': '35', 'ROS_PACKAGE_PATH': '/home/ros/ros_ws/src:/opt/ros/noetic/share', 'ROSLISP_PACKAGE_DIRECTORIES': '/home/ros/ros_ws/devel/share/common-lisp', 'PWD': '/home/ros/ros_ws', 'ROS_LOG_DIR': '/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T095326Z/ros_logs', 'HOME': '/home/ros', 'LANG': 'C.UTF-8', 'ROS_ETC_DIR': '/opt/ros/noetic/etc/ros', 'CMAKE_PREFIX_PATH': '/home/ros/ros_ws/devel:/opt/ros/noetic', 'ROS_WORKSPACE': '/home/ros/ros_ws', 'PYTHONPATH': '/home/ros/ros_ws/devel/lib/python3/dist-packages:/opt/ros/noetic/lib/python3/dist-packages', 'USER': 'ros', 'DISPLAY': ':1', 'SHLVL': '0', 'ROS_MASTER_URI': 'http://localhost:11311', 'ROS_HOSTNAME': 'localhost', 'MPLBACKEND': 'Agg', 'LD_LIBRARY_PATH': '/home/ros/ros_ws/devel/lib:/opt/ros/noetic/lib:/usr/local/lib', 'LC_ALL': 'C.UTF-8', 'PATH': '/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', 'PIP_NO_CACHE_DIR': '1', 'DEBIAN_FRONTEND': 'noninteractive', 'ROS_ROOT': '/opt/ros/noetic/share/ros', 'ROS_DISTRO': 'noetic', 'QT_X11_NO_MITSHM': '1', '_': '/opt/ros/noetic/bin/roslaunch', 'ROS_LOG_FILENAME': '/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T095326Z/ros_logs/1443a51e-55c4-11f1-8a4f-30f6efc06016/roslaunch-rui-Precision-3581-13306.log'})
+[roslaunch][INFO] 2026-05-22 09:53:29,294: starting in server mode
+[roslaunch.parent][INFO] 2026-05-22 09:53:29,294: starting roslaunch parent run
+[roslaunch][INFO] 2026-05-22 09:53:29,294: loading roscore config file /opt/ros/noetic/etc/ros/roscore.xml
+[roslaunch][INFO] 2026-05-22 09:53:29,375: Added core node of type [rosout/rosout] in namespace [/]
+[roslaunch.config][INFO] 2026-05-22 09:53:29,375: loading config file /home/ros/ros_ws/src/RL_controller/launch/task_space_control_gazebo.launch
+[roslaunch][INFO] 2026-05-22 09:53:29,391: Added node of type [RL_controller/task_space_control_node] in namespace [/test/]
+[roslaunch][INFO] 2026-05-22 09:53:29,392: ... selected machine [] for node of type [RL_controller/task_space_control_node]
+[roslaunch.pmon][INFO] 2026-05-22 09:53:29,392: start_process_monitor: creating ProcessMonitor
+[roslaunch.pmon][INFO] 2026-05-22 09:53:29,392: created process monitor <ProcessMonitor(ProcessMonitor-1, initial daemon)>
+[roslaunch.pmon][INFO] 2026-05-22 09:53:29,392: start_process_monitor: ProcessMonitor started
+[roslaunch.parent][INFO] 2026-05-22 09:53:29,392: starting parent XML-RPC server
+[roslaunch.server][INFO] 2026-05-22 09:53:29,392: starting roslaunch XML-RPC server
+[roslaunch.server][INFO] 2026-05-22 09:53:29,392: waiting for roslaunch XML-RPC server to initialize
+[xmlrpc][INFO] 2026-05-22 09:53:29,393: XML-RPC server binding to 127.0.0.1:0
+[xmlrpc][INFO] 2026-05-22 09:53:29,393: Started XML-RPC server [http://localhost:42757/]
+[xmlrpc][INFO] 2026-05-22 09:53:29,393: xml rpc node: starting XML-RPC server
+[roslaunch][INFO] 2026-05-22 09:53:29,404: started roslaunch server http://localhost:42757/
+[roslaunch.parent][INFO] 2026-05-22 09:53:29,404: ... parent XML-RPC server started
+[roslaunch][INFO] 2026-05-22 09:53:29,404: master.is_running[http://localhost:11311]
+[roslaunch][INFO] 2026-05-22 09:53:29,405: master.is_running[http://localhost:11311]
+[roslaunch][INFO] 2026-05-22 09:53:29,406: ROS_MASTER_URI=http://localhost:11311
+[roslaunch][INFO] 2026-05-22 09:53:29,407: setting /roslaunch/uris/host_localhost__42757' to http://localhost:42757/
+[roslaunch][INFO] 2026-05-22 09:53:29,408: load_parameters starting ...
+[roslaunch][INFO] 2026-05-22 09:53:29,420: ... load_parameters complete
+[roslaunch][INFO] 2026-05-22 09:53:29,421: launch_nodes: launching local nodes ...
+[roslaunch][INFO] 2026-05-22 09:53:29,421: ... preparing to launch node of type [RL_controller/task_space_control_node]
+[roslaunch][INFO] 2026-05-22 09:53:29,421: create_node_process: package[RL_controller] type[task_space_control_node] machine[Machine(name[] env_loader[None] address[localhost] ssh_port[22] user[None] assignable[True] timeout[10.0])] master_uri[http://localhost:11311]
+[roslaunch][INFO] 2026-05-22 09:53:29,421: process[test/task_space_control_node-1]: env[{'USER_GROUP': 'ros', 'ROS_VERSION': '1', 'PKG_CONFIG_PATH': '/home/ros/ros_ws/devel/lib/pkgconfig:/opt/ros/noetic/lib/pkgconfig', 'ROS_PYTHON_VERSION': '3', 'HOSTNAME': 'rui-Precision-3581', 'DURATION': '35', 'ROS_PACKAGE_PATH': '/home/ros/ros_ws/src:/opt/ros/noetic/share', 'ROSLISP_PACKAGE_DIRECTORIES': '/home/ros/ros_ws/devel/share/common-lisp', 'PWD': '/home/ros/ros_ws', 'ROS_LOG_DIR': '/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T095326Z/ros_logs', 'HOME': '/home/ros', 'LANG': 'C.UTF-8', 'ROS_ETC_DIR': '/opt/ros/noetic/etc/ros', 'CMAKE_PREFIX_PATH': '/home/ros/ros_ws/devel:/opt/ros/noetic', 'ROS_WORKSPACE': '/home/ros/ros_ws', 'PYTHONPATH': '/home/ros/ros_ws/devel/lib/python3/dist-packages:/opt/ros/noetic/lib/python3/dist-packages', 'USER': 'ros', 'DISPLAY': ':1', 'SHLVL': '0', 'ROS_MASTER_URI': 'http://localhost:11311', 'ROS_HOSTNAME': 'localhost', 'MPLBACKEND': 'Agg', 'LD_LIBRARY_PATH': '/home/ros/ros_ws/devel/lib:/opt/ros/noetic/lib:/usr/local/lib', 'LC_ALL': 'C.UTF-8', 'PATH': '/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', 'PIP_NO_CACHE_DIR': '1', 'DEBIAN_FRONTEND': 'noninteractive', 'ROS_ROOT': '/opt/ros/noetic/share/ros', 'ROS_DISTRO': 'noetic', 'QT_X11_NO_MITSHM': '1', '_': '/opt/ros/noetic/bin/roslaunch', 'ROS_LOG_FILENAME': '/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T095326Z/ros_logs/1443a51e-55c4-11f1-8a4f-30f6efc06016/roslaunch-rui-Precision-3581-13306.log', 'ROS_NAMESPACE': '/test'}]
+[roslaunch][INFO] 2026-05-22 09:53:29,435: process[test/task_space_control_node-1]: args[['/home/ros/ros_ws/devel/lib/RL_controller/task_space_control_node', '__name:=task_space_control_node']]
+[roslaunch][INFO] 2026-05-22 09:53:29,435: ... created process [test/task_space_control_node-1]
+[roslaunch.pmon][INFO] 2026-05-22 09:53:29,435: ProcessMonitor.register[test/task_space_control_node-1]
+[roslaunch.pmon][INFO] 2026-05-22 09:53:29,435: ProcessMonitor.register[test/task_space_control_node-1] complete
+[roslaunch][INFO] 2026-05-22 09:53:29,435: ... registered process [test/task_space_control_node-1]
+[roslaunch][INFO] 2026-05-22 09:53:29,435: process[test/task_space_control_node-1]: starting os process
+[roslaunch][INFO] 2026-05-22 09:53:29,435: process[test/task_space_control_node-1]: start w/ args [['/home/ros/ros_ws/devel/lib/RL_controller/task_space_control_node', '__name:=task_space_control_node', '__log:=/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T095326Z/ros_logs/1443a51e-55c4-11f1-8a4f-30f6efc06016/test-task_space_control_node-1.log']]
+[roslaunch][INFO] 2026-05-22 09:53:29,435: process[test/task_space_control_node-1]: cwd will be [/home/ros/.ros]
+[roslaunch][INFO] 2026-05-22 09:53:29,437: process[test/task_space_control_node-1]: started with pid [13321]
+[roslaunch][INFO] 2026-05-22 09:53:29,438: ... successfully launched [test/task_space_control_node-1]
+[roslaunch][INFO] 2026-05-22 09:53:29,438: ... launch_nodes complete
+[roslaunch.pmon][INFO] 2026-05-22 09:53:29,438: registrations completed <ProcessMonitor(ProcessMonitor-1, started daemon 130709895980800)>
+[roslaunch.parent][INFO] 2026-05-22 09:53:29,438: ... roslaunch parent running, waiting for process exit
+[roslaunch][INFO] 2026-05-22 09:53:29,438: spin
+[roslaunch.pmon][INFO] 2026-05-22 09:54:04,636: ProcessMonitor.shutdown <ProcessMonitor(ProcessMonitor-1, started daemon 130709895980800)>
+[roslaunch.pmon][INFO] 2026-05-22 09:54:04,650: ProcessMonitor._post_run <ProcessMonitor(ProcessMonitor-1, started daemon 130709895980800)>
+[roslaunch.pmon][INFO] 2026-05-22 09:54:04,650: ProcessMonitor._post_run <ProcessMonitor(ProcessMonitor-1, started daemon 130709895980800)>: remaining procs are [<roslaunch.nodeprocess.LocalProcess object at 0x76e144ebc7c0>]
+[roslaunch.pmon][INFO] 2026-05-22 09:54:04,651: ProcessMonitor exit: killing test/task_space_control_node-1
+[roslaunch][INFO] 2026-05-22 09:54:04,651: [test/task_space_control_node-1] killing on exit
+[roslaunch][INFO] 2026-05-22 09:54:04,651: process[test/task_space_control_node-1]: killing os process with pid[13321] pgid[13321]
+[roslaunch][INFO] 2026-05-22 09:54:04,651: [test/task_space_control_node-1] sending SIGINT to pgid [13321]
+[roslaunch][INFO] 2026-05-22 09:54:04,651: [test/task_space_control_node-1] sent SIGINT to pgid [13321]
+[roslaunch][INFO] 2026-05-22 09:54:04,851: process[test/task_space_control_node-1]: SIGINT killed with return value 0
+[roslaunch.pmon][INFO] 2026-05-22 09:54:04,852: ProcessMonitor exit: cleaning up data structures and signals
+[roslaunch.pmon][INFO] 2026-05-22 09:54:04,852: ProcessMonitor exit: pmon has shutdown
+[roslaunch][INFO] 2026-05-22 09:54:04,852: process monitor is done spinning, initiating full shutdown
+[roslaunch][INFO] 2026-05-22 09:54:04,852: runner.stop()
+[roslaunch][INFO] 2026-05-22 09:54:04,852: shutting down processing monitor...
+[roslaunch][INFO] 2026-05-22 09:54:04,852: shutting down processing monitor <ProcessMonitor(ProcessMonitor-1, stopped daemon 130709895980800)>
+[roslaunch.pmon][INFO] 2026-05-22 09:54:04,852: ProcessMonitor.shutdown <ProcessMonitor(ProcessMonitor-1, stopped daemon 130709895980800)>
+[roslaunch][INFO] 2026-05-22 09:54:04,852: ... shutting down processing monitor complete
+[roslaunch][INFO] 2026-05-22 09:54:04,852: done
+[roslaunch.pmon][INFO] 2026-05-22 09:54:04,852: ProcessMonitor.shutdown <ProcessMonitor(ProcessMonitor-1, stopped daemon 130709895980800)>
+[rospy.core][INFO] 2026-05-22 09:54:04,852: signal_shutdown [atexit]

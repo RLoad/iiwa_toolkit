@@ -1,0 +1,47 @@
+attractor_ds_py log summary
+==========================================
+n_rows                     : 21900
+duration_s                 : 66.20800000000001
+eff_rate_hz                : 330.77573707104875
+velocity_saturation_frac   : 0.11785388127853881
+pos_err_overall_rms_m      : 0.21268085712419432
+vel_err_overall_rms_m_s    : 0.02447563368181813
+pos_err_final_m            : 0.039267146443071
+ee_pos_first               : [-6.01889066544696e-07, -1.1040741312359952e-12, 1.2609999924895943]
+ee_pos_last                : [0.5348311920147087, 0.009126191392737347, 0.5843344491549387]
+attractor_first            : [0.5, 0.0, 0.5]
+attractor_last             : [0.5, 0.0, 0.6]
+frac_init_phase            : 0.0
+tau_max_abs_per_joint      : [16.065526855792214, 9.760431918422654, 18.692544247042704, 34.904785553432404, 16.656889565398682, 15.193498205694697, 7.579788577911634]
+tau_all_finite             : True
+per_segment:
+  seg 0 (front high      (K=0.5)):
+    t_start              : 5.0
+    t_end_observed       : 16.996
+    final_pos_err_m      : 0.006495071792890002
+    rms_vel_err_m_s      : 0.017434000983219452
+    sat_frac             : 0.01212415130940834
+  seg 1 (front-right low (K=0.5)):
+    t_start              : 17.0
+    t_end_observed       : 28.997
+    final_pos_err_m      : 0.0035683541991399703
+    rms_vel_err_m_s      : 0.008292177849601715
+    sat_frac             : 0.0
+  seg 2 (back-left high  (K=0.8)):
+    t_start              : 29.0
+    t_end_observed       : 40.997
+    final_pos_err_m      : 0.03641453904055967
+    rms_vel_err_m_s      : 0.027711431832754155
+    sat_frac             : 0.22993162826031907
+  seg 3 (center low      (soft  damping a=b=0.5)):
+    t_start              : 41.0
+    t_end_observed       : 52.999
+    final_pos_err_m      : 0.019014273741737215
+    rms_vel_err_m_s      : 0.01934883852172294
+    sat_frac             : 0.0
+  seg 4 (center          (stiff damping a=b=2.0)):
+    t_start              : 53.0
+    t_end_observed       : 66.20800000000001
+    final_pos_err_m      : 0.039267146443071
+    rms_vel_err_m_s      : 0.019667672096885594
+    sat_frac             : 0.0

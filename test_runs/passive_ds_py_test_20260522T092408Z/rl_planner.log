@@ -1,0 +1,383 @@
+WARNING: Package name "RL_controller" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "cFunc" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "lpvDS" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "lagsDS" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+[33m[WARN] [1779441851.503462332, 1.545000000]: Phase 0: force zeroing... (keep robot still)[0m
+[33m[WARN] [1779441851.503846530, 1.545000000]: end_force_: 0, 0, 0[0m
+[0m[INFO] [1779441851.226802314]: Motion generator node is created at: /test with freq: 300Hz[0m
+[0m[INFO] [1779441851.227636339]: recording ESN path: /home/ros/ros_ws/src/RL_controller/Recordings/2023-3-1-test_code/[0m
+[0m[INFO] [1779441851.227685501]: [demo_recorder_node] Recording to :/home/ros/ros_ws/src/RL_controller/Recordings/2023-3-1-test_code/2026-05-22-09-24-11[0m
+[0m[INFO] [1779441851.227706138]: open failed
+[0m
+[0m[INFO] [1779441851.233547109]: The Motion generator is ready.[0m
+1.35142 1.35142
+[33m[WARN] [1779441851.716204948, 1.746000000]: end_force_: 0, 0, 0[0m
+[33m[WARN] [1779441851.826234812, 1.853000000]: pos_error_approach_:1.27089[0m
+[33m[WARN] [1779441851.929784935, 1.946000000]: end_force_: 0.462457, 0.38275, 0.164315[0m
+[33m[WARN] [1779441852.048327284, 2.056000000]: pos_error_approach_:1.26665[0m
+[33m[WARN] [1779441852.148874972, 2.150000000]: end_force_: 0.44108, 0.132159, 0.375263[0m
+[33m[WARN] [1779441852.260768488, 2.256000000]: pos_error_approach_:1.25473[0m
+[33m[WARN] [1779441852.358188668, 2.350000000]: end_force_: 0.17814, 0.0530615, 0.75177[0m
+[33m[WARN] [1779441852.480171850, 2.460000000]: pos_error_approach_:1.23305[0m
+[33m[WARN] [1779441852.580098677, 2.553000000]: end_force_: 0.185271, 0.0145404, 1.29165[0m
+[33m[WARN] [1779441852.694665157, 2.660000000]: pos_error_approach_:1.19885[0m
+[33m[WARN] [1779441852.790549704, 2.753000000]: end_force_: 0.122322, 0.0705093, 2.20379[0m
+[33m[WARN] [1779441852.922117673, 2.860000000]: pos_error_approach_:1.15639[0m
+[33m[WARN] [1779441853.027802167, 2.953000000]: end_force_: 1.55787, -5.16151, 5.38884[0m
+[33m[WARN] [1779441853.142573549, 3.063000000]: pos_error_approach_:1.10852[0m
+[33m[WARN] [1779441853.255586500, 3.156000000]: end_force_: 0.111273, 3.07298, 4.56143[0m
+[33m[WARN] [1779441853.374178106, 3.266000000]: pos_error_approach_:1.07234[0m
+[33m[WARN] [1779441853.475712951, 3.360000000]: end_force_: -0.483998, 4.27997, 4.69846[0m
+[33m[WARN] [1779441853.593172399, 3.466000000]: pos_error_approach_:1.07516[0m
+[33m[WARN] [1779441853.701526715, 3.560000000]: end_force_: 3.16602, -6.23872, 10.9223[0m
+[33m[WARN] [1779441853.827428700, 3.670000000]: pos_error_approach_:1.06263[0m
+[33m[WARN] [1779441853.924182327, 3.763000000]: end_force_: 2.56397, 0.475451, 10.4812[0m
+[33m[WARN] [1779441854.052757993, 3.870000000]: pos_error_approach_:1.0289[0m
+[33m[WARN] [1779441854.154064153, 3.963000000]: end_force_: 0.684343, 0.489754, 6.20429[0m
+[33m[WARN] [1779441854.275497220, 4.070000000]: pos_error_approach_:0.979208[0m
+[33m[WARN] [1779441854.376890915, 4.163000000]: end_force_: 0.199359, 0.171664, 6.89375[0m
+[33m[WARN] [1779441854.491065252, 4.273000000]: pos_error_approach_:0.924832[0m
+[33m[WARN] [1779441854.592406690, 4.363000000]: end_force_: 0.0963562, 0.0825242, 7.51432[0m
+[33m[WARN] [1779441854.708851286, 4.473000000]: pos_error_approach_:0.874222[0m
+[33m[WARN] [1779441854.804127298, 4.566000000]: end_force_: 0.181244, 0.01693, 7.79965[0m
+[33m[WARN] [1779441854.916056633, 4.673000000]: pos_error_approach_:0.828585[0m
+[33m[WARN] [1779441855.017027456, 4.766000000]: end_force_: 0.222082, -0.00405348, 7.93785[0m
+[33m[WARN] [1779441855.126374068, 4.873000000]: pos_error_approach_:0.78626[0m
+[33m[WARN] [1779441855.220432776, 4.966000000]: end_force_: 0.271966, -0.014994, 8.04826[0m
+[33m[WARN] [1779441855.328573521, 5.073000000]: pos_error_approach_:0.748288[0m
+[33m[WARN] [1779441855.422458097, 5.166000000]: end_force_: 0.295484, -0.0225428, 8.12988[0m
+[33m[WARN] [1779441855.534390208, 5.276000000]: pos_error_approach_:0.713841[0m
+[33m[WARN] [1779441855.626579674, 5.367000000]: end_force_: 0.330494, -0.0532448, 8.19289[0m
+[33m[WARN] [1779441855.738559987, 5.476000000]: pos_error_approach_:0.678672[0m
+[33m[WARN] [1779441855.838254270, 5.570000000]: end_force_: 0.316393, -0.084361, 8.20547[0m
+[33m[WARN] [1779441855.957719470, 5.676000000]: pos_error_approach_:0.648272[0m
+[33m[WARN] [1779441856.058974097, 5.773000000]: end_force_: 0.105428, -0.0183867, 8.02261[0m
+[33m[WARN] [1779441856.166646807, 5.876000000]: pos_error_approach_:0.61794[0m
+[33m[WARN] [1779441856.274226193, 5.973000000]: end_force_: 0.0757965, -0.0137041, 8.02369[0m
+[33m[WARN] [1779441856.389064919, 6.080000000]: pos_error_approach_:0.588554[0m
+[33m[WARN] [1779441856.494066222, 6.173000000]: end_force_: 0.10076, -0.0426529, 8.02372[0m
+[33m[WARN] [1779441856.606102513, 6.280000000]: pos_error_approach_:0.563049[0m
+[33m[WARN] [1779441856.708503882, 6.373000000]: end_force_: 0.0791185, -0.0182005, 8.02218[0m
+[33m[WARN] [1779441856.824333525, 6.480000000]: pos_error_approach_:0.533519[0m
+[33m[WARN] [1779441856.925892388, 6.573000000]: end_force_: 0.0863242, -0.0102008, 8.0266[0m
+[33m[WARN] [1779441857.046590219, 6.683000000]: pos_error_approach_:0.505962[0m
+[33m[WARN] [1779441857.146440391, 6.776000000]: end_force_: 0.555994, 0.526748, 9.93613[0m
+[33m[WARN] [1779441857.260518937, 6.883000000]: pos_error_approach_:0.482427[0m
+[33m[WARN] [1779441857.363966628, 6.976000000]: end_force_: 0.370064, 0.260071, 9.02061[0m
+[33m[WARN] [1779441857.475780356, 7.083000000]: pos_error_approach_:0.459849[0m
+[33m[WARN] [1779441857.574301928, 7.176000000]: end_force_: 0.189128, 0.0729965, 8.26381[0m
+[33m[WARN] [1779441857.684843760, 7.283000000]: pos_error_approach_:0.437984[0m
+[33m[WARN] [1779441857.779787782, 7.376000000]: end_force_: 0.128092, -0.00367345, 7.99515[0m
+[33m[WARN] [1779441857.895791800, 7.486000000]: pos_error_approach_:0.412121[0m
+[33m[WARN] [1779441857.989412770, 7.576000000]: end_force_: 0.120139, -0.0362692, 7.94643[0m
+[33m[WARN] [1779441858.101687388, 7.686000000]: pos_error_approach_:0.386954[0m
+[33m[WARN] [1779441858.210123499, 7.780000000]: end_force_: 0.102463, -0.0508947, 7.95628[0m
+[33m[WARN] [1779441858.324147642, 7.886000000]: pos_error_approach_:0.362088[0m
+[33m[WARN] [1779441858.431767945, 7.980000000]: end_force_: 0.098755, -0.0633348, 7.97353[0m
+[33m[WARN] [1779441858.544544336, 8.086000000]: pos_error_approach_:0.337564[0m
+[33m[WARN] [1779441858.648083550, 8.180000000]: end_force_: 0.332822, 0.229341, 7.72965[0m
+[33m[WARN] [1779441858.763510430, 8.286000000]: pos_error_approach_:0.313113[0m
+[33m[WARN] [1779441858.867718602, 8.380000000]: end_force_: -4.13833, 0.174493, 8.35416[0m
+[33m[WARN] [1779441858.977680374, 8.486000000]: pos_error_approach_:0.292149[0m
+[33m[WARN] [1779441859.074677965, 8.580000000]: end_force_: 0.082024, 0.255564, 7.92215[0m
+[33m[WARN] [1779441859.182926207, 8.686000000]: pos_error_approach_:0.271276[0m
+[33m[WARN] [1779441859.281919728, 8.780000000]: end_force_: -5.35116, 6.68341, 4.36457[0m
+[33m[WARN] [1779441859.395135640, 8.886000000]: pos_error_approach_:0.249918[0m
+[33m[WARN] [1779441859.492877239, 8.980000000]: end_force_: -5.62292, 7.71642, 3.33451[0m
+[33m[WARN] [1779441859.603279794, 9.086000000]: pos_error_approach_:0.227704[0m
+[33m[WARN] [1779441859.713045605, 9.180000000]: end_force_: 9.12618, -8.80737, 13.7149[0m
+[33m[WARN] [1779441859.829274259, 9.286000000]: pos_error_approach_:0.203339[0m
+[33m[WARN] [1779441859.931403020, 9.380000000]: end_force_: -5.65705, 4.91852, 4.88556[0m
+[33m[WARN] [1779441860.043094013, 9.486000000]: pos_error_approach_:0.176389[0m
+[33m[WARN] [1779441860.141897690, 9.580000000]: end_force_: 2.22594, -1.36332, 8.88998[0m
+[33m[WARN] [1779441860.254815731, 9.686000000]: pos_error_approach_:0.148517[0m
+[33m[WARN] [1779441860.355443738, 9.780000000]: end_force_: 0.0403038, 0.064411, 7.94954[0m
+[33m[WARN] [1779441860.471954062, 9.886000000]: pos_error_approach_:0.120509[0m
+[33m[WARN] [1779441860.570962305, 9.980000000]: end_force_: 0.14741, -0.0160327, 7.98002[0m
+[33m[WARN] [1779441860.690275350, 10.086000000]: pos_error_approach_:0.0924328[0m
+[33m[WARN] [1779441860.787800017, 10.180000000]: end_force_: 0.124027, -0.0173757, 7.97394[0m
+[33m[WARN] [1779441860.901248107, 10.286000000]: pos_error_approach_:0.064834[0m
+[33m[WARN] [1779441860.998531344, 10.380000000]: end_force_: -0.0338991, -0.253808, 8.34468[0m
+[33m[WARN] [1779441861.107086461, 10.486000000]: pos_error_approach_:0.0412949[0m
+[33m[WARN] [1779441861.201588325, 10.580000000]: end_force_: -0.0284057, -0.223514, 8.32313[0m
+[33m[WARN] [1779441861.316280628, 10.686000000]: pos_error_approach_:0.0260445[0m
+[33m[WARN] [1779441861.416598520, 10.780000000]: end_force_: 0.0201373, -0.145305, 8.23515[0m
+[33m[WARN] [1779441861.532975780, 10.886000000]: pos_error_approach_:0.0165167[0m
+[33m[WARN] [1779441861.638741257, 10.980000000]: end_force_: 0.057055, -0.0794662, 8.1577[0m
+[33m[WARN] [1779441861.747328265, 11.086000000]: pos_error_approach_:0.0108925[0m
+[33m[WARN] [1779441861.846497602, 11.180000000]: end_force_: 0.067865, -0.0323678, 8.09324[0m
+[33m[WARN] [1779441861.958828125, 11.286000000]: pos_error_approach_:0.00731428[0m
+[33m[WARN] [1779441862.062755056, 11.380000000]: end_force_: 0.0864499, -0.0205385, 8.06371[0m
+[33m[WARN] [1779441862.179294523, 11.486000000]: pos_error_approach_:0.00511408[0m
+[33m[WARN] [1779441862.197259943, 11.503000000]: Phase 1 done: going to phase3 intermediate pose.[0m
+[33m[WARN] [1779441862.200299685, 11.506000000]: Phase 3: moving to intermediate pose, pos_error=0.186456[0m
+[33m[WARN] [1779441862.282916479, 11.580000000]: end_force_: 1.6623, -0.924908, 9.30799[0m
+[33m[WARN] [1779441862.419766486, 11.706000000]: Phase 3: moving to intermediate pose, pos_error=0.173166[0m
+[33m[WARN] [1779441862.500709260, 11.780000000]: end_force_: 0.504209, -0.106625, 8.15132[0m
+[33m[WARN] [1779441862.636198049, 11.906000000]: Phase 3: moving to intermediate pose, pos_error=0.148436[0m
+[33m[WARN] [1779441862.716143767, 11.980000000]: end_force_: 0.355675, -0.0300055, 7.89368[0m
+[33m[WARN] [1779441862.849300260, 12.106000000]: Phase 3: moving to intermediate pose, pos_error=0.123954[0m
+[33m[WARN] [1779441862.926462654, 12.180000000]: end_force_: -0.00479688, 0.0778266, 7.49886[0m
+[33m[WARN] [1779441863.065174207, 12.306000000]: Phase 3: moving to intermediate pose, pos_error=0.10381[0m
+[33m[WARN] [1779441863.144020693, 12.380000000]: end_force_: -0.24004, 0.0794518, 6.9241[0m
+[33m[WARN] [1779441863.273550379, 12.506000000]: Phase 3: moving to intermediate pose, pos_error=0.0881077[0m
+[33m[WARN] [1779441863.351457044, 12.580000000]: end_force_: -0.264696, 0.0416217, 6.01123[0m
+[33m[WARN] [1779441863.478923784, 12.706000000]: Phase 3: moving to intermediate pose, pos_error=0.0745416[0m
+[33m[WARN] [1779441863.555210486, 12.780000000]: end_force_: -0.10011, 0.121232, 4.99304[0m
+[33m[WARN] [1779441863.683268958, 12.906000000]: Phase 3: moving to intermediate pose, pos_error=0.0634213[0m
+[33m[WARN] [1779441863.760543642, 12.980000000]: end_force_: -0.0846722, 0.200419, 4.23861[0m
+[33m[WARN] [1779441863.890388555, 13.106000000]: Phase 3: moving to intermediate pose, pos_error=0.0562656[0m
+[33m[WARN] [1779441863.968401345, 13.180000000]: end_force_: -0.0852499, 0.182028, 3.81161[0m
+[33m[WARN] [1779441864.105901882, 13.306000000]: Phase 3: moving to intermediate pose, pos_error=0.0523793[0m
+[33m[WARN] [1779441864.183382959, 13.380000000]: end_force_: -0.0310636, 0.112919, 3.6084[0m
+[33m[WARN] [1779441864.312100136, 13.506000000]: Phase 3: moving to intermediate pose, pos_error=0.0501471[0m
+[33m[WARN] [1779441864.390104400, 13.580000000]: end_force_: 0.0341342, 0.0518317, 3.54716[0m
+[33m[WARN] [1779441864.521272552, 13.706000000]: Phase 3: moving to intermediate pose, pos_error=0.0484961[0m
+[33m[WARN] [1779441864.600276972, 13.780000000]: end_force_: 0.0851157, -0.00186891, 3.57678[0m
+[33m[WARN] [1779441864.734887707, 13.906000000]: Phase 3: moving to intermediate pose, pos_error=0.0468554[0m
+[33m[WARN] [1779441864.812516839, 13.980000000]: end_force_: 0.117683, -0.0249907, 3.65305[0m
+[33m[WARN] [1779441864.943335704, 14.106000000]: Phase 3: moving to intermediate pose, pos_error=0.0448457[0m
+[33m[WARN] [1779441865.021633289, 14.180000000]: end_force_: 0.140882, -0.0375937, 3.74379[0m
+[33m[WARN] [1779441865.148944958, 14.306000000]: Phase 3: moving to intermediate pose, pos_error=0.0423691[0m
+[33m[WARN] [1779441865.225043432, 14.380000000]: end_force_: -0.236531, -0.738951, 3.89803[0m
+[33m[WARN] [1779441865.356193832, 14.506000000]: Phase 3: moving to intermediate pose, pos_error=0.0441151[0m
+[33m[WARN] [1779441865.434387789, 14.580000000]: end_force_: -0.000453632, -0.488792, 3.97293[0m
+[33m[WARN] [1779441865.565337584, 14.706000000]: Phase 3: moving to intermediate pose, pos_error=0.044459[0m
+[33m[WARN] [1779441865.642554183, 14.780000000]: end_force_: 0.101622, -0.162696, 3.97113[0m
+[33m[WARN] [1779441865.775132789, 14.906000000]: Phase 3: moving to intermediate pose, pos_error=0.0437282[0m
+[33m[WARN] [1779441865.852986474, 14.980000000]: end_force_: 0.127491, -0.033243, 3.96874[0m
+[33m[WARN] [1779441865.984623831, 15.106000000]: Phase 3: moving to intermediate pose, pos_error=0.0424812[0m
+[33m[WARN] [1779441866.063476520, 15.180000000]: end_force_: 0.115074, 0.00936576, 3.96134[0m
+[33m[WARN] [1779441866.192690392, 15.306000000]: Phase 3: moving to intermediate pose, pos_error=0.0410971[0m
+[33m[WARN] [1779441866.267675616, 15.380000000]: end_force_: 0.107933, 0.0155811, 3.94636[0m
+[33m[WARN] [1779441866.381468786, 15.493000000]: Phase 3: re-zeroing force at intermediate pose...[0m
+[33m[WARN] [1779441866.469175586, 15.580000000]: end_force_: 0, 0, 0[0m
+[33m[WARN] [1779441866.669650001, 15.780000000]: end_force_: 0, 0, 0[0m
+[33m[WARN] [1779441866.693213150, 15.803000000]: phase2 force control: F_mag=3.11303 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441866.873243611, 15.980000000]: end_force_: -3.54791, -0.351473, -0.147091[0m
+[33m[WARN] [1779441866.896810139, 16.003000000]: phase2 force control: F_mag=3.59671 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441867.085341087, 16.180000000]: end_force_: -3.86868, -0.151813, -0.0395378[0m
+[33m[WARN] [1779441867.108829492, 16.203000000]: phase2 force control: F_mag=3.86534 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441867.292530072, 16.380000000]: end_force_: -3.90731, -0.110138, -0.0394433[0m
+[33m[WARN] [1779441867.315910815, 16.403000000]: phase2 force control: F_mag=3.90626 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441867.498588660, 16.580000000]: end_force_: -3.9138, -0.110375, -0.0267827[0m
+[33m[WARN] [1779441867.522760646, 16.603000000]: phase2 force control: F_mag=3.91393 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441867.707189595, 16.780000000]: end_force_: -3.91585, -0.116114, -0.00636294[0m
+[33m[WARN] [1779441867.730770845, 16.803000000]: phase2 force control: F_mag=3.91614 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441867.922210608, 16.980000000]: end_force_: -3.91845, -0.122094, 0.0146932[0m
+[33m[WARN] [1779441867.945254266, 17.003000000]: phase2 force control: F_mag=3.91901 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441868.129641106, 17.180000000]: end_force_: -3.92278, -0.12649, 0.0356208[0m
+[33m[WARN] [1779441868.153432960, 17.203000000]: phase2 force control: F_mag=3.92641 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441868.334237449, 17.380000000]: end_force_: -3.93108, -0.125619, 0.0531949[0m
+[33m[WARN] [1779441868.360447201, 17.403000000]: phase2 force control: F_mag=3.93261 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441868.551829583, 17.580000000]: end_force_: -3.93606, -0.131179, 0.0660702[0m
+[33m[WARN] [1779441868.575200008, 17.603000000]: phase2 force control: F_mag=3.93427 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441868.756460969, 17.780000000]: end_force_: -3.91146, -0.063504, 0.0210746[0m
+[33m[WARN] [1779441868.782873928, 17.803000000]: phase2 force control: F_mag=3.9122 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441868.982445653, 17.980000000]: end_force_: -3.91955, -0.0553125, 0.00878066[0m
+[33m[WARN] [1779441869.005598529, 18.003000000]: phase2 force control: F_mag=3.91948 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441869.191169354, 18.180000000]: end_force_: -3.92358, -0.0525578, 0.00317734[0m
+[33m[WARN] [1779441869.214404350, 18.203000000]: phase2 force control: F_mag=3.92321 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441869.402227522, 18.380000000]: end_force_: -3.90278, -0.12515, -0.019236[0m
+[33m[WARN] [1779441869.427744768, 18.403000000]: phase2 force control: F_mag=3.89918 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441869.620116181, 18.580000000]: end_force_: -3.58071, -1.09629, -0.189395[0m
+[33m[WARN] [1779441869.644045894, 18.603000000]: phase2 force control: F_mag=6.55626 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441869.838245381, 18.780000000]: end_force_: -5.69586, 6.48277, 0.775576[0m
+[33m[WARN] [1779441869.864415469, 18.803000000]: phase2 force control: F_mag=11.2874 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441870.054626378, 18.980000000]: end_force_: -1.46231, -9.62501, -0.186764[0m
+[33m[WARN] [1779441870.077974840, 19.003000000]: phase2 force control: F_mag=3.51389 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441870.263931050, 19.180000000]: end_force_: -5.51133, 7.3902, -0.474809[0m
+[33m[WARN] [1779441870.287627209, 19.203000000]: phase2 force control: F_mag=5.18788 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441870.488677277, 19.380000000]: end_force_: -6.23035, 4.55721, -1.06134[0m
+[33m[WARN] [1779441870.519889075, 19.403000000]: phase2 force control: F_mag=5.19763 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441870.752598266, 19.580000000]: end_force_: -6.3479, -9.68632, 0.914827[0m
+[33m[WARN] [1779441870.785764506, 19.603000000]: phase2 force control: F_mag=5.59412 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441871.008243038, 19.780000000]: end_force_: -5.14079, -14.1429, 2.11606[0m
+[33m[WARN] [1779441871.034846111, 19.803000000]: phase2 force control: F_mag=6.1265 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441871.242292039, 19.980000000]: end_force_: -8.84136, 12.6958, -4.12262[0m
+[33m[WARN] [1779441871.271467773, 20.003000000]: phase2 force control: F_mag=14.7904 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441871.478707583, 20.180000000]: end_force_: -4.5287, -6.82925, 0.849696[0m
+[33m[WARN] [1779441871.504142975, 20.203000000]: phase2 force control: F_mag=12.2452 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441871.703190104, 20.380000000]: end_force_: -11.9441, -24.5786, 2.65319[0m
+[33m[WARN] [1779441871.735014440, 20.403000000]: phase2 force control: F_mag=7.58702 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441871.936341721, 20.580000000]: end_force_: -7.4788, -9.94068, 0.926143[0m
+[33m[WARN] [1779441871.960190253, 20.603000000]: phase2 force control: F_mag=27.338 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441872.156187081, 20.780000000]: end_force_: 2.97928, 21.572, -2.567[0m
+[33m[WARN] [1779441872.179511082, 20.803000000]: phase2 force control: F_mag=26.0693 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441872.369279157, 20.980000000]: end_force_: -13.0873, -25.6033, 3.20407[0m
+[33m[WARN] [1779441872.395323024, 21.003000000]: phase2 force control: F_mag=12.4754 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441872.592410920, 21.180000000]: end_force_: -13.3924, -25.2388, 3.29972[0m
+[33m[WARN] [1779441872.621197049, 21.203000000]: phase2 force control: F_mag=9.28441 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441872.856900398, 21.380000000]: end_force_: -6.76792, -9.43535, 0.450168[0m
+[33m[WARN] [1779441872.884619750, 21.403000000]: phase2 force control: F_mag=23.6137 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441873.076432885, 21.580000000]: end_force_: -3.14108, -2.42906, 0.602816[0m
+[33m[WARN] [1779441873.101106333, 21.603000000]: phase2 force control: F_mag=21.7376 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441873.283722847, 21.780000000]: end_force_: 7.19778, 23.5349, -4.90163[0m
+[33m[WARN] [1779441873.306639432, 21.803000000]: phase2 force control: F_mag=3.61677 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441873.487167406, 21.980000000]: end_force_: -14.5592, -24.0597, 4.04631[0m
+[33m[WARN] [1779441873.510319604, 22.003000000]: phase2 force control: F_mag=23.6787 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441873.701391938, 22.180000000]: end_force_: -4.35077, 16.2413, -4.03489[0m
+[33m[WARN] [1779441873.725324026, 22.203000000]: phase2 force control: F_mag=9.45923 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441873.919449485, 22.380000000]: end_force_: -10.6343, -3.29677, 0.0353454[0m
+[33m[WARN] [1779441873.946860156, 22.403000000]: phase2 force control: F_mag=19.3164 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441874.145502146, 22.580000000]: end_force_: -0.793168, -9.07043, 1.9624[0m
+[33m[WARN] [1779441874.170139396, 22.603000000]: phase2 force control: F_mag=10.9215 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441874.365035391, 22.780000000]: end_force_: 10.7662, 12.2251, -2.95833[0m
+[33m[WARN] [1779441874.392589124, 22.803000000]: phase2 force control: F_mag=3.68761 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441874.586511427, 22.980000000]: end_force_: 2.61396, 5.75868, -1.38926[0m
+[33m[WARN] [1779441874.615028458, 23.003000000]: phase2 force control: F_mag=13.8351 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441874.803245675, 23.180000000]: end_force_: -3.75914, -0.755521, 0.0948024[0m
+[33m[WARN] [1779441874.829271464, 23.203000000]: phase2 force control: F_mag=6.31209 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441875.046155972, 23.380000000]: end_force_: 2.37223, -7.49155, 3.01084[0m
+[33m[WARN] [1779441875.072915464, 23.403000000]: phase2 force control: F_mag=12.2327 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441875.277223678, 23.580000000]: end_force_: -17.9077, -14.3132, 5.31301[0m
+[33m[WARN] [1779441875.302875952, 23.603000000]: phase2 force control: F_mag=14.2668 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441875.495336301, 23.780000000]: end_force_: -12.2228, -13.6486, 5.76716[0m
+[33m[WARN] [1779441875.519082200, 23.803000000]: phase2 force control: F_mag=10.1239 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441875.705871081, 23.980000000]: end_force_: 3.34974, 13.0761, -7.33224[0m
+[33m[WARN] [1779441875.728638957, 24.003000000]: phase2 force control: F_mag=24.301 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441875.914995987, 24.180000000]: end_force_: -10.7777, -10.7449, 7.92048[0m
+[33m[WARN] [1779441875.941460132, 24.203000000]: phase2 force control: F_mag=11.5701 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441876.137884813, 24.380000000]: end_force_: 3.72532, 13.6601, -7.82537[0m
+[33m[WARN] [1779441876.164586568, 24.403000000]: phase2 force control: F_mag=16.4878 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441876.360211796, 24.580000000]: end_force_: 2.84189, 14.3214, -8.95857[0m
+[33m[WARN] [1779441876.384789703, 24.603000000]: phase2 force control: F_mag=18.7891 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441876.575370203, 24.780000000]: end_force_: 3.4324, 17.7145, -10.3072[0m
+[33m[WARN] [1779441876.600041858, 24.803000000]: phase2 force control: F_mag=11.7305 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441876.789696199, 24.980000000]: end_force_: 3.36651, 19.4645, -10.424[0m
+[33m[WARN] [1779441876.815591417, 25.003000000]: phase2 force control: F_mag=15.123 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441877.001596899, 25.180000000]: end_force_: 1.78031, 17.0658, -8.0663[0m
+[33m[WARN] [1779441877.027042584, 25.203000000]: phase2 force control: F_mag=9.87331 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441877.212449432, 25.380000000]: end_force_: 0.258164, 15.8703, -8.10888[0m
+[33m[WARN] [1779441877.236127494, 25.403000000]: phase2 force control: F_mag=19.1329 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441877.428014142, 25.580000000]: end_force_: -1.0792, 9.26731, -3.00103[0m
+[33m[WARN] [1779441877.452408622, 25.603000000]: phase2 force control: F_mag=16.8018 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441877.642832672, 25.780000000]: end_force_: -9.04831, -19.2194, 10.3541[0m
+[33m[WARN] [1779441877.666295424, 25.803000000]: phase2 force control: F_mag=8.01038 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441877.857077924, 25.980000000]: end_force_: -1.44027, 11.5173, -5.37391[0m
+[33m[WARN] [1779441877.882195762, 26.003000000]: phase2 force control: F_mag=23.7932 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441878.075824829, 26.180000000]: end_force_: -8.4679, -16.4941, 8.44786[0m
+[33m[WARN] [1779441878.100978170, 26.203000000]: phase2 force control: F_mag=27.2691 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441878.291247933, 26.380000000]: end_force_: -6.58724, -8.1713, 4.6401[0m
+[33m[WARN] [1779441878.316141715, 26.403000000]: phase2 force control: F_mag=29.9651 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441878.509131760, 26.580000000]: end_force_: -6.28162, -8.50812, 4.93795[0m
+[33m[WARN] [1779441878.534381157, 26.603000000]: phase2 force control: F_mag=16.6556 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441878.727871280, 26.780000000]: end_force_: -4.84281, 0.00124741, 0.706356[0m
+[33m[WARN] [1779441878.751885790, 26.803000000]: phase2 force control: F_mag=21.4068 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441878.936809224, 26.980000000]: end_force_: -3.02595, 2.4894, 0.00278926[0m
+[33m[WARN] [1779441878.961329297, 27.003000000]: phase2 force control: F_mag=7.13054 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441879.149098375, 27.180000000]: end_force_: -7.65539, -15.6744, 8.20395[0m
+[33m[WARN] [1779441879.173863592, 27.203000000]: phase2 force control: F_mag=26.2717 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441879.357762554, 27.380000000]: end_force_: -11.5402, -20.2804, 8.8293[0m
+[33m[WARN] [1779441879.395949672, 27.403000000]: phase2 force control: F_mag=7.79482 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441879.634763475, 27.580000000]: end_force_: -6.00562, -7.29012, 6.04723[0m
+[33m[WARN] [1779441879.668667998, 27.603000000]: phase2 force control: F_mag=5.94165 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441879.884838314, 27.780000000]: end_force_: 1.77759, 23.0759, -8.33272[0m
+[33m[WARN] [1779441879.910952751, 27.803000000]: phase2 force control: F_mag=21.5555 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441880.123498696, 27.980000000]: end_force_: -7.75059, -17.8406, 8.29786[0m
+[33m[WARN] [1779441880.147003140, 28.003000000]: phase2 force control: F_mag=25.9573 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441880.331930430, 28.180000000]: end_force_: -4.02735, 0.783204, 0.023311[0m
+[33m[WARN] [1779441880.355237727, 28.203000000]: phase2 force control: F_mag=19.887 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441880.539586475, 28.380000000]: end_force_: -8.04418, -21.7285, 9.01212[0m
+[33m[WARN] [1779441880.563030959, 28.403000000]: phase2 force control: F_mag=25.499 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441880.742954001, 28.580000000]: end_force_: -6.90967, -17.2824, 7.71473[0m
+[33m[WARN] [1779441880.765966767, 28.603000000]: phase2 force control: F_mag=27.2932 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441880.948280968, 28.780000000]: end_force_: -0.215115, 22.8475, -7.55083[0m
+[33m[WARN] [1779441880.973298181, 28.803000000]: phase2 force control: F_mag=22.7782 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441881.179786996, 28.980000000]: end_force_: -2.41221, 6.62388, -1.72961[0m
+[33m[WARN] [1779441881.204981426, 29.003000000]: phase2 force control: F_mag=14.9372 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441881.395674698, 29.180000000]: end_force_: -3.3335, 4.17962, -0.555125[0m
+[33m[WARN] [1779441881.419799562, 29.203000000]: phase2 force control: F_mag=17.8799 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441881.603874681, 29.380000000]: end_force_: -5.80133, -13.2366, 6.32819[0m
+[33m[WARN] [1779441881.627887880, 29.403000000]: phase2 force control: F_mag=25.7749 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441881.816643333, 29.580000000]: end_force_: -0.686397, 17.3656, -4.277[0m
+[33m[WARN] [1779441881.843273893, 29.603000000]: phase2 force control: F_mag=20.9014 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441882.029631684, 29.780000000]: end_force_: -6.53483, -14.2219, 7.31118[0m
+[33m[WARN] [1779441882.054092164, 29.803000000]: phase2 force control: F_mag=14.2606 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441882.249434613, 29.980000000]: end_force_: -1.33115, 3.93755, -0.189971[0m
+[33m[WARN] [1779441882.275303389, 30.003000000]: phase2 force control: F_mag=20.2646 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441882.464681235, 30.180000000]: end_force_: -4.5255, -3.35808, 2.86956[0m
+[33m[WARN] [1779441882.490632528, 30.203000000]: phase2 force control: F_mag=7.46423 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441882.682014410, 30.380000000]: end_force_: -2.63527, 14.7936, -4.67267[0m
+[33m[WARN] [1779441882.707114285, 30.403000000]: phase2 force control: F_mag=17.3184 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441882.894570341, 30.580000000]: end_force_: -6.02966, -2.58886, 2.26935[0m
+[33m[WARN] [1779441882.917557822, 30.603000000]: phase2 force control: F_mag=20.5729 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441883.099323965, 30.780000000]: end_force_: -5.09044, -13.6628, 6.01139[0m
+[33m[WARN] [1779441883.122288155, 30.803000000]: phase2 force control: F_mag=14.7174 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441883.305621615, 30.980000000]: end_force_: -0.555625, 22.5752, -7.49946[0m
+[33m[WARN] [1779441883.329891368, 31.003000000]: phase2 force control: F_mag=18.0215 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441883.516735410, 31.180000000]: end_force_: -1.18897, 21.3549, -7.13145[0m
+[33m[WARN] [1779441883.540377961, 31.203000000]: phase2 force control: F_mag=9.42543 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441883.729654904, 31.380000000]: end_force_: -4.01576, 9.45372, -3.03241[0m
+[33m[WARN] [1779441883.753077626, 31.403000000]: phase2 force control: F_mag=20.4246 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441883.935364173, 31.580000000]: end_force_: -1.81676, 15.2, -3.74947[0m
+[33m[WARN] [1779441883.959698893, 31.603000000]: phase2 force control: F_mag=4.49399 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441884.150988192, 31.780000000]: end_force_: -6.04954, -22.1381, 8.2399[0m
+[33m[WARN] [1779441884.174987696, 31.803000000]: phase2 force control: F_mag=18.9315 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441884.364017536, 31.980000000]: end_force_: -0.590545, 22.5819, -6.30362[0m
+[33m[WARN] [1779441884.387632714, 32.003000000]: phase2 force control: F_mag=20.7049 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441884.569542172, 32.180000000]: end_force_: -3.52987, 7.41068, -1.74332[0m
+[33m[WARN] [1779441884.592868177, 32.203000000]: phase2 force control: F_mag=18.4647 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441884.775136049, 32.380000000]: end_force_: -6.41302, -21.1607, 8.27159[0m
+[33m[WARN] [1779441884.801385979, 32.406000000]: phase2 force control: F_mag=20.2208 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441884.997446213, 32.583000000]: end_force_: -2.04127, 20.6324, -6.1316[0m
+[33m[WARN] [1779441885.023545863, 32.606000000]: phase2 force control: F_mag=22.3255 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441885.207950307, 32.783000000]: end_force_: -5.73074, -20.1256, 7.38853[0m
+[33m[WARN] [1779441885.235300161, 32.810000000]: phase2 force control: F_mag=21.6611 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441885.415821445, 32.986000000]: end_force_: -6.23267, -18.8674, 7.25091[0m
+[33m[WARN] [1779441885.443042464, 33.013000000]: phase2 force control: F_mag=18.7232 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441885.617576981, 33.186000000]: end_force_: -2.90066, 15.0744, -4.04446[0m
+[33m[WARN] [1779441885.645029156, 33.213000000]: phase2 force control: F_mag=20.2015 N, F_des=10, v_adj applied[0m
+[33m[WARN] [1779441885.826970762, 33.386000000]: end_force_: -1.82702, 23.5453, -7.20283[0m
+[33m[WARN] [1779441885.859448416, 33.416000000]: phase2 force control: F_mag=15.0204 N, F_des=10, v_adj applied[0m
+[0m[INFO] [1779441851.818453085, 1.846000000]: [test_ori_control] Tool gravity compensation: F/T bias estimated over 300 samples.[0m
+[0m[INFO] [1779441851.822675104, 1.850000000]: [test_ori_control] Phase 0 done: force zeroed, starting phase 1.[0m
+[0m[INFO] [1779441866.378558092, 15.490000000]: [test_ori_control] Phase 3: at intermediate pose, starting force re-zero.[0m
+[0m[INFO] [1779441866.675786080, 15.786000000]: [test_ori_control] Tool gravity compensation: F/T bias estimated over 300 samples.[0m
+[0m[INFO] [1779441866.679738234, 15.790000000]: [test_ori_control] Phase 3 done: force re-zeroed at intermediate pose, starting phase 2.[0m
+WARNING: Package name "RL_controller" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "cFunc" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "lpvDS" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "lagsDS" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "RL_controller" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "cFunc" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "lpvDS" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+WARNING: Package name "lagsDS" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+... logging to /home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T092408Z/ros_logs/fc280db6-55bf-11f1-aa0e-30f6efc06016/roslaunch-rui-Precision-3581-9383.log
+Checking log directory for disk usage. This may take a while.
+Press Ctrl-C to interrupt
+Done checking log file disk usage. Usage is <1GB.
+]2;/home/ros/ros_ws/src/RL_controller/launch/task_space_control_gazebo.launch
+[1mstarted roslaunch server http://localhost:33659/[0m
+
+SUMMARY
+========
+
+PARAMETERS
+ * /rosdistro: noetic
+ * /rosversion: 1.17.4
+ * /test/Convergence_Rate: 40.0
+ * /test/Cycle_radius: 0.01
+ * /test/Cycle_speed: 12.0
+ * /test/input_force_name: /iiwa/iiwa_FTS_topic
+ * /test/input_pose_name: /iiwa/ee_info/Pose
+ * /test/input_velocity_name: /iiwa/ee_info/Vel
+ * /test/output_damping_eig_topic_name: /lwr/joint_contro...
+ * /test/output_filtered_velocity_name: /passive_control/...
+ * /test/output_velocity_name: /ds1/desired_velo...
+ * /test/record_1_robotdemo_0_humandemo: False
+ * /test/record_or_not: True
+ * /test/recording_path: /home/ros/ros_ws/...
+ * /test/target: [0.8, -0.0, 0.8, ...
+
+NODES
+  /test/
+    task_space_control_node (RL_controller/task_space_control_node)
+
+[1mROS_MASTER_URI=http://localhost:11311[0m
+]2;/home/ros/ros_ws/src/RL_controller/launch/task_space_control_gazebo.launch http://localhost:11311
+[1mprocess[test/task_space_control_node-1]: started with pid [9398][0m
+[test/task_space_control_node-1] killing on exit
+shutting down processing monitor...
+... shutting down processing monitor complete
+[1mdone[0m

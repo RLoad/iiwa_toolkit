@@ -1,0 +1,3 @@
+[INFO] [1779522433.149507, 1.661000]: [ds_planner] subscribers: pose=1 gains=1
+[INFO] [1779522433.151320, 1.662000]: [ds_planner] 5 segments, warmup=5.0s, seg=12.0s, total=65.0s
+[INFO] [1779522438.167575, 6.623000]: [ds_planner] t=  5.02s  seg 0 → front high      (K=0.5)  pos=[0.7, 0.0, 0.6]  K/a/b=[0.5, 1.0, 1.0]

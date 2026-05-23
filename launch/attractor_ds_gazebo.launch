@@ -1,0 +1,64 @@
+<?xml version="1.0" ?>
+<!--
+  Self-contained Python passive DS controller running against Gazebo iiwa.
+  Drives the EE toward an externally-published attractor pose via the
+  AttractorDSController (one DS phase = linear attractor DS + inner passive
+  DS + null-space PD).  No separate planner needed — the same code path runs
+  in Isaac Lab with the RL policy outputting attractor + gains directly.
+
+  Topics:
+    in   /iiwa/joint_states                     sensor_msgs/JointState
+    in   /attractor_ds_py/attractor             geometry_msgs/Pose
+                                                  position    = attractor pos
+                                                  orientation = attractor quat
+    in   /attractor_ds_py/gains                 std_msgs/Float64MultiArray
+                                                  data = [K_linear, damping_a, damping_b]
+
+    out  /iiwa/TorqueController/command         std_msgs/Float64MultiArray (7 torques)
+    out  /iiwa/ee_info/Pose                     geometry_msgs/Pose   (debug + back-compat)
+    out  /iiwa/ee_info/Vel                      geometry_msgs/Twist
+    out  /attractor_ds_py/v_des                 geometry_msgs/Vector3 (after clamp)
+    out  /attractor_ds_py/v_des_raw             geometry_msgs/Vector3 (before clamp)
+
+  Args:
+    robot_name_1   default iiwa
+    iiwa_model_1   default 14
+    device         default cpu     (set cuda for GPU)
+    rate_hz        default 500.0
+    enable_init_phase  default true (set false for RL training)
+    log_csv        default ""      (per-step CSV log path; empty → /tmp/<UTC>.csv)
+-->
+<launch>
+
+  <arg name="robot_name_1"       default="iiwa"/>
+  <arg name="iiwa_model_1"       default="14"/>
+  <arg name="gui"                default="true"/>
+
+  <arg name="device"             default="cpu"/>
+  <arg name="rate_hz"            default="500.0"/>
+  <arg name="enable_init_phase"  default="true"/>
+  <arg name="log_csv"            default=""/>
+
+  <!-- Gazebo + URDF + TorqueController (same as passive_track_gazebo.launch). -->
+  <include file="$(find iiwa_gazebo)/launch/iiwa_gazebo.launch">
+    <arg name="robot_name_1" value="$(arg robot_name_1)"/>
+    <arg name="iiwa_model_1" value="$(arg iiwa_model_1)"/>
+    <arg name="gui"          value="$(arg gui)"/>
+  </include>
+
+  <group ns="/$(arg robot_name_1)">
+    <node name="attractor_ds_py"
+          pkg="iiwa_toolkit"
+          type="node_attractor_ds_gazebo.py"
+          output="screen"
+          required="true">
+      <rosparam command="load"
+                file="$(find iiwa_toolkit)/config/attractor_ds_params.yaml"/>
+      <param name="device"            value="$(arg device)"/>
+      <param name="rate_hz"           value="$(arg rate_hz)"/>
+      <param name="enable_init_phase" value="$(arg enable_init_phase)"/>
+      <param name="log_csv"           value="$(arg log_csv)" unless="$(eval log_csv == '')"/>
+    </node>
+  </group>
+
+</launch>

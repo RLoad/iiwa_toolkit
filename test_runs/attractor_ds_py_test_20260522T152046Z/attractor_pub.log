@@ -1,0 +1,7 @@
+[INFO] [1779463249.205271, 1.438000]: [attractor_pub] subscribers: pose=1 gains=1
+[INFO] [1779463249.207011, 1.440000]: [attractor_pub] t=0.00  seg 0: home (K=0.5)  pos=[0.5, 0.0, 0.5]  K/a/b=[0.5, 1.0, 1.0]
+[INFO] [1779463264.207665, 16.280000]: [attractor_pub] t=15.00  seg 1: front-right low  pos=[0.7, -0.2, 0.4]  K/a/b=[0.5, 1.0, 1.0]
+[INFO] [1779463277.224114, 29.140000]: [attractor_pub] t=28.02  seg 2: back-left high  (K=0.8)  pos=[0.4, 0.2, 0.7]  K/a/b=[0.8, 1.0, 1.0]
+[INFO] [1779463289.220394, 41.040000]: [attractor_pub] t=40.01  seg 3: center           (softer damping a=b=0.5)  pos=[0.6, 0.0, 0.6]  K/a/b=[0.5, 0.5, 0.5]
+[INFO] [1779463301.215734, 52.960000]: [attractor_pub] t=52.01  seg 4: center           (stiffer damping a=b=2.0)  pos=[0.6, 0.0, 0.6]  K/a/b=[0.5, 2.0, 2.0]
+[INFO] [1779463311.226528, 62.840000]: [attractor_pub] schedule done — exiting

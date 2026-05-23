@@ -1,0 +1,93 @@
+[rospy.client][INFO] 2026-05-22 10:41:42,685: init_node, name[/iiwa/passive_ds_py], pid[13508]
+[xmlrpc][INFO] 2026-05-22 10:41:42,685: XML-RPC server binding to 127.0.0.1:0
+[xmlrpc][INFO] 2026-05-22 10:41:42,686: Started XML-RPC server [http://localhost:46683/]
+[rospy.init][INFO] 2026-05-22 10:41:42,686: ROS Slave URI: [http://localhost:46683/]
+[rospy.impl.masterslave][INFO] 2026-05-22 10:41:42,686: _ready: http://localhost:46683/
+[rospy.registration][INFO] 2026-05-22 10:41:42,686: Registering with master node http://localhost:11311
+[xmlrpc][INFO] 2026-05-22 10:41:42,687: xml rpc node: starting XML-RPC server
+[rospy.init][INFO] 2026-05-22 10:41:42,786: registered with master
+[rospy.rosout][INFO] 2026-05-22 10:41:42,786: initializing /rosout core topic
+[rospy.rosout][INFO] 2026-05-22 10:41:42,788: connected to core topic /rosout
+[rospy.simtime][INFO] 2026-05-22 10:41:42,789: initializing /clock core topic
+[rospy.simtime][INFO] 2026-05-22 10:41:42,790: connected to core topic /clock
+[rospy.internal][INFO] 2026-05-22 10:41:42,791: topic[/clock] adding connection to [http://localhost:40899/], count 0
+[rosout][INFO] 2026-05-22 10:41:42,798: [passive_ds_py] building kinematics chain iiwa_link_0 -> iiwa_link_ee on cpu
+[rosout][INFO] 2026-05-22 10:41:42,973: [passive_ds_py] startup target  pos=[0.5, 0.0, 0.5]  quat=[0.0, 1.0, 0.0, 0.0]
+[rosout][INFO] 2026-05-22 10:41:42,980: [passive_ds_py] logging to /home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/passive_ds_py_log_20260522T104141Z.csv
+[rosout][INFO] 2026-05-22 10:41:42,980: [passive_ds_py] ready, 500 Hz, device=cpu
+[rospy.internal][INFO] 2026-05-22 10:41:43,073: topic[/rosout] adding connection to [/rosout], count 0
+[rospy.internal][INFO] 2026-05-22 10:41:43,175: topic[/iiwa/joint_states] adding connection to [http://localhost:40899/], count 0
+[rospy.internal][INFO] 2026-05-22 10:41:43,374: topic[/iiwa/TorqueController/command] adding connection to [/gazebo], count 0
+[rospy.internal][INFO] 2026-05-22 10:41:44,178: topic[/passive_control/vel_quat] adding connection to [http://localhost:38413/], count 0
+[rospy.internal][INFO] 2026-05-22 10:41:44,377: topic[/iiwa/ee_info/Pose] adding connection to [/test/task_space_control_node], count 0
+[rospy.internal][INFO] 2026-05-22 10:41:44,378: topic[/iiwa/ee_info/Vel] adding connection to [/test/task_space_control_node], count 0
+[rosout][INFO] 2026-05-22 10:41:44,382: [passive_ds_py] vel_quat cmd  des_vel=[0.0, 0.0, 0.0]
+[rosout][INFO] 2026-05-22 10:41:46,390: [passive_ds_py] vel_quat cmd  des_vel=[-0.07732050844990308, -0.10263307364921939, -0.07738211141059906]
+[rosout][INFO] 2026-05-22 10:41:48,408: [passive_ds_py] vel_quat cmd  des_vel=[-0.06951965919461509, -0.11332640107882543, -0.06945605664004949]
+[rosout][INFO] 2026-05-22 10:41:50,473: [passive_ds_py] vel_quat cmd  des_vel=[-0.07475562617739903, -0.10942000013175313, -0.0702770227456465]
+[rosout][INFO] 2026-05-22 10:41:52,491: [passive_ds_py] vel_quat cmd  des_vel=[-0.00018618106842041015, 0.04615134358406065, 0.0691699719429016]
+[rosout][INFO] 2026-05-22 10:41:54,514: [passive_ds_py] vel_quat cmd  des_vel=[-0.017384934425354003, 0.020868912935256945, -0.005932524204254164]
+[rosout][INFO] 2026-05-22 10:41:56,534: [passive_ds_py] vel_quat cmd  des_vel=[0.08442304790467521, 0.08689418046044499, 0.08844292161949725]
+[rosout][INFO] 2026-05-22 10:41:58,582: [passive_ds_py] vel_quat cmd  des_vel=[0.07724140374271181, 0.09577121266058199, 0.0858000021758564]
+[rosout][INFO] 2026-05-22 10:42:00,632: [passive_ds_py] vel_quat cmd  des_vel=[0.046172731570782256, 0.09097505924811863, 0.06854655971156913]
+[rosout][INFO] 2026-05-22 10:42:02,650: [passive_ds_py] vel_quat cmd  des_vel=[0.07224583100139606, 0.054960648876294746, 0.017502388954478105]
+[rosout][INFO] 2026-05-22 10:42:04,708: [passive_ds_py] vel_quat cmd  des_vel=[0.015582998142349987, 0.015922885804948723, 0.00461836180581574]
+[rosout][INFO] 2026-05-22 10:42:06,754: [passive_ds_py] vel_quat cmd  des_vel=[-0.021563998305162688, -0.012449305137124542, 0.014497714617027192]
+[rosout][INFO] 2026-05-22 10:42:08,796: [passive_ds_py] vel_quat cmd  des_vel=[-0.008132097350896659, 0.013076424042167953, 0.017687767932645614]
+[rosout][INFO] 2026-05-22 10:42:10,855: [passive_ds_py] vel_quat cmd  des_vel=[0.020039387890653043, -0.008787572489525717, -0.00928949221370539]
+[rosout][INFO] 2026-05-22 10:42:12,904: [passive_ds_py] vel_quat cmd  des_vel=[-0.0050273317294210595, 0.021717823410796484, 0.017583209956115047]
+[rosout][INFO] 2026-05-22 10:42:14,964: [passive_ds_py] vel_quat cmd  des_vel=[-0.01959413764808904, -0.012501117516765635, 0.022740615226061897]
+[rosout][INFO] 2026-05-22 10:42:17,027: [passive_ds_py] vel_quat cmd  des_vel=[-0.020525581140807242, -0.010588417415084959, 0.024517199681774852]
+[rosout][INFO] 2026-05-22 10:42:19,074: [passive_ds_py] vel_quat cmd  des_vel=[0.06709097499143774, 0.020005950146108797, 0.004211217074201044]
+[rosout][INFO] 2026-05-22 10:42:21,082: [passive_ds_py] vel_quat cmd  des_vel=[0.06769041591413491, 0.023660348048339937, 0.006575281687378514]
+[rosout][INFO] 2026-05-22 10:42:23,097: [passive_ds_py] vel_quat cmd  des_vel=[0.002948804950348447, 0.017158625945180098, 0.01321792628752199]
+[rosout][INFO] 2026-05-22 10:42:25,131: [passive_ds_py] vel_quat cmd  des_vel=[-0.03864081507082409, 0.03308733985070028, 0.01960212860255478]
+[rosout][INFO] 2026-05-22 10:42:27,172: [passive_ds_py] vel_quat cmd  des_vel=[-0.00027803498787477843, 0.018597697882648284, 0.015017294889606743]
+[rosout][INFO] 2026-05-22 10:42:29,212: [passive_ds_py] vel_quat cmd  des_vel=[0.03066359950741255, -0.010516926129360093, 0.008284814803486116]
+[rosout][INFO] 2026-05-22 10:42:31,246: [passive_ds_py] vel_quat cmd  des_vel=[0.05359157263868537, 0.019100690259488733, 0.009785762115652474]
+[rosout][INFO] 2026-05-22 10:42:33,331: [passive_ds_py] vel_quat cmd  des_vel=[-0.009154048517098272, 0.04576546110812566, 0.008150809303546043]
+[rosout][INFO] 2026-05-22 10:42:35,394: [passive_ds_py] vel_quat cmd  des_vel=[-0.014514514581791631, -0.003638254798449812, 0.022605151756140578]
+[rosout][INFO] 2026-05-22 10:42:37,436: [passive_ds_py] vel_quat cmd  des_vel=[0.0552347951497011, 0.022172301073629844, 0.012013556709391237]
+[rosout][INFO] 2026-05-22 10:42:39,537: [passive_ds_py] vel_quat cmd  des_vel=[-0.010205073669238361, -0.003997891464102648, 0.02005010522497899]
+[rosout][INFO] 2026-05-22 10:42:41,567: [passive_ds_py] vel_quat cmd  des_vel=[-0.046899580573486144, -0.02120136665299231, 0.03398045060123514]
+[rosout][INFO] 2026-05-22 10:42:43,604: [passive_ds_py] vel_quat cmd  des_vel=[-0.009878877482010147, 0.03471077377151181, 0.016447621846105074]
+[rosout][INFO] 2026-05-22 10:42:45,664: [passive_ds_py] vel_quat cmd  des_vel=[0.03534942126222044, 0.020440737560227795, 0.01824142388175097]
+[rosout][INFO] 2026-05-22 10:42:47,710: [passive_ds_py] vel_quat cmd  des_vel=[0.023279271419751793, -0.0017500854229449635, 0.012748614495970131]
+[rosout][INFO] 2026-05-22 10:42:49,806: [passive_ds_py] vel_quat cmd  des_vel=[0.0193013357683062, 0.008167948255961184, -0.0034134903097282378]
+[rosout][INFO] 2026-05-22 10:42:51,833: [passive_ds_py] vel_quat cmd  des_vel=[-0.00035073830776728883, 0.005713023628922693, 0.022054976253984778]
+[rosout][INFO] 2026-05-22 10:42:53,846: [passive_ds_py] vel_quat cmd  des_vel=[0.05979625304379005, 0.01957846784510461, 0.009077795114410061]
+[rosout][INFO] 2026-05-22 10:42:55,950: [passive_ds_py] vel_quat cmd  des_vel=[-0.016109483946280173, -0.00702222981820969, 0.023884271715509112]
+[rosout][INFO] 2026-05-22 10:42:58,024: [passive_ds_py] vel_quat cmd  des_vel=[0.07959126653984881, 0.02896262021468645, 0.004629086146120488]
+[rosout][INFO] 2026-05-22 10:43:00,085: [passive_ds_py] vel_quat cmd  des_vel=[-0.005211009248609902, 0.0035794183532837772, 0.01759219463849556]
+[rosout][INFO] 2026-05-22 10:43:02,123: [passive_ds_py] vel_quat cmd  des_vel=[-0.01746686945021019, -0.0048169514394595485, 0.024448858771956773]
+[rosout][INFO] 2026-05-22 10:43:04,169: [passive_ds_py] vel_quat cmd  des_vel=[0.07754737934492002, 0.027758588089873894, 0.005607127141270386]
+[rosout][INFO] 2026-05-22 10:43:06,190: [passive_ds_py] vel_quat cmd  des_vel=[0.03844514646081981, 0.007516820992106484, 0.013112509536483087]
+[rosout][INFO] 2026-05-22 10:43:08,240: [passive_ds_py] vel_quat cmd  des_vel=[-0.010811264906188512, -4.886023970424947e-05, 0.019936972714974913]
+[rosout][INFO] 2026-05-22 10:43:10,287: [passive_ds_py] vel_quat cmd  des_vel=[-0.04692153270527917, -0.014409546831818507, 0.036234166581457165]
+[rosout][INFO] 2026-05-22 10:43:12,295: [passive_ds_py] vel_quat cmd  des_vel=[0.07725975694589993, 0.028612517585517926, 0.005818127375375522]
+[rosout][INFO] 2026-05-22 10:43:14,308: [passive_ds_py] vel_quat cmd  des_vel=[-0.011981228917286956, 0.029767133476541564, 0.02132010914078555]
+[rosout][INFO] 2026-05-22 10:43:16,328: [passive_ds_py] vel_quat cmd  des_vel=[0.02811936963579708, 0.016317412911130882, 0.02063558734081979]
+[rosout][INFO] 2026-05-22 10:43:18,343: [passive_ds_py] vel_quat cmd  des_vel=[0.0033802534281815247, 0.0015639691749875957, 0.021411729140805004]
+[rosout][INFO] 2026-05-22 10:43:20,358: [passive_ds_py] vel_quat cmd  des_vel=[0.029434679017998337, -0.0008666946963114671, 0.012611553448097614]
+[rosout][INFO] 2026-05-22 10:43:22,382: [passive_ds_py] vel_quat cmd  des_vel=[-0.004144369549237224, 0.01838927931651441, 0.020566355227438632]
+[rosout][INFO] 2026-05-22 10:43:24,413: [passive_ds_py] vel_quat cmd  des_vel=[0.0686351602816557, 0.011851703231694386, 0.0029500996674509984]
+[rosout][INFO] 2026-05-22 10:43:26,424: [passive_ds_py] vel_quat cmd  des_vel=[-0.008866687097776695, -0.02848325722781605, -0.025681108498860794]
+[rosout][INFO] 2026-05-22 10:43:28,449: [passive_ds_py] vel_quat cmd  des_vel=[0.057884298669110046, 0.030339456773364776, 0.01351338459107893]
+[rosout][INFO] 2026-05-22 10:43:30,484: [passive_ds_py] vel_quat cmd  des_vel=[0.024452377307148485, 0.011463380859033494, 0.018242599404582793]
+[rosout][INFO] 2026-05-22 10:43:32,510: [passive_ds_py] vel_quat cmd  des_vel=[-0.00266071615375418, 0.010148063548390257, 0.018104729664731593]
+[rosout][INFO] 2026-05-22 10:43:34,555: [passive_ds_py] vel_quat cmd  des_vel=[-0.047963873879417765, -0.021288247989583634, 0.03494018910507806]
+[rosout][INFO] 2026-05-22 10:43:36,656: [passive_ds_py] vel_quat cmd  des_vel=[-0.002227668756531711, 0.028204292716372925, 0.01744303328597655]
+[rosout][INFO] 2026-05-22 10:43:38,693: [passive_ds_py] vel_quat cmd  des_vel=[-0.0344443496947888, 0.0049309213990036075, 0.024645249655179738]
+[rosout][INFO] 2026-05-22 10:43:40,713: [passive_ds_py] vel_quat cmd  des_vel=[0.05423275221908025, 0.024012460482453507, 0.011990430276424444]
+[rosout][INFO] 2026-05-22 10:43:42,752: [passive_ds_py] vel_quat cmd  des_vel=[-0.018550338117973037, -0.004932861577405955, 0.02347603189392207]
+[rospy.core][INFO] 2026-05-22 10:43:43,866: signal_shutdown [signal-2]
+[rosout][INFO] 2026-05-22 10:43:44,351: [passive_ds_py] wrote 37183 rows to /home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/passive_ds_py_log_20260522T104141Z.csv
+[rospy.internal][INFO] 2026-05-22 10:43:44,396: topic[/rosout] removing connection to /rosout
+[rospy.internal][INFO] 2026-05-22 10:43:44,396: topic[/iiwa/TorqueController/command] removing connection to /gazebo
+[rospy.internal][INFO] 2026-05-22 10:43:44,397: topic[/iiwa/ee_info/Pose] removing connection to /test/task_space_control_node
+[rospy.internal][INFO] 2026-05-22 10:43:44,397: topic[/iiwa/ee_info/Vel] removing connection to /test/task_space_control_node
+[rospy.internal][INFO] 2026-05-22 10:43:44,397: topic[/clock] removing connection to http://localhost:40899/
+[rospy.internal][INFO] 2026-05-22 10:43:44,397: topic[/iiwa/joint_states] removing connection to http://localhost:40899/
+[rospy.internal][INFO] 2026-05-22 10:43:44,397: topic[/passive_control/vel_quat] removing connection to http://localhost:38413/
+[rospy.impl.masterslave][INFO] 2026-05-22 10:43:44,397: signal-2
+[rospy.core][INFO] 2026-05-22 10:43:45,003: signal_shutdown [atexit]

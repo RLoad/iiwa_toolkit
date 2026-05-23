@@ -87,5 +87,15 @@ add_dependencies(passive_null_track ${PROJECT_NAME}_gencfg)
 catkin_install_python(PROGRAMS
   src/optimal_manipulability_node.py
   src/comparison_metrics_logger.py
+  src/node_attractor_ds_gazebo.py
+  src/ds_planner.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+# Pure-python passive DS controller library (importable in Gazebo node and
+# in Isaac Lab). Installed under the package's python lib path so external
+# tools can `import iiwa_passive_ds`.
+install(DIRECTORY src/iiwa_passive_ds/
+  DESTINATION ${CATKIN_PACKAGE_PYTHON_DESTINATION}/iiwa_passive_ds
+  FILES_MATCHING PATTERN "*.py"
 )

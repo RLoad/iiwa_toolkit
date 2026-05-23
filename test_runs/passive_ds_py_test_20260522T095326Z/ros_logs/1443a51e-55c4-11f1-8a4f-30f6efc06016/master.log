@@ -1,0 +1,461 @@
+[rosmaster.main][INFO] 2026-05-22 09:53:27,127: initialization complete, waiting for shutdown
+[rosmaster.main][INFO] 2026-05-22 09:53:27,127: Starting ROS Master Node
+[xmlrpc][INFO] 2026-05-22 09:53:27,128: XML-RPC server binding to 127.0.0.1:11311
+[xmlrpc][INFO] 2026-05-22 09:53:27,128: Started XML-RPC server [http://localhost:11311/]
+[rosmaster.master][INFO] 2026-05-22 09:53:27,129: Master initialized: port[11311], uri[http://localhost:11311/]
+[xmlrpc][INFO] 2026-05-22 09:53:27,129: xml rpc node: starting XML-RPC server
+[rosmaster.master][INFO] 2026-05-22 09:53:27,209: +PARAM [/run_id] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,211: +PARAM [/roslaunch/uris/host_localhost__34717] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,253: +PARAM [/rosversion] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/rosdistro] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/robot_description] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/service/robot_description] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/service/end_effector] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/service/fk_service_name] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/service/ik_service_name] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/service/jacobian_service_name] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/service/jacobian_deriv_service_name] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/service/jacobians_service_name] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/service/gravity_service_name] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/joint_state_controller/type] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/joint_state_controller/publish_rate] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/TorqueController/type] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/TorqueController/joints] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/type] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/joints] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_1/pid/p] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_1/pid/i] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_1/pid/d] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_1/pid/i_clamp_min] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_1/pid/i_clamp_max] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_2/pid/p] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_2/pid/i] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_2/pid/d] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_2/pid/i_clamp_min] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_2/pid/i_clamp_max] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_3/pid/p] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_3/pid/i] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_3/pid/d] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_3/pid/i_clamp_min] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_3/pid/i_clamp_max] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_4/pid/p] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_4/pid/i] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_4/pid/d] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_4/pid/i_clamp_min] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_4/pid/i_clamp_max] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_5/pid/p] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_5/pid/i] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_5/pid/d] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_5/pid/i_clamp_min] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_5/pid/i_clamp_max] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_6/pid/p] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,254: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_6/pid/i] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_6/pid/d] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_6/pid/i_clamp_min] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_6/pid/i_clamp_max] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_7/pid/p] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_7/pid/i] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_7/pid/d] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_7/pid/i_clamp_min] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionTorqueController/iiwa_joint_7/pid/i_clamp_max] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/type] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/joints] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_1/p] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_1/i] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_1/d] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_1/i_clamp_min] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_1/i_clamp_max] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_2/p] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_2/i] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_2/d] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_2/i_clamp_min] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_2/i_clamp_max] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_3/p] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_3/i] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_3/d] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_3/i_clamp_min] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_3/i_clamp_max] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_4/p] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_4/i] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_4/d] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_4/i_clamp_min] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_4/i_clamp_max] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_5/p] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_5/i] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_5/d] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_5/i_clamp_min] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_5/i_clamp_max] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_6/p] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_6/i] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_6/d] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_6/i_clamp_min] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_6/i_clamp_max] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_7/p] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_7/i] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_7/d] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_7/i_clamp_min] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,255: +PARAM [/iiwa/PositionController/pid_gains/iiwa_joint_7/i_clamp_max] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/CustomControllers/type] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/CustomControllers/joints] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/CustomControllers/params/space] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/CustomControllers/params/end_effector] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/CustomControllers/params/null_space/joints] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/CustomControllers/params/null_space/Kp] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/CustomControllers/params/null_space/Kd] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/CustomControllers/params/null_space/max_torque] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/CustomControllers/controllers/PassiveDS/type] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/CustomControllers/controllers/PassiveDS/params] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/CustomControllers/controllers/PD/type] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/CustomControllers/controllers/PD/params] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/CustomControllers/controllers/PD/input] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/CustomControllers/controllers/PD/output] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/PositionTrajectoryController/type] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/PositionTrajectoryController/joints] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/PositionTrajectoryController/constraints/goal_time] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/PositionTrajectoryController/state_publish_rate] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/PositionTrajectoryController/action_monitor_rate] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/PositionTrajectoryController/stop_trajectory_duration] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/use_sim_time] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/gazebo/enable_ros_network] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/passive_ds_py/rate_hz] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/passive_ds_py/cmd_timeout] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/passive_ds_py/ee_link] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/passive_ds_py/root_link] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/passive_ds_py/urdf_param] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/passive_ds_py/device] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/passive_ds_py/joint_names] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/passive_ds_py/lam0_pos] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/passive_ds_py/lam1_pos] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/passive_ds_py/lam0_ori] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/passive_ds_py/lam1_ori] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/passive_ds_py/ds_gain_pos] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/passive_ds_py/ds_gain_ori] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/passive_ds_py/max_dx] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/passive_ds_py/max_dq] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/passive_ds_py/null_q] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/passive_ds_py/null_gains] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/passive_ds_py/null_damping] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/passive_ds_py/null_scale] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/passive_ds_py/enable_init_phase] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/passive_ds_py/init_phase_norm] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/passive_ds_py/load_added] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/passive_ds_py/init_pos] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/passive_ds_py/init_quat] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,256: +PARAM [/iiwa/passive_ds_py/log_csv] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:27,258: +SERVICE [/rosout/get_loggers] /rosout http://localhost:36439/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,258: +SERVICE [/rosout/set_logger_level] /rosout http://localhost:36439/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,260: +SUB [/clock] /rosout http://localhost:36439/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,260: +PUB [/rosout_agg] /rosout http://localhost:36439/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,262: +SUB [/rosout] /rosout http://localhost:36439/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,277: +PUB [/rosout] /iiwa/iiwa_service http://localhost:33137/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,277: +SERVICE [/iiwa/iiwa_service/get_loggers] /iiwa/iiwa_service http://localhost:33137/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,278: +SERVICE [/iiwa/iiwa_service/set_logger_level] /iiwa/iiwa_service http://localhost:33137/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,279: +SUB [/clock] /iiwa/iiwa_service http://localhost:33137/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,279: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/iiwa_service
+[rosmaster.master][INFO] 2026-05-22 09:53:27,289: +PUB [/rosout] /iiwa/robot_state_publisher http://localhost:44317/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,289: +SERVICE [/iiwa/robot_state_publisher/get_loggers] /iiwa/robot_state_publisher http://localhost:44317/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,289: +SERVICE [/iiwa/robot_state_publisher/set_logger_level] /iiwa/robot_state_publisher http://localhost:44317/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,290: +SUB [/clock] /iiwa/robot_state_publisher http://localhost:44317/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,292: +PUB [/tf] /iiwa/robot_state_publisher http://localhost:44317/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,292: +PUB [/tf_static] /iiwa/robot_state_publisher http://localhost:44317/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,293: +SUB [/iiwa/joint_states] /iiwa/robot_state_publisher http://localhost:44317/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,328: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:33137/']
+[rosmaster.master][INFO] 2026-05-22 09:53:27,331: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:33137/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:53:27,331: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:33137/', 'http://localhost:44317/']
+[rosmaster.master][INFO] 2026-05-22 09:53:27,331: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:33137/', 'http://localhost:44317/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:53:27,383: +SERVICE [/iiwa/iiwa_fk_server] /iiwa/iiwa_service http://localhost:33137/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,383: +SERVICE [/iiwa/iiwa_ik_server] /iiwa/iiwa_service http://localhost:33137/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,384: +SERVICE [/iiwa/iiwa_jacobian_server] /iiwa/iiwa_service http://localhost:33137/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,384: +SERVICE [/iiwa/iiwa_jacobian_deriv_server] /iiwa/iiwa_service http://localhost:33137/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,384: +SERVICE [/iiwa/iiwa_jacobians_server] /iiwa/iiwa_service http://localhost:33137/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,385: +SERVICE [/iiwa/iiwa_gravity_server] /iiwa/iiwa_service http://localhost:33137/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,505: +PUB [/rosout] /iiwa/iiwa_controller http://localhost:42057/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,507: +SUB [/clock] /iiwa/iiwa_controller http://localhost:42057/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,508: +SERVICE [/iiwa/iiwa_controller/get_loggers] /iiwa/iiwa_controller http://localhost:42057/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,509: +SERVICE [/iiwa/iiwa_controller/set_logger_level] /iiwa/iiwa_controller http://localhost:42057/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,510: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/iiwa_controller
+[rosmaster.master][INFO] 2026-05-22 09:53:27,529: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:33137/', 'http://localhost:44317/', 'http://localhost:42057/']
+[rosmaster.master][INFO] 2026-05-22 09:53:27,530: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:33137/', 'http://localhost:44317/', 'http://localhost:42057/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:53:27,536: +PUB [/rosout] /iiwa/urdf_spawner http://localhost:37293/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,538: +SUB [/clock] /iiwa/urdf_spawner http://localhost:37293/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,539: +SERVICE [/iiwa/urdf_spawner/get_loggers] /iiwa/urdf_spawner http://localhost:37293/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,539: +SERVICE [/iiwa/urdf_spawner/set_logger_level] /iiwa/urdf_spawner http://localhost:37293/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,540: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/urdf_spawner
+[rosmaster.master][INFO] 2026-05-22 09:53:27,545: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/urdf_spawner
+[rosmaster.master][INFO] 2026-05-22 09:53:27,589: +PUB [/rosout] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,589: +SERVICE [/gazebo/get_loggers] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,590: +SERVICE [/gazebo/set_logger_level] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,592: +SUB [/clock] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,593: +CACHEDPARAM [/rosout_disable_topics_generation] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,629: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:33137/', 'http://localhost:44317/', 'http://localhost:42057/', 'http://localhost:37293/']
+[rosmaster.master][INFO] 2026-05-22 09:53:27,630: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:33137/', 'http://localhost:44317/', 'http://localhost:42057/', 'http://localhost:37293/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:53:27,631: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:33137/', 'http://localhost:44317/', 'http://localhost:42057/', 'http://localhost:37293/', 'http://localhost:37971/']
+[rosmaster.master][INFO] 2026-05-22 09:53:27,631: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:33137/', 'http://localhost:44317/', 'http://localhost:42057/', 'http://localhost:37293/', 'http://localhost:37971/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:53:27,732: +CACHEDPARAM [/rosout/omit_topics] by /rosout
+[rosmaster.master][INFO] 2026-05-22 09:53:27,775: +PUB [/clock] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,775: +SERVICE [/gazebo/spawn_sdf_model] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,776: +SERVICE [/gazebo/spawn_urdf_model] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,776: +SERVICE [/gazebo/delete_model] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,776: +SERVICE [/gazebo/delete_light] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,776: +SERVICE [/gazebo/get_model_properties] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,777: +SERVICE [/gazebo/get_model_state] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,777: +SERVICE [/gazebo/get_world_properties] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,778: +SERVICE [/gazebo/get_joint_properties] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,778: +SERVICE [/gazebo/get_link_properties] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,778: +SERVICE [/gazebo/get_link_state] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,778: +SERVICE [/gazebo/get_light_properties] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,779: +SERVICE [/gazebo/set_light_properties] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,779: +SERVICE [/gazebo/get_physics_properties] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,779: +PUB [/gazebo/link_states] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,779: +PUB [/gazebo/model_states] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,780: +PUB [/gazebo/performance_metrics] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,780: +SERVICE [/gazebo/set_link_properties] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,780: +SERVICE [/gazebo/set_physics_properties] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,781: +SERVICE [/gazebo/set_model_state] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,781: +SERVICE [/gazebo/set_model_configuration] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,781: +SERVICE [/gazebo/set_joint_properties] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,782: +SERVICE [/gazebo/set_link_state] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,783: +SUB [/gazebo/set_link_state] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,784: +SUB [/gazebo/set_model_state] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,785: +SERVICE [/gazebo/pause_physics] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,785: +SERVICE [/gazebo/unpause_physics] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,785: +SERVICE [/gazebo/apply_body_wrench] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,785: +SERVICE [/gazebo/apply_joint_effort] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,786: +SERVICE [/gazebo/clear_joint_forces] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,786: +SERVICE [/gazebo/clear_body_wrenches] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,786: +SERVICE [/gazebo/reset_simulation] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,786: +SERVICE [/gazebo/reset_world] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,799: +SERVICE [/gazebo/set_parameters] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,799: +PUB [/gazebo/parameter_descriptions] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,800: +PUB [/gazebo/parameter_updates] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:27,803: +PARAM [/gazebo/time_step] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,803: +PARAM [/gazebo/max_update_rate] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,803: +PARAM [/gazebo/gravity_x] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,803: +PARAM [/gazebo/gravity_y] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,804: +PARAM [/gazebo/gravity_z] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,804: +PARAM [/gazebo/auto_disable_bodies] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,804: +PARAM [/gazebo/sor_pgs_precon_iters] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,804: +PARAM [/gazebo/sor_pgs_iters] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,805: +PARAM [/gazebo/sor_pgs_w] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,805: +PARAM [/gazebo/sor_pgs_rms_error_tol] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,805: +PARAM [/gazebo/cfm] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,806: +PARAM [/gazebo/erp] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,806: +PARAM [/gazebo/contact_surface_layer] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,806: +PARAM [/gazebo/contact_max_correcting_vel] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,806: +PARAM [/gazebo/max_contacts] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,807: +PARAM [/gazebo/time_step] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,808: +PARAM [/gazebo/max_update_rate] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,808: +PARAM [/gazebo/gravity_x] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,808: +PARAM [/gazebo/gravity_y] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,808: +PARAM [/gazebo/gravity_z] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,809: +PARAM [/gazebo/auto_disable_bodies] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,809: +PARAM [/gazebo/sor_pgs_precon_iters] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,809: +PARAM [/gazebo/sor_pgs_iters] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,809: +PARAM [/gazebo/sor_pgs_w] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,809: +PARAM [/gazebo/sor_pgs_rms_error_tol] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,809: +PARAM [/gazebo/cfm] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,809: +PARAM [/gazebo/erp] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,809: +PARAM [/gazebo/contact_surface_layer] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,810: +PARAM [/gazebo/contact_max_correcting_vel] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,810: +PARAM [/gazebo/max_contacts] by /gazebo
+[rosmaster.master][INFO] 2026-05-22 09:53:27,830: publisherUpdate[/clock] -> http://localhost:36439/ ['http://localhost:37971/']
+[rosmaster.master][INFO] 2026-05-22 09:53:27,831: publisherUpdate[/clock] -> http://localhost:36439/ ['http://localhost:37971/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:53:27,831: publisherUpdate[/clock] -> http://localhost:33137/ ['http://localhost:37971/']
+[rosmaster.master][INFO] 2026-05-22 09:53:27,831: publisherUpdate[/clock] -> http://localhost:33137/ ['http://localhost:37971/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:53:27,831: publisherUpdate[/clock] -> http://localhost:44317/ ['http://localhost:37971/']
+[rosmaster.master][INFO] 2026-05-22 09:53:27,831: publisherUpdate[/clock] -> http://localhost:42057/ ['http://localhost:37971/']
+[rosmaster.master][INFO] 2026-05-22 09:53:27,832: publisherUpdate[/clock] -> http://localhost:44317/ ['http://localhost:37971/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:53:27,832: publisherUpdate[/clock] -> http://localhost:37293/ ['http://localhost:37971/']
+[rosmaster.master][INFO] 2026-05-22 09:53:27,832: publisherUpdate[/clock] -> http://localhost:37971/ ['http://localhost:37971/']
+[rosmaster.master][INFO] 2026-05-22 09:53:27,832: publisherUpdate[/clock] -> http://localhost:42057/ ['http://localhost:37971/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:53:27,833: publisherUpdate[/clock] -> http://localhost:37971/ ['http://localhost:37971/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:53:27,833: publisherUpdate[/clock] -> http://localhost:37293/ ['http://localhost:37971/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:53:27,848: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/urdf_spawner
+[rosmaster.master][INFO] 2026-05-22 09:53:28,044: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/urdf_spawner
+[rosmaster.master][INFO] 2026-05-22 09:53:28,045: -SUB [/clock] /iiwa/urdf_spawner http://localhost:37293/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,045: -PUB [/rosout] /iiwa/urdf_spawner http://localhost:37293/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,045: -SERVICE [/iiwa/urdf_spawner/get_loggers] /iiwa/urdf_spawner rosrpc://localhost:38219
+[rosmaster.master][INFO] 2026-05-22 09:53:28,045: -SERVICE [/iiwa/urdf_spawner/set_logger_level] /iiwa/urdf_spawner rosrpc://localhost:38219
+[rosmaster.master][INFO] 2026-05-22 09:53:28,083: +PUB [/iiwa/iiwa_FTS_topic] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,133: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:33137/', 'http://localhost:44317/', 'http://localhost:42057/', 'http://localhost:37971/']
+[rosmaster.master][INFO] 2026-05-22 09:53:28,133: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:33137/', 'http://localhost:44317/', 'http://localhost:42057/', 'http://localhost:37971/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:53:28,185: +PUB [/rosout] /iiwa/passive_ds_py http://localhost:35557/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,189: +SUB [/clock] /iiwa/passive_ds_py http://localhost:35557/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,191: +SERVICE [/iiwa/passive_ds_py/get_loggers] /iiwa/passive_ds_py http://localhost:35557/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,192: +SERVICE [/iiwa/passive_ds_py/set_logger_level] /iiwa/passive_ds_py http://localhost:35557/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,210: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/passive_ds_py
+[rosmaster.master][INFO] 2026-05-22 09:53:28,214: +SERVICE [/iiwa/controller_manager/list_controllers] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,214: +SERVICE [/iiwa/controller_manager/list_controller_types] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,215: +SERVICE [/iiwa/controller_manager/load_controller] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,215: +SERVICE [/iiwa/controller_manager/unload_controller] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,215: +SERVICE [/iiwa/controller_manager/switch_controller] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,215: +SERVICE [/iiwa/controller_manager/reload_controller_libraries] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,233: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:33137/', 'http://localhost:44317/', 'http://localhost:42057/', 'http://localhost:37971/', 'http://localhost:35557/']
+[rosmaster.master][INFO] 2026-05-22 09:53:28,235: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:33137/', 'http://localhost:44317/', 'http://localhost:42057/', 'http://localhost:37971/', 'http://localhost:35557/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:53:28,388: +PUB [/rosout] /rostopic_13235_1779443608265 http://localhost:38957/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,390: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/passive_ds_py
+[rosmaster.master][INFO] 2026-05-22 09:53:28,390: +SUB [/clock] /rostopic_13235_1779443608265 http://localhost:38957/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,391: +SUB [/iiwa/joint_states] /iiwa/passive_ds_py http://localhost:35557/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,392: +SERVICE [/rostopic_13235_1779443608265/get_loggers] /rostopic_13235_1779443608265 http://localhost:38957/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,392: +SUB [/passive_control/pos_quat] /iiwa/passive_ds_py http://localhost:35557/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,392: +SERVICE [/rostopic_13235_1779443608265/set_logger_level] /rostopic_13235_1779443608265 http://localhost:38957/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,393: +SUB [/passive_control/vel_quat] /iiwa/passive_ds_py http://localhost:35557/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,395: +SUB [/passive_ds_py/damping_scales] /iiwa/passive_ds_py http://localhost:35557/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,396: +PUB [/iiwa/TorqueController/command] /iiwa/passive_ds_py http://localhost:35557/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,396: +PUB [/iiwa/ee_info/Pose] /iiwa/passive_ds_py http://localhost:35557/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,397: +PUB [/iiwa/ee_info/Vel] /iiwa/passive_ds_py http://localhost:35557/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,398: +PUB [/passive_ds_py/ee_pose] /iiwa/passive_ds_py http://localhost:35557/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,398: +PUB [/passive_ds_py/ee_vel] /iiwa/passive_ds_py http://localhost:35557/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,399: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/passive_ds_py
+[rosmaster.master][INFO] 2026-05-22 09:53:28,399: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/passive_ds_py
+[rosmaster.master][INFO] 2026-05-22 09:53:28,408: +SUB [/iiwa/joint_states] /rostopic_13235_1779443608265 http://localhost:38957/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,415: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/iiwa_controller
+[rosmaster.master][INFO] 2026-05-22 09:53:28,417: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/iiwa_controller
+[rosmaster.master][INFO] 2026-05-22 09:53:28,419: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/iiwa_controller
+[rosmaster.master][INFO] 2026-05-22 09:53:28,424: +SUB [/iiwa/TorqueController/command] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,425: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/iiwa_controller
+[rosmaster.master][INFO] 2026-05-22 09:53:28,429: +PUB [/iiwa/joint_states] /gazebo http://localhost:37971/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,430: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/iiwa_controller
+[rosmaster.master][INFO] 2026-05-22 09:53:28,434: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:33137/', 'http://localhost:44317/', 'http://localhost:42057/', 'http://localhost:37971/', 'http://localhost:35557/', 'http://localhost:38957/']
+[rosmaster.master][INFO] 2026-05-22 09:53:28,434: publisherUpdate[/iiwa/joint_states] -> http://localhost:44317/ ['http://localhost:37971/']
+[rosmaster.master][INFO] 2026-05-22 09:53:28,434: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/iiwa_controller
+[rosmaster.master][INFO] 2026-05-22 09:53:28,435: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:33137/', 'http://localhost:44317/', 'http://localhost:42057/', 'http://localhost:37971/', 'http://localhost:35557/', 'http://localhost:38957/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:53:28,435: publisherUpdate[/iiwa/joint_states] -> http://localhost:35557/ ['http://localhost:37971/']
+[rosmaster.master][INFO] 2026-05-22 09:53:28,435: publisherUpdate[/iiwa/joint_states] -> http://localhost:38957/ ['http://localhost:37971/']
+[rosmaster.master][INFO] 2026-05-22 09:53:28,435: publisherUpdate[/iiwa/joint_states] -> http://localhost:44317/ ['http://localhost:37971/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:53:28,436: publisherUpdate[/iiwa/joint_states] -> http://localhost:35557/ ['http://localhost:37971/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:53:28,437: publisherUpdate[/iiwa/joint_states] -> http://localhost:38957/ ['http://localhost:37971/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:53:28,510: -SUB [/clock] /rostopic_13235_1779443608265 http://localhost:38957/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,510: -SUB [/iiwa/joint_states] /rostopic_13235_1779443608265 http://localhost:38957/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,510: -PUB [/rosout] /rostopic_13235_1779443608265 http://localhost:38957/
+[rosmaster.master][INFO] 2026-05-22 09:53:28,510: -SERVICE [/rostopic_13235_1779443608265/get_loggers] /rostopic_13235_1779443608265 rosrpc://localhost:38905
+[rosmaster.master][INFO] 2026-05-22 09:53:28,510: -SERVICE [/rostopic_13235_1779443608265/set_logger_level] /rostopic_13235_1779443608265 rosrpc://localhost:38905
+[rosmaster.master][INFO] 2026-05-22 09:53:28,536: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:33137/', 'http://localhost:44317/', 'http://localhost:42057/', 'http://localhost:37971/', 'http://localhost:35557/']
+[rosmaster.master][INFO] 2026-05-22 09:53:28,537: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:33137/', 'http://localhost:44317/', 'http://localhost:42057/', 'http://localhost:37971/', 'http://localhost:35557/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:53:29,407: +PARAM [/roslaunch/uris/host_localhost__42757] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:29,409: +PARAM [/rosversion] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:29,409: +PARAM [/rosdistro] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:29,410: +PARAM [/test/input_pose_name] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:29,410: +PARAM [/test/input_velocity_name] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:29,410: +PARAM [/test/input_force_name] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:29,410: +PARAM [/test/output_velocity_name] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:29,410: +PARAM [/test/output_filtered_velocity_name] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:29,410: +PARAM [/test/output_damping_eig_topic_name] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:29,410: +PARAM [/test/record_or_not] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:29,410: +PARAM [/test/record_1_robotdemo_0_humandemo] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:29,410: +PARAM [/test/target] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:29,410: +PARAM [/test/Convergence_Rate] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:29,410: +PARAM [/test/Cycle_radius] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:29,410: +PARAM [/test/Cycle_speed] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:29,410: +PARAM [/test/recording_path] by /roslaunch
+[rosmaster.master][INFO] 2026-05-22 09:53:29,442: +PUB [/rosout] /test/task_space_control_node http://localhost:36627/
+[rosmaster.master][INFO] 2026-05-22 09:53:29,442: +SERVICE [/test/task_space_control_node/get_loggers] /test/task_space_control_node http://localhost:36627/
+[rosmaster.master][INFO] 2026-05-22 09:53:29,443: +SERVICE [/test/task_space_control_node/set_logger_level] /test/task_space_control_node http://localhost:36627/
+[rosmaster.master][INFO] 2026-05-22 09:53:29,445: +SUB [/clock] /test/task_space_control_node http://localhost:36627/
+[rosmaster.master][INFO] 2026-05-22 09:53:29,447: +CACHEDPARAM [/rosout_disable_topics_generation] by /test/task_space_control_node
+[rosmaster.master][INFO] 2026-05-22 09:53:29,449: +SUB [/iiwa/ee_info/Pose] /test/task_space_control_node http://localhost:36627/
+[rosmaster.master][INFO] 2026-05-22 09:53:29,450: +SUB [/iiwa/ee_info/Vel] /test/task_space_control_node http://localhost:36627/
+[rosmaster.master][INFO] 2026-05-22 09:53:29,451: +SUB [/iiwa/iiwa_FTS_topic] /test/task_space_control_node http://localhost:36627/
+[rosmaster.master][INFO] 2026-05-22 09:53:29,451: +PUB [/ds1/desired_velocity] /test/task_space_control_node http://localhost:36627/
+[rosmaster.master][INFO] 2026-05-22 09:53:29,452: +PUB [/passive_control/vel_quat] /test/task_space_control_node http://localhost:36627/
+[rosmaster.master][INFO] 2026-05-22 09:53:29,452: +PUB [/lwr/joint_controllers/passive_ds_eig] /test/task_space_control_node http://localhost:36627/
+[rosmaster.master][INFO] 2026-05-22 09:53:29,452: +PUB [/test/debug/wrench_compensated] /test/task_space_control_node http://localhost:36627/
+[rosmaster.master][INFO] 2026-05-22 09:53:29,452: +PUB [/test/debug/force_marker] /test/task_space_control_node http://localhost:36627/
+[rosmaster.master][INFO] 2026-05-22 09:53:29,538: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:33137/', 'http://localhost:44317/', 'http://localhost:42057/', 'http://localhost:37971/', 'http://localhost:35557/', 'http://localhost:36627/']
+[rosmaster.master][INFO] 2026-05-22 09:53:29,538: publisherUpdate[/passive_control/vel_quat] -> http://localhost:35557/ ['http://localhost:36627/']
+[rosmaster.master][INFO] 2026-05-22 09:53:29,539: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:33137/', 'http://localhost:44317/', 'http://localhost:42057/', 'http://localhost:37971/', 'http://localhost:35557/', 'http://localhost:36627/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:53:29,539: publisherUpdate[/passive_control/vel_quat] -> http://localhost:35557/ ['http://localhost:36627/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:53:29,745: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/passive_ds_py
+[rosmaster.master][INFO] 2026-05-22 09:53:31,758: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/passive_ds_py
+[rosmaster.master][INFO] 2026-05-22 09:53:33,785: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/passive_ds_py
+[rosmaster.master][INFO] 2026-05-22 09:53:35,873: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/passive_ds_py
+[rosmaster.master][INFO] 2026-05-22 09:53:37,910: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/passive_ds_py
+[rosmaster.master][INFO] 2026-05-22 09:53:39,948: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/passive_ds_py
+[rosmaster.master][INFO] 2026-05-22 09:53:42,016: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/passive_ds_py
+[rosmaster.master][INFO] 2026-05-22 09:53:44,112: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/passive_ds_py
+[rosmaster.master][INFO] 2026-05-22 09:53:46,169: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/passive_ds_py
+[rosmaster.master][INFO] 2026-05-22 09:53:48,236: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/passive_ds_py
+[rosmaster.master][INFO] 2026-05-22 09:53:50,276: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/passive_ds_py
+[rosmaster.master][INFO] 2026-05-22 09:53:52,324: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/passive_ds_py
+[rosmaster.master][INFO] 2026-05-22 09:53:54,342: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/passive_ds_py
+[rosmaster.master][INFO] 2026-05-22 09:53:56,398: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/passive_ds_py
+[rosmaster.master][INFO] 2026-05-22 09:53:58,467: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/passive_ds_py
+[rosmaster.master][INFO] 2026-05-22 09:54:00,528: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/passive_ds_py
+[rosmaster.master][INFO] 2026-05-22 09:54:02,588: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/passive_ds_py
+[rosmaster.master][INFO] 2026-05-22 09:54:04,149: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/iiwa_controller
+[rosmaster.master][INFO] 2026-05-22 09:54:04,150: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/iiwa_controller
+[rosmaster.master][INFO] 2026-05-22 09:54:04,273: -PUB [/rosout] /iiwa/iiwa_service http://localhost:33137/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,273: -SUB [/clock] /iiwa/iiwa_service http://localhost:33137/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,274: -SERVICE [/iiwa/iiwa_service/get_loggers] /iiwa/iiwa_service rosrpc://localhost:34581
+[rosmaster.master][INFO] 2026-05-22 09:54:04,274: -SERVICE [/iiwa/iiwa_service/set_logger_level] /iiwa/iiwa_service rosrpc://localhost:34581
+[rosmaster.master][INFO] 2026-05-22 09:54:04,275: -SERVICE [/iiwa/iiwa_fk_server] /iiwa/iiwa_service rosrpc://localhost:34581
+[rosmaster.master][INFO] 2026-05-22 09:54:04,275: -SERVICE [/iiwa/iiwa_ik_server] /iiwa/iiwa_service rosrpc://localhost:34581
+[rosmaster.master][INFO] 2026-05-22 09:54:04,275: -SERVICE [/iiwa/iiwa_jacobian_server] /iiwa/iiwa_service rosrpc://localhost:34581
+[rosmaster.master][INFO] 2026-05-22 09:54:04,275: -SERVICE [/iiwa/iiwa_jacobian_deriv_server] /iiwa/iiwa_service rosrpc://localhost:34581
+[rosmaster.master][INFO] 2026-05-22 09:54:04,275: -SERVICE [/iiwa/iiwa_jacobians_server] /iiwa/iiwa_service rosrpc://localhost:34581
+[rosmaster.master][INFO] 2026-05-22 09:54:04,275: -PUB [/rosout] /iiwa/robot_state_publisher http://localhost:44317/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,276: -SERVICE [/iiwa/iiwa_gravity_server] /iiwa/iiwa_service rosrpc://localhost:34581
+[rosmaster.master][INFO] 2026-05-22 09:54:04,276: -PUB [/tf] /iiwa/robot_state_publisher http://localhost:44317/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,276: -CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/iiwa_service
+[rosmaster.master][INFO] 2026-05-22 09:54:04,276: -PUB [/tf_static] /iiwa/robot_state_publisher http://localhost:44317/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,277: -SUB [/clock] /iiwa/robot_state_publisher http://localhost:44317/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,277: -SUB [/iiwa/joint_states] /iiwa/robot_state_publisher http://localhost:44317/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,278: -SERVICE [/iiwa/robot_state_publisher/get_loggers] /iiwa/robot_state_publisher rosrpc://localhost:33713
+[rosmaster.master][INFO] 2026-05-22 09:54:04,278: -SERVICE [/iiwa/robot_state_publisher/set_logger_level] /iiwa/robot_state_publisher rosrpc://localhost:33713
+[rosmaster.master][INFO] 2026-05-22 09:54:04,283: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:44317/', 'http://localhost:42057/', 'http://localhost:37971/', 'http://localhost:35557/', 'http://localhost:36627/']
+[rosmaster.master][INFO] 2026-05-22 09:54:04,284: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:44317/', 'http://localhost:42057/', 'http://localhost:37971/', 'http://localhost:35557/', 'http://localhost:36627/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:54:04,284: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:42057/', 'http://localhost:37971/', 'http://localhost:35557/', 'http://localhost:36627/']
+[rosmaster.master][INFO] 2026-05-22 09:54:04,284: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:42057/', 'http://localhost:37971/', 'http://localhost:35557/', 'http://localhost:36627/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:54:04,297: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/passive_ds_py
+[rosmaster.master][INFO] 2026-05-22 09:54:04,310: -SUB [/clock] /iiwa/passive_ds_py http://localhost:35557/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,310: -SUB [/iiwa/joint_states] /iiwa/passive_ds_py http://localhost:35557/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,310: -SUB [/passive_control/pos_quat] /iiwa/passive_ds_py http://localhost:35557/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,310: -SUB [/passive_control/vel_quat] /iiwa/passive_ds_py http://localhost:35557/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,310: -SUB [/passive_ds_py/damping_scales] /iiwa/passive_ds_py http://localhost:35557/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,310: -PUB [/rosout] /iiwa/passive_ds_py http://localhost:35557/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,310: -PUB [/iiwa/TorqueController/command] /iiwa/passive_ds_py http://localhost:35557/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,310: -PUB [/iiwa/ee_info/Pose] /iiwa/passive_ds_py http://localhost:35557/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,310: -PUB [/iiwa/ee_info/Vel] /iiwa/passive_ds_py http://localhost:35557/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,310: -PUB [/passive_ds_py/ee_pose] /iiwa/passive_ds_py http://localhost:35557/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,310: -PUB [/passive_ds_py/ee_vel] /iiwa/passive_ds_py http://localhost:35557/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,310: -SERVICE [/iiwa/passive_ds_py/get_loggers] /iiwa/passive_ds_py rosrpc://localhost:33831
+[rosmaster.master][INFO] 2026-05-22 09:54:04,310: -SERVICE [/iiwa/passive_ds_py/set_logger_level] /iiwa/passive_ds_py rosrpc://localhost:33831
+[rosmaster.master][INFO] 2026-05-22 09:54:04,384: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:42057/', 'http://localhost:37971/', 'http://localhost:36627/']
+[rosmaster.master][INFO] 2026-05-22 09:54:04,385: publisherUpdate[/iiwa/TorqueController/command] -> http://localhost:37971/ []
+[rosmaster.master][INFO] 2026-05-22 09:54:04,385: publisherUpdate[/iiwa/ee_info/Pose] -> http://localhost:36627/ []
+[rosmaster.master][INFO] 2026-05-22 09:54:04,387: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:42057/', 'http://localhost:37971/', 'http://localhost:36627/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:54:04,388: publisherUpdate[/iiwa/TorqueController/command] -> http://localhost:37971/ []: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:54:04,389: publisherUpdate[/iiwa/ee_info/Pose] -> http://localhost:36627/ []: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:54:04,389: publisherUpdate[/iiwa/ee_info/Vel] -> http://localhost:36627/ []
+[rosmaster.master][INFO] 2026-05-22 09:54:04,390: publisherUpdate[/iiwa/ee_info/Vel] -> http://localhost:36627/ []: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:54:04,791: -PUB [/rosout] /test/task_space_control_node http://localhost:36627/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,791: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:42057/', 'http://localhost:37971/']
+[rosmaster.master][INFO] 2026-05-22 09:54:04,791: -PUB [/ds1/desired_velocity] /test/task_space_control_node http://localhost:36627/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,792: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:42057/', 'http://localhost:37971/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:54:04,792: -PUB [/passive_control/vel_quat] /test/task_space_control_node http://localhost:36627/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,792: -PUB [/lwr/joint_controllers/passive_ds_eig] /test/task_space_control_node http://localhost:36627/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,792: -PUB [/test/debug/wrench_compensated] /test/task_space_control_node http://localhost:36627/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,793: -PUB [/test/debug/force_marker] /test/task_space_control_node http://localhost:36627/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,793: -SUB [/clock] /test/task_space_control_node http://localhost:36627/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,793: -SUB [/iiwa/ee_info/Pose] /test/task_space_control_node http://localhost:36627/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,793: -SUB [/iiwa/ee_info/Vel] /test/task_space_control_node http://localhost:36627/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,794: -SUB [/iiwa/iiwa_FTS_topic] /test/task_space_control_node http://localhost:36627/
+[rosmaster.master][INFO] 2026-05-22 09:54:04,794: -SERVICE [/test/task_space_control_node/get_loggers] /test/task_space_control_node rosrpc://localhost:57699
+[rosmaster.master][INFO] 2026-05-22 09:54:04,794: -SERVICE [/test/task_space_control_node/set_logger_level] /test/task_space_control_node rosrpc://localhost:57699
+[rosmaster.master][INFO] 2026-05-22 09:54:04,795: -CACHEDPARAM [/rosout_disable_topics_generation] by /test/task_space_control_node
+[rosmaster.master][INFO] 2026-05-22 09:54:19,196: +CACHEDPARAM [/rosout_disable_topics_generation] by /iiwa/iiwa_controller
+[rosmaster.master][INFO] 2026-05-22 09:54:19,198: -SUB [/clock] /iiwa/iiwa_controller http://localhost:42057/
+[rosmaster.master][INFO] 2026-05-22 09:54:19,198: -PUB [/rosout] /iiwa/iiwa_controller http://localhost:42057/
+[rosmaster.master][INFO] 2026-05-22 09:54:19,198: -SERVICE [/iiwa/iiwa_controller/get_loggers] /iiwa/iiwa_controller rosrpc://localhost:39617
+[rosmaster.master][INFO] 2026-05-22 09:54:19,198: -SERVICE [/iiwa/iiwa_controller/set_logger_level] /iiwa/iiwa_controller rosrpc://localhost:39617
+[rosmaster.master][INFO] 2026-05-22 09:54:19,213: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:37971/']
+[rosmaster.master][INFO] 2026-05-22 09:54:19,214: publisherUpdate[/rosout] -> http://localhost:36439/ ['http://localhost:37971/']: sec=0.00, result=[1, '', 0]
+[rosmaster.master][INFO] 2026-05-22 09:54:20,115: -PUB [/rosout_agg] /rosout http://localhost:36439/
+[rosmaster.master][INFO] 2026-05-22 09:54:20,116: -SUB [/clock] /rosout http://localhost:36439/
+[rosmaster.master][INFO] 2026-05-22 09:54:20,116: -SUB [/rosout] /rosout http://localhost:36439/
+[rosmaster.master][INFO] 2026-05-22 09:54:20,116: -SERVICE [/rosout/get_loggers] /rosout rosrpc://localhost:38455
+[rosmaster.master][INFO] 2026-05-22 09:54:20,117: -SERVICE [/rosout/set_logger_level] /rosout rosrpc://localhost:38455
+[rosmaster.master][INFO] 2026-05-22 09:54:20,117: -CACHEDPARAM [/rosout/omit_topics] by /rosout
+[rosmaster.main][INFO] 2026-05-22 09:54:20,179: keyboard interrupt, will exit
+[rosmaster.main][INFO] 2026-05-22 09:54:20,180: stopping master...
+[rospy.core][INFO] 2026-05-22 09:54:20,180: signal_shutdown [atexit]

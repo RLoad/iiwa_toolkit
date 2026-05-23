@@ -1,0 +1,45 @@
+=== attractor_ds_py_log_20260522T140255Z ===
+n_rows                     : 21321
+duration_s                 : 63.2
+eff_rate_hz                : 337.35759493670884
+velocity_saturation_frac   : 0.12171098916561136
+pos_err_overall_rms_m      : 0.21509016610745352
+vel_err_overall_rms_m_s    : 0.026749322699862847
+pos_err_final_m            : 0.023247053235895158
+ee_pos_first               : [-3.2663882163899634e-07, -8.138996237031054e-13, 1.2609999924897293]
+ee_pos_last                : [0.6225702836779025, 0.003626607549218749, 0.5957744235262509]
+attractor_first            : [0.5, 0.0, 0.5]
+attractor_last             : [0.6, 0.0, 0.6]
+frac_init_phase            : 0.0
+per_segment:
+  seg 0 (home (K=0.5)):
+    t_start              : 0.0
+    t_end_observed       : 14.996
+    final_pos_err_m      : 0.02949027431447567
+    rms_vel_err_m_s      : 0.03995398699654501
+    sat_frac             : 0.29926299456943367
+  seg 1 (front-right low):
+    t_start              : 15.0
+    t_end_observed       : 27.997999999999998
+    final_pos_err_m      : 0.0035692449414798074
+    rms_vel_err_m_s      : 0.009207369130568134
+    sat_frac             : 0.0
+  seg 2 (back-left high  (K=0.8)):
+    t_start              : 28.0
+    t_end_observed       : 39.997
+    final_pos_err_m      : 0.04184842965430406
+    rms_vel_err_m_s      : 0.03187884887825111
+    sat_frac             : 0.24970329931165441
+  seg 3 (center           (softer damping a=b=0.5)):
+    t_start              : 40.0
+    t_end_observed       : 51.997
+    final_pos_err_m      : 0.025842636611241192
+    rms_vel_err_m_s      : 0.021549280841934366
+    sat_frac             : 0.0
+  seg 4 (center           (stiffer damping a=b=2.0)):
+    t_start              : 52.0
+    t_end_observed       : 63.2
+    final_pos_err_m      : 0.023247053235895158
+    rms_vel_err_m_s      : 0.011421275942189975
+    sat_frac             : 0.0
+plots written under: /home/ros/ros_ws/src/iiwa_toolkit/test_runs/attractor_ds_py_test_20260522T140255Z

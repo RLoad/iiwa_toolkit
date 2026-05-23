@@ -1,0 +1,212 @@
+[roslaunch][INFO] 2026-05-22 10:41:41,383: Checking log directory for disk usage. This may take a while.
+Press Ctrl-C to interrupt
+[roslaunch][INFO] 2026-05-22 10:41:41,386: Done checking log file disk usage. Usage is <1GB.
+[roslaunch][INFO] 2026-05-22 10:41:41,386: roslaunch starting with args ['/opt/ros/noetic/bin/roslaunch', 'iiwa_toolkit', 'passive_ds_py_gazebo.launch', 'gui:=false', 'device:=cpu', 'log_csv:=/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/passive_ds_py_log_20260522T104141Z.csv']
+[roslaunch][INFO] 2026-05-22 10:41:41,386: roslaunch env is environ({'USER_GROUP': 'ros', 'ROS_VERSION': '1', 'PKG_CONFIG_PATH': '/home/ros/ros_ws/devel/lib/pkgconfig:/opt/ros/noetic/lib/pkgconfig', 'ROS_PYTHON_VERSION': '3', 'HOSTNAME': 'rui-Precision-3581', 'DURATION': '120', 'ROS_PACKAGE_PATH': '/home/ros/ros_ws/src:/opt/ros/noetic/share', 'ROSLISP_PACKAGE_DIRECTORIES': '/home/ros/ros_ws/devel/share/common-lisp', 'PWD': '/home/ros/ros_ws', 'ROS_LOG_DIR': '/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/ros_logs', 'HOME': '/home/ros', 'LANG': 'C.UTF-8', 'ROS_ETC_DIR': '/opt/ros/noetic/etc/ros', 'CMAKE_PREFIX_PATH': '/home/ros/ros_ws/devel:/opt/ros/noetic', 'ROS_WORKSPACE': '/home/ros/ros_ws', 'PYTHONPATH': '/home/ros/ros_ws/devel/lib/python3/dist-packages:/opt/ros/noetic/lib/python3/dist-packages', 'USER': 'ros', 'DISPLAY': ':1', 'SHLVL': '0', 'ROS_MASTER_URI': 'http://localhost:11311', 'ROS_HOSTNAME': 'localhost', 'MPLBACKEND': 'Agg', 'LD_LIBRARY_PATH': '/home/ros/ros_ws/devel/lib:/opt/ros/noetic/lib:/usr/local/lib', 'LC_ALL': 'C.UTF-8', 'PATH': '/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', 'PIP_NO_CACHE_DIR': '1', 'DEBIAN_FRONTEND': 'noninteractive', 'ROS_ROOT': '/opt/ros/noetic/share/ros', 'ROS_DISTRO': 'noetic', 'QT_X11_NO_MITSHM': '1', '_': '/opt/ros/noetic/bin/roslaunch', 'ROS_LOG_FILENAME': '/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/ros_logs/d19d9a92-55ca-11f1-80ee-30f6efc06016/roslaunch-rui-Precision-3581-13446.log'})
+[roslaunch][INFO] 2026-05-22 10:41:41,386: starting in server mode
+[roslaunch.parent][INFO] 2026-05-22 10:41:41,386: starting roslaunch parent run
+[roslaunch][INFO] 2026-05-22 10:41:41,386: loading roscore config file /opt/ros/noetic/etc/ros/roscore.xml
+[roslaunch][INFO] 2026-05-22 10:41:41,458: Added core node of type [rosout/rosout] in namespace [/]
+[roslaunch.config][INFO] 2026-05-22 10:41:41,458: loading config file /home/ros/ros_ws/src/iiwa_toolkit/launch/passive_ds_py_gazebo.launch
+[roslaunch][INFO] 2026-05-22 10:41:41,622: Added node of type [iiwa_tools/iiwa_service] in namespace [/iiwa/]
+[roslaunch][INFO] 2026-05-22 10:41:41,623: Added node of type [gazebo_ros/spawn_model] in namespace [/iiwa/]
+[roslaunch][INFO] 2026-05-22 10:41:41,630: Added node of type [controller_manager/spawner] in namespace [/iiwa/]
+[roslaunch][INFO] 2026-05-22 10:41:41,630: Added node of type [robot_state_publisher/robot_state_publisher] in namespace [/iiwa/]
+[roslaunch][INFO] 2026-05-22 10:41:41,631: Added node of type [gazebo_ros/gzserver] in namespace [/]
+[roslaunch][INFO] 2026-05-22 10:41:41,634: Added node of type [iiwa_toolkit/node_passive_ds_gazebo.py] in namespace [/iiwa/]
+[roslaunch][INFO] 2026-05-22 10:41:41,634: ... selected machine [] for node of type [iiwa_tools/iiwa_service]
+[roslaunch][INFO] 2026-05-22 10:41:41,634: ... selected machine [] for node of type [gazebo_ros/spawn_model]
+[roslaunch][INFO] 2026-05-22 10:41:41,634: ... selected machine [] for node of type [controller_manager/spawner]
+[roslaunch][INFO] 2026-05-22 10:41:41,634: ... selected machine [] for node of type [robot_state_publisher/robot_state_publisher]
+[roslaunch][INFO] 2026-05-22 10:41:41,634: ... selected machine [] for node of type [gazebo_ros/gzserver]
+[roslaunch][INFO] 2026-05-22 10:41:41,634: ... selected machine [] for node of type [iiwa_toolkit/node_passive_ds_gazebo.py]
+[roslaunch.pmon][INFO] 2026-05-22 10:41:41,634: start_process_monitor: creating ProcessMonitor
+[roslaunch.pmon][INFO] 2026-05-22 10:41:41,634: created process monitor <ProcessMonitor(ProcessMonitor-1, initial daemon)>
+[roslaunch.pmon][INFO] 2026-05-22 10:41:41,634: start_process_monitor: ProcessMonitor started
+[roslaunch.parent][INFO] 2026-05-22 10:41:41,635: starting parent XML-RPC server
+[roslaunch.server][INFO] 2026-05-22 10:41:41,635: starting roslaunch XML-RPC server
+[roslaunch.server][INFO] 2026-05-22 10:41:41,635: waiting for roslaunch XML-RPC server to initialize
+[xmlrpc][INFO] 2026-05-22 10:41:41,635: XML-RPC server binding to 127.0.0.1:0
+[xmlrpc][INFO] 2026-05-22 10:41:41,635: Started XML-RPC server [http://localhost:38643/]
+[xmlrpc][INFO] 2026-05-22 10:41:41,635: xml rpc node: starting XML-RPC server
+[roslaunch][INFO] 2026-05-22 10:41:41,646: started roslaunch server http://localhost:38643/
+[roslaunch.parent][INFO] 2026-05-22 10:41:41,646: ... parent XML-RPC server started
+[roslaunch][INFO] 2026-05-22 10:41:41,647: master.is_running[http://localhost:11311]
+[roslaunch][INFO] 2026-05-22 10:41:41,647: auto-starting new master
+[roslaunch][INFO] 2026-05-22 10:41:41,647: create_master_process: rosmaster, /opt/ros/noetic/share/ros, 11311, 3, None, False
+[roslaunch][INFO] 2026-05-22 10:41:41,647: process[master]: launching with args [['rosmaster', '--core', '-p', '11311', '-w', '3']]
+[roslaunch.pmon][INFO] 2026-05-22 10:41:41,647: ProcessMonitor.register[master]
+[roslaunch.pmon][INFO] 2026-05-22 10:41:41,647: ProcessMonitor.register[master] complete
+[roslaunch][INFO] 2026-05-22 10:41:41,647: process[master]: starting os process
+[roslaunch][INFO] 2026-05-22 10:41:41,647: process[master]: start w/ args [['rosmaster', '--core', '-p', '11311', '-w', '3', '__log:=/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/ros_logs/d19d9a92-55ca-11f1-80ee-30f6efc06016/master.log']]
+[roslaunch][INFO] 2026-05-22 10:41:41,647: process[master]: cwd will be [/home/ros/.ros]
+[roslaunch][INFO] 2026-05-22 10:41:41,650: process[master]: started with pid [13477]
+[roslaunch][INFO] 2026-05-22 10:41:41,650: master.is_running[http://localhost:11311]
+[roslaunch][INFO] 2026-05-22 10:41:41,750: master.is_running[http://localhost:11311]
+[roslaunch][INFO] 2026-05-22 10:41:41,851: master.is_running[http://localhost:11311]
+[roslaunch][INFO] 2026-05-22 10:41:41,855: master.is_running[http://localhost:11311]
+[roslaunch][INFO] 2026-05-22 10:41:41,857: ROS_MASTER_URI=http://localhost:11311
+[roslaunch][INFO] 2026-05-22 10:41:41,858: setting /run_id to d19d9a92-55ca-11f1-80ee-30f6efc06016
+[roslaunch][INFO] 2026-05-22 10:41:41,860: setting /roslaunch/uris/host_localhost__38643' to http://localhost:38643/
+[roslaunch][INFO] 2026-05-22 10:41:41,862: ... preparing to launch node of type [rosout/rosout]
+[roslaunch][INFO] 2026-05-22 10:41:41,863: create_node_process: package[rosout] type[rosout] machine[Machine(name[] env_loader[None] address[localhost] ssh_port[22] user[None] assignable[True] timeout[10.0])] master_uri[http://localhost:11311]
+[roslaunch][INFO] 2026-05-22 10:41:41,863: process[rosout-1]: env[{'USER_GROUP': 'ros', 'ROS_VERSION': '1', 'PKG_CONFIG_PATH': '/home/ros/ros_ws/devel/lib/pkgconfig:/opt/ros/noetic/lib/pkgconfig', 'ROS_PYTHON_VERSION': '3', 'HOSTNAME': 'rui-Precision-3581', 'DURATION': '120', 'ROS_PACKAGE_PATH': '/home/ros/ros_ws/src:/opt/ros/noetic/share', 'ROSLISP_PACKAGE_DIRECTORIES': '/home/ros/ros_ws/devel/share/common-lisp', 'PWD': '/home/ros/ros_ws', 'ROS_LOG_DIR': '/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/ros_logs', 'HOME': '/home/ros', 'LANG': 'C.UTF-8', 'ROS_ETC_DIR': '/opt/ros/noetic/etc/ros', 'CMAKE_PREFIX_PATH': '/home/ros/ros_ws/devel:/opt/ros/noetic', 'ROS_WORKSPACE': '/home/ros/ros_ws', 'PYTHONPATH': '/home/ros/ros_ws/devel/lib/python3/dist-packages:/opt/ros/noetic/lib/python3/dist-packages', 'USER': 'ros', 'DISPLAY': ':1', 'SHLVL': '0', 'ROS_MASTER_URI': 'http://localhost:11311', 'ROS_HOSTNAME': 'localhost', 'MPLBACKEND': 'Agg', 'LD_LIBRARY_PATH': '/home/ros/ros_ws/devel/lib:/opt/ros/noetic/lib:/usr/local/lib', 'LC_ALL': 'C.UTF-8', 'PATH': '/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', 'PIP_NO_CACHE_DIR': '1', 'DEBIAN_FRONTEND': 'noninteractive', 'ROS_ROOT': '/opt/ros/noetic/share/ros', 'ROS_DISTRO': 'noetic', 'QT_X11_NO_MITSHM': '1', '_': '/opt/ros/noetic/bin/roslaunch', 'ROS_LOG_FILENAME': '/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/ros_logs/d19d9a92-55ca-11f1-80ee-30f6efc06016/roslaunch-rui-Precision-3581-13446.log'}]
+[roslaunch][INFO] 2026-05-22 10:41:41,903: process[rosout-1]: args[['/opt/ros/noetic/lib/rosout/rosout', '__name:=rosout']]
+[roslaunch][INFO] 2026-05-22 10:41:41,903: ... created process [rosout-1]
+[roslaunch.pmon][INFO] 2026-05-22 10:41:41,903: ProcessMonitor.register[rosout-1]
+[roslaunch.pmon][INFO] 2026-05-22 10:41:41,903: ProcessMonitor.register[rosout-1] complete
+[roslaunch][INFO] 2026-05-22 10:41:41,903: ... registered process [rosout-1]
+[roslaunch][INFO] 2026-05-22 10:41:41,903: process[rosout-1]: starting os process
+[roslaunch][INFO] 2026-05-22 10:41:41,903: process[rosout-1]: start w/ args [['/opt/ros/noetic/lib/rosout/rosout', '__name:=rosout', '__log:=/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/ros_logs/d19d9a92-55ca-11f1-80ee-30f6efc06016/rosout-1.log']]
+[roslaunch][INFO] 2026-05-22 10:41:41,903: process[rosout-1]: cwd will be [/home/ros/.ros]
+[roslaunch][INFO] 2026-05-22 10:41:41,906: process[rosout-1]: started with pid [13487]
+[roslaunch][INFO] 2026-05-22 10:41:41,906: ... successfully launched [rosout-1]
+[roslaunch][INFO] 2026-05-22 10:41:41,906: load_parameters starting ...
+[roslaunch][INFO] 2026-05-22 10:41:41,939: ... load_parameters complete
+[roslaunch][INFO] 2026-05-22 10:41:41,939: launch_nodes: launching local nodes ...
+[roslaunch][INFO] 2026-05-22 10:41:41,940: ... preparing to launch node of type [iiwa_tools/iiwa_service]
+[roslaunch][INFO] 2026-05-22 10:41:41,940: create_node_process: package[iiwa_tools] type[iiwa_service] machine[Machine(name[] env_loader[None] address[localhost] ssh_port[22] user[None] assignable[True] timeout[10.0])] master_uri[http://localhost:11311]
+[roslaunch][INFO] 2026-05-22 10:41:41,940: process[iiwa/iiwa_service-2]: env[{'USER_GROUP': 'ros', 'ROS_VERSION': '1', 'PKG_CONFIG_PATH': '/home/ros/ros_ws/devel/lib/pkgconfig:/opt/ros/noetic/lib/pkgconfig', 'ROS_PYTHON_VERSION': '3', 'HOSTNAME': 'rui-Precision-3581', 'DURATION': '120', 'ROS_PACKAGE_PATH': '/home/ros/ros_ws/src:/opt/ros/noetic/share', 'ROSLISP_PACKAGE_DIRECTORIES': '/home/ros/ros_ws/devel/share/common-lisp', 'PWD': '/home/ros/ros_ws', 'ROS_LOG_DIR': '/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/ros_logs', 'HOME': '/home/ros', 'LANG': 'C.UTF-8', 'ROS_ETC_DIR': '/opt/ros/noetic/etc/ros', 'CMAKE_PREFIX_PATH': '/home/ros/ros_ws/devel:/opt/ros/noetic', 'ROS_WORKSPACE': '/home/ros/ros_ws', 'PYTHONPATH': '/home/ros/ros_ws/devel/lib/python3/dist-packages:/opt/ros/noetic/lib/python3/dist-packages', 'USER': 'ros', 'DISPLAY': ':1', 'SHLVL': '0', 'ROS_MASTER_URI': 'http://localhost:11311', 'ROS_HOSTNAME': 'localhost', 'MPLBACKEND': 'Agg', 'LD_LIBRARY_PATH': '/home/ros/ros_ws/devel/lib:/opt/ros/noetic/lib:/usr/local/lib', 'LC_ALL': 'C.UTF-8', 'PATH': '/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', 'PIP_NO_CACHE_DIR': '1', 'DEBIAN_FRONTEND': 'noninteractive', 'ROS_ROOT': '/opt/ros/noetic/share/ros', 'ROS_DISTRO': 'noetic', 'QT_X11_NO_MITSHM': '1', '_': '/opt/ros/noetic/bin/roslaunch', 'ROS_LOG_FILENAME': '/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/ros_logs/d19d9a92-55ca-11f1-80ee-30f6efc06016/roslaunch-rui-Precision-3581-13446.log', 'ROS_NAMESPACE': '/iiwa'}]
+[roslaunch][INFO] 2026-05-22 10:41:41,940: process[iiwa/iiwa_service-2]: args[['/home/ros/ros_ws/devel/lib/iiwa_tools/iiwa_service', '__name:=iiwa_service']]
+[roslaunch][INFO] 2026-05-22 10:41:41,940: ... created process [iiwa/iiwa_service-2]
+[roslaunch.pmon][INFO] 2026-05-22 10:41:41,940: ProcessMonitor.register[iiwa/iiwa_service-2]
+[roslaunch.pmon][INFO] 2026-05-22 10:41:41,940: ProcessMonitor.register[iiwa/iiwa_service-2] complete
+[roslaunch][INFO] 2026-05-22 10:41:41,940: ... registered process [iiwa/iiwa_service-2]
+[roslaunch][INFO] 2026-05-22 10:41:41,940: process[iiwa/iiwa_service-2]: starting os process
+[roslaunch][INFO] 2026-05-22 10:41:41,940: process[iiwa/iiwa_service-2]: start w/ args [['/home/ros/ros_ws/devel/lib/iiwa_tools/iiwa_service', '__name:=iiwa_service', '__log:=/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/ros_logs/d19d9a92-55ca-11f1-80ee-30f6efc06016/iiwa-iiwa_service-2.log']]
+[roslaunch][INFO] 2026-05-22 10:41:41,940: process[iiwa/iiwa_service-2]: cwd will be [/home/ros/.ros]
+[roslaunch][INFO] 2026-05-22 10:41:41,943: process[iiwa/iiwa_service-2]: started with pid [13494]
+[roslaunch][INFO] 2026-05-22 10:41:41,943: ... successfully launched [iiwa/iiwa_service-2]
+[roslaunch][INFO] 2026-05-22 10:41:41,943: ... preparing to launch node of type [gazebo_ros/spawn_model]
+[roslaunch][INFO] 2026-05-22 10:41:41,943: create_node_process: package[gazebo_ros] type[spawn_model] machine[Machine(name[] env_loader[None] address[localhost] ssh_port[22] user[None] assignable[True] timeout[10.0])] master_uri[http://localhost:11311]
+[roslaunch][INFO] 2026-05-22 10:41:41,943: process[iiwa/urdf_spawner-3]: env[{'USER_GROUP': 'ros', 'ROS_VERSION': '1', 'PKG_CONFIG_PATH': '/home/ros/ros_ws/devel/lib/pkgconfig:/opt/ros/noetic/lib/pkgconfig', 'ROS_PYTHON_VERSION': '3', 'HOSTNAME': 'rui-Precision-3581', 'DURATION': '120', 'ROS_PACKAGE_PATH': '/home/ros/ros_ws/src:/opt/ros/noetic/share', 'ROSLISP_PACKAGE_DIRECTORIES': '/home/ros/ros_ws/devel/share/common-lisp', 'PWD': '/home/ros/ros_ws', 'ROS_LOG_DIR': '/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/ros_logs', 'HOME': '/home/ros', 'LANG': 'C.UTF-8', 'ROS_ETC_DIR': '/opt/ros/noetic/etc/ros', 'CMAKE_PREFIX_PATH': '/home/ros/ros_ws/devel:/opt/ros/noetic', 'ROS_WORKSPACE': '/home/ros/ros_ws', 'PYTHONPATH': '/home/ros/ros_ws/devel/lib/python3/dist-packages:/opt/ros/noetic/lib/python3/dist-packages', 'USER': 'ros', 'DISPLAY': ':1', 'SHLVL': '0', 'ROS_MASTER_URI': 'http://localhost:11311', 'ROS_HOSTNAME': 'localhost', 'MPLBACKEND': 'Agg', 'LD_LIBRARY_PATH': '/home/ros/ros_ws/devel/lib:/opt/ros/noetic/lib:/usr/local/lib', 'LC_ALL': 'C.UTF-8', 'PATH': '/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', 'PIP_NO_CACHE_DIR': '1', 'DEBIAN_FRONTEND': 'noninteractive', 'ROS_ROOT': '/opt/ros/noetic/share/ros', 'ROS_DISTRO': 'noetic', 'QT_X11_NO_MITSHM': '1', '_': '/opt/ros/noetic/bin/roslaunch', 'ROS_LOG_FILENAME': '/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/ros_logs/d19d9a92-55ca-11f1-80ee-30f6efc06016/roslaunch-rui-Precision-3581-13446.log', 'ROS_NAMESPACE': '/iiwa'}]
+[roslaunch][INFO] 2026-05-22 10:41:41,943: process[iiwa/urdf_spawner-3]: args[['/opt/ros/noetic/lib/gazebo_ros/spawn_model', '-urdf', '-model', 'iiwa', '-param', 'robot_description', '__name:=urdf_spawner']]
+[roslaunch][INFO] 2026-05-22 10:41:41,943: ... created process [iiwa/urdf_spawner-3]
+[roslaunch.pmon][INFO] 2026-05-22 10:41:41,943: ProcessMonitor.register[iiwa/urdf_spawner-3]
+[roslaunch.pmon][INFO] 2026-05-22 10:41:41,943: ProcessMonitor.register[iiwa/urdf_spawner-3] complete
+[roslaunch][INFO] 2026-05-22 10:41:41,943: ... registered process [iiwa/urdf_spawner-3]
+[roslaunch][INFO] 2026-05-22 10:41:41,943: process[iiwa/urdf_spawner-3]: starting os process
+[roslaunch][INFO] 2026-05-22 10:41:41,943: process[iiwa/urdf_spawner-3]: start w/ args [['/opt/ros/noetic/lib/gazebo_ros/spawn_model', '-urdf', '-model', 'iiwa', '-param', 'robot_description', '__name:=urdf_spawner', '__log:=/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/ros_logs/d19d9a92-55ca-11f1-80ee-30f6efc06016/iiwa-urdf_spawner-3.log']]
+[roslaunch][INFO] 2026-05-22 10:41:41,943: process[iiwa/urdf_spawner-3]: cwd will be [/home/ros/.ros]
+[roslaunch][INFO] 2026-05-22 10:41:41,945: process[iiwa/urdf_spawner-3]: started with pid [13495]
+[roslaunch][INFO] 2026-05-22 10:41:41,945: ... successfully launched [iiwa/urdf_spawner-3]
+[roslaunch][INFO] 2026-05-22 10:41:41,945: ... preparing to launch node of type [controller_manager/spawner]
+[roslaunch][INFO] 2026-05-22 10:41:41,945: create_node_process: package[controller_manager] type[spawner] machine[Machine(name[] env_loader[None] address[localhost] ssh_port[22] user[None] assignable[True] timeout[10.0])] master_uri[http://localhost:11311]
+[roslaunch][INFO] 2026-05-22 10:41:41,945: process[iiwa/iiwa_controller-4]: env[{'USER_GROUP': 'ros', 'ROS_VERSION': '1', 'PKG_CONFIG_PATH': '/home/ros/ros_ws/devel/lib/pkgconfig:/opt/ros/noetic/lib/pkgconfig', 'ROS_PYTHON_VERSION': '3', 'HOSTNAME': 'rui-Precision-3581', 'DURATION': '120', 'ROS_PACKAGE_PATH': '/home/ros/ros_ws/src:/opt/ros/noetic/share', 'ROSLISP_PACKAGE_DIRECTORIES': '/home/ros/ros_ws/devel/share/common-lisp', 'PWD': '/home/ros/ros_ws', 'ROS_LOG_DIR': '/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/ros_logs', 'HOME': '/home/ros', 'LANG': 'C.UTF-8', 'ROS_ETC_DIR': '/opt/ros/noetic/etc/ros', 'CMAKE_PREFIX_PATH': '/home/ros/ros_ws/devel:/opt/ros/noetic', 'ROS_WORKSPACE': '/home/ros/ros_ws', 'PYTHONPATH': '/home/ros/ros_ws/devel/lib/python3/dist-packages:/opt/ros/noetic/lib/python3/dist-packages', 'USER': 'ros', 'DISPLAY': ':1', 'SHLVL': '0', 'ROS_MASTER_URI': 'http://localhost:11311', 'ROS_HOSTNAME': 'localhost', 'MPLBACKEND': 'Agg', 'LD_LIBRARY_PATH': '/home/ros/ros_ws/devel/lib:/opt/ros/noetic/lib:/usr/local/lib', 'LC_ALL': 'C.UTF-8', 'PATH': '/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', 'PIP_NO_CACHE_DIR': '1', 'DEBIAN_FRONTEND': 'noninteractive', 'ROS_ROOT': '/opt/ros/noetic/share/ros', 'ROS_DISTRO': 'noetic', 'QT_X11_NO_MITSHM': '1', '_': '/opt/ros/noetic/bin/roslaunch', 'ROS_LOG_FILENAME': '/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/ros_logs/d19d9a92-55ca-11f1-80ee-30f6efc06016/roslaunch-rui-Precision-3581-13446.log', 'ROS_NAMESPACE': '/iiwa'}]
+[roslaunch][INFO] 2026-05-22 10:41:41,946: process[iiwa/iiwa_controller-4]: args[['/opt/ros/noetic/lib/controller_manager/spawner', 'TorqueController', 'joint_state_controller', '__name:=iiwa_controller']]
+[roslaunch][INFO] 2026-05-22 10:41:41,946: ... created process [iiwa/iiwa_controller-4]
+[roslaunch.pmon][INFO] 2026-05-22 10:41:41,946: ProcessMonitor.register[iiwa/iiwa_controller-4]
+[roslaunch.pmon][INFO] 2026-05-22 10:41:41,946: ProcessMonitor.register[iiwa/iiwa_controller-4] complete
+[roslaunch][INFO] 2026-05-22 10:41:41,946: ... registered process [iiwa/iiwa_controller-4]
+[roslaunch][INFO] 2026-05-22 10:41:41,946: process[iiwa/iiwa_controller-4]: starting os process
+[roslaunch][INFO] 2026-05-22 10:41:41,946: process[iiwa/iiwa_controller-4]: start w/ args [['/opt/ros/noetic/lib/controller_manager/spawner', 'TorqueController', 'joint_state_controller', '__name:=iiwa_controller', '__log:=/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/ros_logs/d19d9a92-55ca-11f1-80ee-30f6efc06016/iiwa-iiwa_controller-4.log']]
+[roslaunch][INFO] 2026-05-22 10:41:41,946: process[iiwa/iiwa_controller-4]: cwd will be [/home/ros/.ros]
+[roslaunch][INFO] 2026-05-22 10:41:41,947: process[iiwa/iiwa_controller-4]: started with pid [13496]
+[roslaunch][INFO] 2026-05-22 10:41:41,948: ... successfully launched [iiwa/iiwa_controller-4]
+[roslaunch][INFO] 2026-05-22 10:41:41,948: ... preparing to launch node of type [robot_state_publisher/robot_state_publisher]
+[roslaunch][INFO] 2026-05-22 10:41:41,948: create_node_process: package[robot_state_publisher] type[robot_state_publisher] machine[Machine(name[] env_loader[None] address[localhost] ssh_port[22] user[None] assignable[True] timeout[10.0])] master_uri[http://localhost:11311]
+[roslaunch][INFO] 2026-05-22 10:41:41,948: process[iiwa/robot_state_publisher-5]: env[{'USER_GROUP': 'ros', 'ROS_VERSION': '1', 'PKG_CONFIG_PATH': '/home/ros/ros_ws/devel/lib/pkgconfig:/opt/ros/noetic/lib/pkgconfig', 'ROS_PYTHON_VERSION': '3', 'HOSTNAME': 'rui-Precision-3581', 'DURATION': '120', 'ROS_PACKAGE_PATH': '/home/ros/ros_ws/src:/opt/ros/noetic/share', 'ROSLISP_PACKAGE_DIRECTORIES': '/home/ros/ros_ws/devel/share/common-lisp', 'PWD': '/home/ros/ros_ws', 'ROS_LOG_DIR': '/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/ros_logs', 'HOME': '/home/ros', 'LANG': 'C.UTF-8', 'ROS_ETC_DIR': '/opt/ros/noetic/etc/ros', 'CMAKE_PREFIX_PATH': '/home/ros/ros_ws/devel:/opt/ros/noetic', 'ROS_WORKSPACE': '/home/ros/ros_ws', 'PYTHONPATH': '/home/ros/ros_ws/devel/lib/python3/dist-packages:/opt/ros/noetic/lib/python3/dist-packages', 'USER': 'ros', 'DISPLAY': ':1', 'SHLVL': '0', 'ROS_MASTER_URI': 'http://localhost:11311', 'ROS_HOSTNAME': 'localhost', 'MPLBACKEND': 'Agg', 'LD_LIBRARY_PATH': '/home/ros/ros_ws/devel/lib:/opt/ros/noetic/lib:/usr/local/lib', 'LC_ALL': 'C.UTF-8', 'PATH': '/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', 'PIP_NO_CACHE_DIR': '1', 'DEBIAN_FRONTEND': 'noninteractive', 'ROS_ROOT': '/opt/ros/noetic/share/ros', 'ROS_DISTRO': 'noetic', 'QT_X11_NO_MITSHM': '1', '_': '/opt/ros/noetic/bin/roslaunch', 'ROS_LOG_FILENAME': '/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/ros_logs/d19d9a92-55ca-11f1-80ee-30f6efc06016/roslaunch-rui-Precision-3581-13446.log', 'ROS_NAMESPACE': '/iiwa'}]
+[roslaunch][INFO] 2026-05-22 10:41:41,948: process[iiwa/robot_state_publisher-5]: args[['/opt/ros/noetic/lib/robot_state_publisher/robot_state_publisher', '__name:=robot_state_publisher']]
+[roslaunch][INFO] 2026-05-22 10:41:41,948: ... created process [iiwa/robot_state_publisher-5]
+[roslaunch.pmon][INFO] 2026-05-22 10:41:41,948: ProcessMonitor.register[iiwa/robot_state_publisher-5]
+[roslaunch.pmon][INFO] 2026-05-22 10:41:41,948: ProcessMonitor.register[iiwa/robot_state_publisher-5] complete
+[roslaunch][INFO] 2026-05-22 10:41:41,948: ... registered process [iiwa/robot_state_publisher-5]
+[roslaunch][INFO] 2026-05-22 10:41:41,948: process[iiwa/robot_state_publisher-5]: starting os process
+[roslaunch][INFO] 2026-05-22 10:41:41,948: process[iiwa/robot_state_publisher-5]: start w/ args [['/opt/ros/noetic/lib/robot_state_publisher/robot_state_publisher', '__name:=robot_state_publisher', '__log:=/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/ros_logs/d19d9a92-55ca-11f1-80ee-30f6efc06016/iiwa-robot_state_publisher-5.log']]
+[roslaunch][INFO] 2026-05-22 10:41:41,948: process[iiwa/robot_state_publisher-5]: cwd will be [/home/ros/.ros]
+[roslaunch][INFO] 2026-05-22 10:41:41,950: process[iiwa/robot_state_publisher-5]: started with pid [13501]
+[roslaunch][INFO] 2026-05-22 10:41:41,950: ... successfully launched [iiwa/robot_state_publisher-5]
+[roslaunch][INFO] 2026-05-22 10:41:41,950: ... preparing to launch node of type [gazebo_ros/gzserver]
+[roslaunch][INFO] 2026-05-22 10:41:41,951: create_node_process: package[gazebo_ros] type[gzserver] machine[Machine(name[] env_loader[None] address[localhost] ssh_port[22] user[None] assignable[True] timeout[10.0])] master_uri[http://localhost:11311]
+[roslaunch][INFO] 2026-05-22 10:41:41,951: process[gazebo-6]: env[{'USER_GROUP': 'ros', 'ROS_VERSION': '1', 'PKG_CONFIG_PATH': '/home/ros/ros_ws/devel/lib/pkgconfig:/opt/ros/noetic/lib/pkgconfig', 'ROS_PYTHON_VERSION': '3', 'HOSTNAME': 'rui-Precision-3581', 'DURATION': '120', 'ROS_PACKAGE_PATH': '/home/ros/ros_ws/src:/opt/ros/noetic/share', 'ROSLISP_PACKAGE_DIRECTORIES': '/home/ros/ros_ws/devel/share/common-lisp', 'PWD': '/home/ros/ros_ws', 'ROS_LOG_DIR': '/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/ros_logs', 'HOME': '/home/ros', 'LANG': 'C.UTF-8', 'ROS_ETC_DIR': '/opt/ros/noetic/etc/ros', 'CMAKE_PREFIX_PATH': '/home/ros/ros_ws/devel:/opt/ros/noetic', 'ROS_WORKSPACE': '/home/ros/ros_ws', 'PYTHONPATH': '/home/ros/ros_ws/devel/lib/python3/dist-packages:/opt/ros/noetic/lib/python3/dist-packages', 'USER': 'ros', 'DISPLAY': ':1', 'SHLVL': '0', 'ROS_MASTER_URI': 'http://localhost:11311', 'ROS_HOSTNAME': 'localhost', 'MPLBACKEND': 'Agg', 'LD_LIBRARY_PATH': '/home/ros/ros_ws/devel/lib:/opt/ros/noetic/lib:/usr/local/lib', 'LC_ALL': 'C.UTF-8', 'PATH': '/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', 'PIP_NO_CACHE_DIR': '1', 'DEBIAN_FRONTEND': 'noninteractive', 'ROS_ROOT': '/opt/ros/noetic/share/ros', 'ROS_DISTRO': 'noetic', 'QT_X11_NO_MITSHM': '1', '_': '/opt/ros/noetic/bin/roslaunch', 'ROS_LOG_FILENAME': '/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/ros_logs/d19d9a92-55ca-11f1-80ee-30f6efc06016/roslaunch-rui-Precision-3581-13446.log'}]
+[roslaunch][INFO] 2026-05-22 10:41:41,951: process[gazebo-6]: args[['/opt/ros/noetic/lib/gazebo_ros/gzserver', '-e', 'ode', '/home/ros/ros_ws/src/iiwa_ros/iiwa_gazebo/world/iiwa.world', '__name:=gazebo']]
+[roslaunch][INFO] 2026-05-22 10:41:41,951: ... created process [gazebo-6]
+[roslaunch.pmon][INFO] 2026-05-22 10:41:41,951: ProcessMonitor.register[gazebo-6]
+[roslaunch.pmon][INFO] 2026-05-22 10:41:41,951: ProcessMonitor.register[gazebo-6] complete
+[roslaunch][INFO] 2026-05-22 10:41:41,951: ... registered process [gazebo-6]
+[roslaunch][INFO] 2026-05-22 10:41:41,951: process[gazebo-6]: starting os process
+[roslaunch][INFO] 2026-05-22 10:41:41,951: process[gazebo-6]: start w/ args [['/opt/ros/noetic/lib/gazebo_ros/gzserver', '-e', 'ode', '/home/ros/ros_ws/src/iiwa_ros/iiwa_gazebo/world/iiwa.world', '__name:=gazebo', '__log:=/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/ros_logs/d19d9a92-55ca-11f1-80ee-30f6efc06016/gazebo-6.log']]
+[roslaunch][INFO] 2026-05-22 10:41:41,951: process[gazebo-6]: cwd will be [/home/ros/.ros]
+[roslaunch][INFO] 2026-05-22 10:41:41,953: process[gazebo-6]: started with pid [13503]
+[roslaunch][INFO] 2026-05-22 10:41:41,953: ... successfully launched [gazebo-6]
+[roslaunch][INFO] 2026-05-22 10:41:41,953: ... preparing to launch node of type [iiwa_toolkit/node_passive_ds_gazebo.py]
+[roslaunch][INFO] 2026-05-22 10:41:41,953: create_node_process: package[iiwa_toolkit] type[node_passive_ds_gazebo.py] machine[Machine(name[] env_loader[None] address[localhost] ssh_port[22] user[None] assignable[True] timeout[10.0])] master_uri[http://localhost:11311]
+[roslaunch][INFO] 2026-05-22 10:41:41,953: process[iiwa/passive_ds_py-7]: env[{'USER_GROUP': 'ros', 'ROS_VERSION': '1', 'PKG_CONFIG_PATH': '/home/ros/ros_ws/devel/lib/pkgconfig:/opt/ros/noetic/lib/pkgconfig', 'ROS_PYTHON_VERSION': '3', 'HOSTNAME': 'rui-Precision-3581', 'DURATION': '120', 'ROS_PACKAGE_PATH': '/home/ros/ros_ws/src:/opt/ros/noetic/share', 'ROSLISP_PACKAGE_DIRECTORIES': '/home/ros/ros_ws/devel/share/common-lisp', 'PWD': '/home/ros/ros_ws', 'ROS_LOG_DIR': '/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/ros_logs', 'HOME': '/home/ros', 'LANG': 'C.UTF-8', 'ROS_ETC_DIR': '/opt/ros/noetic/etc/ros', 'CMAKE_PREFIX_PATH': '/home/ros/ros_ws/devel:/opt/ros/noetic', 'ROS_WORKSPACE': '/home/ros/ros_ws', 'PYTHONPATH': '/home/ros/ros_ws/devel/lib/python3/dist-packages:/opt/ros/noetic/lib/python3/dist-packages', 'USER': 'ros', 'DISPLAY': ':1', 'SHLVL': '0', 'ROS_MASTER_URI': 'http://localhost:11311', 'ROS_HOSTNAME': 'localhost', 'MPLBACKEND': 'Agg', 'LD_LIBRARY_PATH': '/home/ros/ros_ws/devel/lib:/opt/ros/noetic/lib:/usr/local/lib', 'LC_ALL': 'C.UTF-8', 'PATH': '/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', 'PIP_NO_CACHE_DIR': '1', 'DEBIAN_FRONTEND': 'noninteractive', 'ROS_ROOT': '/opt/ros/noetic/share/ros', 'ROS_DISTRO': 'noetic', 'QT_X11_NO_MITSHM': '1', '_': '/opt/ros/noetic/bin/roslaunch', 'ROS_LOG_FILENAME': '/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/ros_logs/d19d9a92-55ca-11f1-80ee-30f6efc06016/roslaunch-rui-Precision-3581-13446.log', 'ROS_NAMESPACE': '/iiwa'}]
+[roslaunch][INFO] 2026-05-22 10:41:41,957: process[iiwa/passive_ds_py-7]: args[['/home/ros/ros_ws/devel/lib/iiwa_toolkit/node_passive_ds_gazebo.py', '__name:=passive_ds_py']]
+[roslaunch][INFO] 2026-05-22 10:41:41,957: ... created process [iiwa/passive_ds_py-7]
+[roslaunch.pmon][INFO] 2026-05-22 10:41:41,957: ProcessMonitor.register[iiwa/passive_ds_py-7]
+[roslaunch.pmon][INFO] 2026-05-22 10:41:41,957: ProcessMonitor.register[iiwa/passive_ds_py-7] complete
+[roslaunch][INFO] 2026-05-22 10:41:41,957: ... registered process [iiwa/passive_ds_py-7]
+[roslaunch][INFO] 2026-05-22 10:41:41,957: process[iiwa/passive_ds_py-7]: starting os process
+[roslaunch][INFO] 2026-05-22 10:41:41,957: process[iiwa/passive_ds_py-7]: start w/ args [['/home/ros/ros_ws/devel/lib/iiwa_toolkit/node_passive_ds_gazebo.py', '__name:=passive_ds_py', '__log:=/home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/ros_logs/d19d9a92-55ca-11f1-80ee-30f6efc06016/iiwa-passive_ds_py-7.log']]
+[roslaunch][INFO] 2026-05-22 10:41:41,957: process[iiwa/passive_ds_py-7]: cwd will be [/home/ros/.ros]
+[roslaunch][INFO] 2026-05-22 10:41:41,959: process[iiwa/passive_ds_py-7]: started with pid [13508]
+[roslaunch][INFO] 2026-05-22 10:41:41,959: ... successfully launched [iiwa/passive_ds_py-7]
+[roslaunch][INFO] 2026-05-22 10:41:41,959: ... launch_nodes complete
+[roslaunch.pmon][INFO] 2026-05-22 10:41:41,959: registrations completed <ProcessMonitor(ProcessMonitor-1, started daemon 128837674047232)>
+[roslaunch.parent][INFO] 2026-05-22 10:41:41,959: ... roslaunch parent running, waiting for process exit
+[roslaunch][INFO] 2026-05-22 10:41:41,959: spin
+[roslaunch][INFO] 2026-05-22 10:41:43,342: [iiwa/urdf_spawner-3] process has finished cleanly
+log file: /home/ros/ros_ws/src/iiwa_toolkit/test_runs/passive_ds_py_test_20260522T104141Z/ros_logs/d19d9a92-55ca-11f1-80ee-30f6efc06016/iiwa-urdf_spawner-3*.log
+[roslaunch.pmon][INFO] 2026-05-22 10:41:43,342: ProcessMonitor.unregister[iiwa/urdf_spawner-3] starting
+[roslaunch.pmon][INFO] 2026-05-22 10:41:43,342: ProcessMonitor.unregister[iiwa/urdf_spawner-3] complete
+[roslaunch.pmon][INFO] 2026-05-22 10:43:43,809: ProcessMonitor.shutdown <ProcessMonitor(ProcessMonitor-1, started daemon 128837674047232)>
+[roslaunch.pmon][INFO] 2026-05-22 10:43:43,864: ProcessMonitor._post_run <ProcessMonitor(ProcessMonitor-1, started daemon 128837674047232)>
+[roslaunch.pmon][INFO] 2026-05-22 10:43:43,864: ProcessMonitor._post_run <ProcessMonitor(ProcessMonitor-1, started daemon 128837674047232)>: remaining procs are [<roslaunch.nodeprocess.LocalProcess object at 0x752d5bd66d00>, <roslaunch.nodeprocess.LocalProcess object at 0x752d5e5690a0>, <roslaunch.nodeprocess.LocalProcess object at 0x752d5be9ac10>, <roslaunch.nodeprocess.LocalProcess object at 0x752d5bcddb80>, <roslaunch.nodeprocess.LocalProcess object at 0x752d5bcdd850>, <roslaunch.nodeprocess.LocalProcess object at 0x752d5bcdda60>, <roslaunch.nodeprocess.LocalProcess object at 0x752d5be864c0>]
+[roslaunch.pmon][INFO] 2026-05-22 10:43:43,864: ProcessMonitor exit: killing iiwa/passive_ds_py-7
+[roslaunch][INFO] 2026-05-22 10:43:43,864: [iiwa/passive_ds_py-7] killing on exit
+[roslaunch.pmon][INFO] 2026-05-22 10:43:43,865: ProcessMonitor exit: killing gazebo-6
+[roslaunch][INFO] 2026-05-22 10:43:43,865: process[iiwa/passive_ds_py-7]: killing os process with pid[13508] pgid[13508]
+[roslaunch.pmon][INFO] 2026-05-22 10:43:43,865: ProcessMonitor exit: killing iiwa/robot_state_publisher-5
+[roslaunch][INFO] 2026-05-22 10:43:43,865: [gazebo-6] killing on exit
+[roslaunch.pmon][INFO] 2026-05-22 10:43:43,865: ProcessMonitor exit: killing iiwa/iiwa_controller-4
+[roslaunch][INFO] 2026-05-22 10:43:43,865: [iiwa/passive_ds_py-7] sending SIGINT to pgid [13508]
+[roslaunch.pmon][INFO] 2026-05-22 10:43:43,865: ProcessMonitor exit: killing iiwa/iiwa_service-2
+[roslaunch][INFO] 2026-05-22 10:43:43,865: [iiwa/robot_state_publisher-5] killing on exit
+[roslaunch][INFO] 2026-05-22 10:43:43,865: process[gazebo-6]: killing os process with pid[13503] pgid[13503]
+[roslaunch][INFO] 2026-05-22 10:43:43,865: [iiwa/iiwa_controller-4] killing on exit
+[roslaunch][INFO] 2026-05-22 10:43:43,866: [iiwa/passive_ds_py-7] sent SIGINT to pgid [13508]
+[roslaunch][INFO] 2026-05-22 10:43:43,866: [iiwa/iiwa_service-2] killing on exit
+[roslaunch][INFO] 2026-05-22 10:43:43,866: process[iiwa/robot_state_publisher-5]: killing os process with pid[13501] pgid[13501]
+[roslaunch][INFO] 2026-05-22 10:43:43,866: [gazebo-6] sending SIGINT to pgid [13503]
+[roslaunch][INFO] 2026-05-22 10:43:43,866: process[iiwa/iiwa_controller-4]: killing os process with pid[13496] pgid[13496]
+[roslaunch][INFO] 2026-05-22 10:43:43,866: process[iiwa/iiwa_service-2]: killing os process with pid[13494] pgid[13494]
+[roslaunch][INFO] 2026-05-22 10:43:43,866: [iiwa/robot_state_publisher-5] sending SIGINT to pgid [13501]
+[roslaunch][INFO] 2026-05-22 10:43:43,866: [gazebo-6] sent SIGINT to pgid [13503]
+[roslaunch][INFO] 2026-05-22 10:43:43,866: [iiwa/iiwa_controller-4] sending SIGINT to pgid [13496]
+[roslaunch][INFO] 2026-05-22 10:43:43,866: [iiwa/iiwa_service-2] sending SIGINT to pgid [13494]
+[roslaunch][INFO] 2026-05-22 10:43:43,866: [iiwa/robot_state_publisher-5] sent SIGINT to pgid [13501]
+[roslaunch][INFO] 2026-05-22 10:43:43,867: [iiwa/iiwa_controller-4] sent SIGINT to pgid [13496]
+[roslaunch][INFO] 2026-05-22 10:43:43,867: [iiwa/iiwa_service-2] sent SIGINT to pgid [13494]
+[roslaunch][INFO] 2026-05-22 10:43:44,167: process[iiwa/robot_state_publisher-5]: SIGINT killed with return value 0
+[roslaunch][INFO] 2026-05-22 10:43:44,167: process[iiwa/iiwa_service-2]: SIGINT killed with return value 0
+[roslaunch][INFO] 2026-05-22 10:43:45,168: process[iiwa/passive_ds_py-7]: SIGINT killed with return value 1
+[roslaunch][ERROR] 2026-05-22 10:43:58,895: [gazebo-6] escalating to SIGTERM
+[roslaunch][INFO] 2026-05-22 10:43:58,896: [gazebo-6] sent SIGTERM to pgid [13503]
+[roslaunch][ERROR] 2026-05-22 10:43:58,896: [iiwa/iiwa_controller-4] escalating to SIGTERM
+[roslaunch][INFO] 2026-05-22 10:43:58,897: [iiwa/iiwa_controller-4] sent SIGTERM to pgid [13496]
+[roslaunch][INFO] 2026-05-22 10:43:59,097: process[gazebo-6]: SIGTERM killed with return value -15
+[roslaunch][INFO] 2026-05-22 10:43:59,698: process[iiwa/iiwa_controller-4]: SIGTERM killed with return value 0
+[roslaunch.pmon][INFO] 2026-05-22 10:43:59,699: ProcessMonitor exit: killing rosout-1
+[roslaunch][INFO] 2026-05-22 10:43:59,699: [rosout-1] killing on exit
+[roslaunch][INFO] 2026-05-22 10:43:59,700: process[rosout-1]: killing os process with pid[13487] pgid[13487]
+[roslaunch][INFO] 2026-05-22 10:43:59,700: [rosout-1] sending SIGINT to pgid [13487]
+[roslaunch][INFO] 2026-05-22 10:43:59,700: [rosout-1] sent SIGINT to pgid [13487]
+[roslaunch][INFO] 2026-05-22 10:43:59,900: process[rosout-1]: SIGINT killed with return value 0
+[roslaunch.pmon][INFO] 2026-05-22 10:43:59,901: ProcessMonitor exit: killing master
+[roslaunch][INFO] 2026-05-22 10:43:59,901: [master] killing on exit
+[roslaunch][INFO] 2026-05-22 10:43:59,901: process[master]: killing os process with pid[13477] pgid[13477]
+[roslaunch][INFO] 2026-05-22 10:43:59,901: [master] sending SIGINT to pgid [13477]
+[roslaunch][INFO] 2026-05-22 10:43:59,901: [master] sent SIGINT to pgid [13477]
+[roslaunch][INFO] 2026-05-22 10:44:00,102: process[master]: SIGINT killed with return value 0
+[roslaunch.pmon][INFO] 2026-05-22 10:44:00,102: ProcessMonitor exit: cleaning up data structures and signals
+[roslaunch.pmon][INFO] 2026-05-22 10:44:00,103: ProcessMonitor exit: pmon has shutdown
+[roslaunch][INFO] 2026-05-22 10:44:00,103: process monitor is done spinning, initiating full shutdown
+[roslaunch][INFO] 2026-05-22 10:44:00,103: runner.stop()
+[roslaunch][INFO] 2026-05-22 10:44:00,103: shutting down processing monitor...
+[roslaunch][INFO] 2026-05-22 10:44:00,103: shutting down processing monitor <ProcessMonitor(ProcessMonitor-1, stopped daemon 128837674047232)>
+[roslaunch.pmon][INFO] 2026-05-22 10:44:00,103: ProcessMonitor.shutdown <ProcessMonitor(ProcessMonitor-1, stopped daemon 128837674047232)>
+[roslaunch][INFO] 2026-05-22 10:44:00,103: ... shutting down processing monitor complete
+[roslaunch][INFO] 2026-05-22 10:44:00,103: done
+[roslaunch.pmon][INFO] 2026-05-22 10:44:00,104: ProcessMonitor.shutdown <ProcessMonitor(ProcessMonitor-1, stopped daemon 128837674047232)>
+[rospy.core][INFO] 2026-05-22 10:44:00,104: signal_shutdown [atexit]

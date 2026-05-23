@@ -1,0 +1,8 @@
+[INFO] [1779468721.886871, 1.472000]: [ds_planner] subscribers: pose=1 gains=1
+[INFO] [1779468721.888863, 1.474000]: [ds_planner] 5 segments, warmup=5.0s, seg=12.0s, total=65.0s
+[INFO] [1779468726.905981, 6.475000]: [ds_planner] t=  5.02s  seg 0 → front high      (K=0.5)  pos=[0.7, 0.0, 0.6]  K/a/b=[0.5, 1.0, 1.0]
+[INFO] [1779468738.906744, 18.415000]: [ds_planner] t= 17.02s  seg 1 → front-right low (K=0.5)  pos=[0.7, -0.2, 0.4]  K/a/b=[0.5, 1.0, 1.0]
+[INFO] [1779468750.898620, 30.295000]: [ds_planner] t= 29.01s  seg 2 → back-left high  (K=0.8)  pos=[0.4, 0.2, 0.6]  K/a/b=[0.8, 1.0, 1.0]
+[INFO] [1779468762.895477, 42.215000]: [ds_planner] t= 41.01s  seg 3 → center low      (soft  damping a=b=0.5)  pos=[0.5, 0.0, 0.4]  K/a/b=[0.5, 0.5, 0.5]
+[INFO] [1779468774.894580, 54.135000]: [ds_planner] t= 53.00s  seg 4 → center          (stiff damping a=b=2.0)  pos=[0.5, 0.0, 0.6]  K/a/b=[0.5, 2.0, 2.0]
+[INFO] [1779468786.902967, 66.055000]: [ds_planner] schedule complete (65.0s)

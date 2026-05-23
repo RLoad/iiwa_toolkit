@@ -1,0 +1,76 @@
+# Config for the AttractorDSController-driven Gazebo node
+# (node_attractor_ds_gazebo.py).  In Isaac Lab these knobs become RL outputs;
+# here we use the yaml values until an /attractor_ds_py/gains message arrives.
+
+rate_hz: 500.0           # control loop rate (Hz)
+cmd_timeout: 0.5         # seconds; attractor-Pose message becomes stale after this
+
+# kinematics — relative paths resolve under <group ns="/iiwa">
+ee_link:    iiwa_link_ee
+root_link:  iiwa_link_0
+urdf_param: robot_description
+device:     cpu          # "cpu" for Gazebo; "cuda" for batched RL training
+
+joint_names:
+  - iiwa_joint_1
+  - iiwa_joint_2
+  - iiwa_joint_3
+  - iiwa_joint_4
+  - iiwa_joint_5
+  - iiwa_joint_6
+  - iiwa_joint_7
+
+# ----------------------------------------------------------------
+# PassiveDSCore parameters (mirror C++ passive_control.cpp defaults).
+# These are FIXED system parameters — RL doesn't tune them per step.
+# ----------------------------------------------------------------
+
+# inner passive-DS damping eigenvalue base values
+# effective values = a * lam0_*, b * lam1_*  (a, b come per-step from RL)
+lam0_pos: 100.0
+lam1_pos: 100.0
+lam0_ori:   5.0
+lam1_ori:   5.0
+
+# outer DS gains used by PassiveDSCore for the *orientation* DS only.
+# (The position outer DS is bypassed — AttractorDSController computes
+#  v_des = -K_linear * (x - x_a) and passes it in VEL mode.)
+ds_gain_pos: 5.0         # unused at runtime, kept for symmetry
+ds_gain_ori: 2.5
+
+# saturation on the outer DS error-vector (orientation branch uses max_dq)
+max_dx: 0.10
+max_dq: 0.20
+
+# null-space joint PD
+null_q:      [0.0, 0.0, 0.0, -0.75, 0.0, 0.0, 0.0]
+null_gains:  [5.0, 80.0, 10.0, 30.0, 5.0, 2.0, 2.0]
+null_damping: 1.0
+null_scale:  10.0
+
+# coarse-positioning startup phase.  Turn OFF for Isaac Lab RL training so
+# the controller is purely state-input → torque-output without latched state.
+enable_init_phase: true
+init_phase_norm: 1.5
+
+# end-effector tool gravity comp (z direction, added to the wrench)
+load_added: 0.0          # kg
+
+# ----------------------------------------------------------------
+# AttractorDSController-specific
+# ----------------------------------------------------------------
+# C++ test_ori_control::Velocity_limit_ — saturates ‖v_des‖ before passive DS.
+velocity_limit: 0.15     # m/s
+
+# Defaults for the RL knobs, used until /attractor_ds_py/gains arrives.
+default_K_linear:  0.5
+default_damping_a: 1.0
+default_damping_b: 1.0
+
+# Default attractor used at boot before any /attractor_ds_py/attractor arrives.
+# Empty / commented out → node refuses to publish torques until it has a real
+# attractor (matches the "no fallback" decision).  Provide both pos AND quat.
+    # pos: [0.7, 0.0, 0.5]
+    # quat: [0.7071068, 0.0, 0.7071068,  0.0]
+default_attractor_pos:  [0.7, 0.0, 0.5]
+default_attractor_quat: [0.7071068, 0.0, 0.7071068,  0.0]
