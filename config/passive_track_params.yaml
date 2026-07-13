@@ -8,8 +8,10 @@ control:
     # lambda0Pos: 100.0
     # lambda1Pos: 100.0
     dsGainOri: 3.0
-    lambda0Ori: 5
-    lambda1Ori: 2.5
+    # lambda0Ori: 5
+    lambda0Ori: 20
+    # lambda1Ori: 2.5
+    lambda1Ori: 10
     # dsGainOri: 4.0 ##--for egg cut
     # lambda0Ori: 6
     # lambda1Ori: 6

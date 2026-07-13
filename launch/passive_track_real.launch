@@ -28,7 +28,7 @@
         <!-- <arg  name="ip_address"  default="192.168.0.50"/> -->
         <!-- <arg  name="ip_address"  default="192.168.0.2"/> -->
         <!-- <arg  name="ip_address"  default="192.168.1.1"/> -->
-	<arg  name="bias"	 default="False"/>
+	<arg  name="bias"	 default="True"/>
 	<arg  name="rate" 	 default="100"/>	
 	<arg  name="frame_id"    default="myframe"/>
 	<arg  name="alpha"	 default="0" />	

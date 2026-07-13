@@ -1,0 +1,22 @@
+<launch>
+    <!-- Standalone zigzag trajectory TXT writer -->
+    <arg name="pointcloud_dir" default="$(find ds_motion_generator)/ply"/>
+    <arg name="trajectory_file" default="$(find ds_motion_generator)/trj/final_trajectory.txt"/>
+    <arg name="rate" default="2.0"/>
+    <arg name="reload_interval" default="2.0"/>
+    <arg name="zigzag_lane_count" default="9"/>
+    <arg name="zigzag_point_spacing" default="0.001"/>
+    <arg name="zigzag_z_mode" default="auto"/>
+    <arg name="zigzag_z_value" default="0.0"/>
+
+    <node name="zigzag_trajectory_txt_writer" pkg="ds_motion_generator" type="generate_zigzag_trajectory_txt.py" output="screen">
+        <param name="pointcloud_dir" value="$(arg pointcloud_dir)"/>
+        <param name="trajectory_file" value="$(arg trajectory_file)"/>
+        <param name="rate" value="$(arg rate)"/>
+        <param name="reload_interval" value="$(arg reload_interval)"/>
+        <param name="zigzag_lane_count" value="$(arg zigzag_lane_count)"/>
+        <param name="zigzag_point_spacing" value="$(arg zigzag_point_spacing)"/>
+        <param name="zigzag_z_mode" value="$(arg zigzag_z_mode)"/>
+        <param name="zigzag_z_value" value="$(arg zigzag_z_value)"/>
+    </node>
+</launch>
